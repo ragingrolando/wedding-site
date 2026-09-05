@@ -20,11 +20,13 @@ const SITE = {
      Drop files into images/ and name them here. Anything missing is
      skipped silently, so a wrong filename breaks nothing.
 
-     heroMode "plate" shows the whole painting under the names, uncropped.
-              "cover" fills the screen behind the names, which crops the
-              top and bottom on wide screens.                             */
+     heroMode "overlay" puts the names in the sky at the top of the
+                painting, with a light wash behind them. Nothing is cropped.
+              "plate"   shows the whole painting below the names instead.
+              "cover"   fills the screen behind the names, which crops San
+                        Luca and the dancers away on a wide screen.       */
   heroImage: "wedding-hero.jpeg",
-  heroMode:  "plate",
+  heroMode:  "overlay",
   heroCaption: { en: "Villa Zarri, with San Luca above",
                  it: "Villa Zarri, con San Luca sopra" },
 

@@ -142,9 +142,14 @@
 
   /* ================================================================== hero */
   function buildHero() {
-    var plate = SITE.heroImage && SITE.heroMode !== "cover";
-    var cover = SITE.heroImage && SITE.heroMode === "cover";
-    var hero = el("div", { class: "hero" + (cover ? "" : " no-photo") + (plate ? " has-plate" : ""), id: "top" }, [
+    var mode  = SITE.heroImage ? (SITE.heroMode || "plate") : "none";
+    var cover = mode === "cover";
+    var plate = mode === "plate";
+    var over  = mode === "overlay";
+    var hero = el("div", {
+      class: "hero" + (cover ? "" : " no-photo") + (plate ? " has-plate" : "") + (over ? " is-overlay" : ""),
+      id: "top"
+    }, [
       cover ? el("div", { class: "hero-photo",
                           style: "background-image:url('images/" + SITE.heroImage + "')" }) : null,
       el("div", { class: "hero-veil" }),
@@ -165,6 +170,19 @@
         ])
       ])
     ]);
+
+    /* overlay: the whole painting, with the names sitting on it */
+    if (over) {
+      var oimg = art(SITE.heroImage, "hero-over-img", SITE.couple + ", " + t(SITE.place));
+      return el("div", { class: "hero-wrap" }, [
+        el("div", { class: "hero-over" }, [oimg, hero]),
+        /* The RSVP button moves below the painting: over it, it lands on
+           the villa's front door. */
+        el("div", { class: "hero-under-cta" }, [
+          el("a", { class: "btn", href: "#rsvp", text: t(SITE.ui.rsvpNow) })
+        ])
+      ]);
+    }
 
     if (!plate) return hero;
 

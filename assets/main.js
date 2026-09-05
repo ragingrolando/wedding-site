@@ -388,6 +388,92 @@
     ]);
   }
 
+  /* ================================================================== gate
+     Soft only. The password is in content.js and readable via View Source.
+     It keeps strangers and crawlers out, not anyone determined.             */
+  var GATE_KEY = "os-gate";
+  var gateOpen = false;   /* this tab, even if localStorage is unavailable */
+
+  function normalise(v) {
+    return String(v || "").trim().toLowerCase().replace(/\s+/g, "");
+  }
+
+  function gatePassed() {
+    var g = SITE.gate;
+    if (!g || !g.enabled || !g.password) return true;
+    if (gateOpen) return true;
+    var want = normalise(g.password);
+    /* A link ending ?k=baci lets guests in without typing anything. */
+    try {
+      var k = new URLSearchParams(location.search).get("k");
+      if (k && normalise(k) === want) {
+        gateOpen = true;
+        localStorage.setItem(GATE_KEY, want);
+        history.replaceState(null, "", location.pathname + location.hash);
+        return true;
+      }
+    } catch (e) {}
+    try { return localStorage.getItem(GATE_KEY) === want; } catch (e) { return false; }
+  }
+
+  function buildGate(onPass) {
+    var g = SITE.gate;
+    var input = el("input", { id: "gate-pw", type: "password", autocomplete: "off",
+                              autocapitalize: "off", spellcheck: "false" });
+    var error = el("p", { class: "gate-error", role: "alert" });
+
+    var form = el("form", { class: "gate-form" }, [
+      el("div", { class: "field" }, [
+        el("label", { for: "gate-pw", text: t(g.label) }), input
+      ]),
+      el("button", { class: "btn", type: "submit", text: t(g.button) }),
+      t(g.hint) ? el("p", { class: "gate-hint", text: t(g.hint) }) : null,
+      error
+    ]);
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (normalise(input.value) !== normalise(g.password)) {
+        error.textContent = t(g.wrong);
+        form.classList.remove("shake");
+        void form.offsetWidth;
+        form.classList.add("shake");
+        input.select();
+        return;
+      }
+      gateOpen = true;
+      try { localStorage.setItem(GATE_KEY, normalise(g.password)); } catch (err) {}
+      onPass();
+    });
+
+    var toggle = el("div", { class: "lang", role: "group", "aria-label": "Language" },
+      LANGS.map(function (code) {
+        var b = el("button", { type: "button", text: code.toUpperCase(),
+                               "aria-pressed": String(code === lang) });
+        b.addEventListener("click", function () {
+          if (code === lang) return;
+          try { localStorage.setItem("os-lang", code); } catch (err) {}
+          lang = code;
+          render();
+        });
+        return b;
+      })
+    );
+
+    return el("div", { class: "gate" }, [
+      el("div", { class: "gate-card" }, [
+        el("p", { class: "gate-kicker", text: SITE.couple }),
+        el("p", { class: "gate-date",
+                  text: (lang === "it" ? SITE.date.displayIt : SITE.date.display)
+                        + " · " + t(SITE.place) }),
+        el("h1", { class: "gate-title", text: t(g.title) }),
+        el("p", { class: "gate-blurb", text: t(g.blurb) }),
+        form,
+        toggle
+      ])
+    ]);
+  }
+
   /* ================================================================ render */
   function render() {
     document.documentElement.lang = lang;
@@ -395,6 +481,12 @@
 
     var root = document.getElementById("app");
     root.textContent = "";
+
+    if (!gatePassed()) {
+      root.appendChild(buildGate(function () { render(); window.scrollTo(0, 0); }));
+      document.getElementById("gate-pw").focus();
+      return;
+    }
 
     var builders = {
       when: buildWhen, order: buildOrder, dress: buildDress, transport: buildTransport,

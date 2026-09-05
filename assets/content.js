@@ -20,6 +20,32 @@ const SITE = {
      Leave as "" to fall back to a plain colour wash. */
   heroImage: "",
 
+  /* ------------------------------------------------------------------ GATE
+     A soft gate. It stops casual browsing and search engines, nothing more:
+     the password sits in this file, which anyone can read via View Source.
+     Treat it as a "not for strangers" sign, not as security.
+
+     enabled  false turns the gate off entirely
+     password what guests type (case and spaces are ignored)
+     hint     shown under the field, optional, leave "" to hide
+
+     Guests who arrive on a link ending ?k=baci skip the gate. Put that on
+     the Joy invite so nobody has to type anything.                          */
+  gate: {
+    enabled:  true,
+    password: "baci",
+    title:    { en: "A quiet corner of the internet",
+                it: "Un angolo tranquillo di internet" },
+    blurb:    { en: "Pop in the password from your invitation.",
+                it: "Inserisci la password che trovi sull'invito." },
+    label:    { en: "Password", it: "Password" },
+    button:   { en: "Come in", it: "Entra" },
+    wrong:    { en: "Not quite. Try again, or text us.",
+                it: "Non è questa. Riprova, o scrivici." },
+    hint:     { en: "It is what Italians give on both cheeks.",
+                it: "È quello che ci si dà su entrambe le guance." }
+  },
+
   /* ------------------------------------------------------------------ RSVP
      mode: "link"  -> a button pointing at joyUrl (keeps Joy's guest list,
                       meal choices, reminders and +1 logic working)

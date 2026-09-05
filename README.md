@@ -73,12 +73,28 @@ faking a success. No reply can be silently lost.
 
 ---
 
-## Two things to know
+## The soft gate
 
-**The site is public.** GitHub Pages has no password. Anyone with the URL sees
-the venue, the timings and the addresses. `robots.txt` and a `noindex` tag keep
-it out of Google, but that is discouragement, not security. Joy's `baci`
-password has no equivalent here.
+Visitors land on a password screen before they see anything. Password is `baci`,
+set in the `gate` block of `content.js`. Case and spaces are ignored, and once
+someone is in, their browser remembers it.
+
+Guests who arrive on a link ending **`?k=baci`** skip the screen entirely. Put
+that version of the link on the Joy invitation and nobody has to type anything:
+
+```
+https://ragingrolando.github.io/wedding-site/?k=baci
+```
+
+Set `gate.enabled` to `false` to turn it off.
+
+### What "soft" means
+
+The password lives in `assets/content.js`, which is a public file. Anyone can
+open `.../assets/content.js` in a browser and read the password and every word
+of the site. The gate stops crawlers and casual browsing. It is a closed door,
+not a locked one. Do not put anything on this site you would mind a stranger
+reading.
 
 **Joy's hotel rates are gone.** The negotiated group prices and the booking
 widget are a Joy product. `stay.hotels` is a plain list with map links. Keep the

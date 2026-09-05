@@ -197,8 +197,8 @@ const SITE = {
       },
       {
         q: { en: "What will the weather be like?", it: "Come sarà il tempo?" },
-        a: { en: ["Italy in June is likely to be generally warm (25 to 35 degrees). But it should be much cooler by the afternoon. Maybe."],
-             it: ["In Italia a Giugno fa generalmente caldo (25 - 35 gradi). Ma dovrebbe rinfrescarsi nel tardo pomeriggio. Forse."] }
+        a: { en: ["Italy in June is likely to be generally warm (25°C to 35°C). But it should be much cooler by the afternoon. Maybe."],
+             it: ["In Italia a Giugno fa generalmente caldo (25°C - 35°C). Ma dovrebbe rinfrescarsi nel tardo pomeriggio. Forse."] }
       },
       {
         q: { en: "Is the wedding indoors or outdoors?", it: "L'evento sarà all'interno o all'esterno?" },

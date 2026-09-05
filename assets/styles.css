@@ -399,8 +399,8 @@ footer p{max-width:none;margin-top:14px;font-size:11px;letter-spacing:.24em;
   max-width:1080px;text-align:center;
 }
 .hero-plate-img{
-  display:block;margin:0 auto;width:auto;max-width:min(560px,100%);
-  max-height:min(56vh,620px);object-fit:contain;
+  display:block;margin:0 auto;width:auto;max-width:min(620px,100%);
+  max-height:min(62vh,700px);object-fit:contain;
   border-radius:4px;mix-blend-mode:multiply;
 }
 .hero-plate figcaption{

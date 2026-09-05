@@ -94,9 +94,11 @@
     return "data:text/calendar;charset=utf-8," + encodeURIComponent(body);
   }
 
-  function sectionHead(title, sub) {
+  /* noMotif skips the decoration where it would not read, rather than
+     hiding it in CSS, which would still burn a slot in the cycle. */
+  function sectionHead(title, sub, noMotif) {
     return el("div", { class: "sec-head" }, [
-      nextMotif(),
+      noMotif ? null : nextMotif(),
       el("h2", { text: t(title) }),
       sub ? el("p", { class: "sec-sub", text: t(sub) }) : null,
       el("div", { class: "rule" })
@@ -338,7 +340,9 @@
   function buildRsvp() {
     var cfg = SITE.rsvp;
     var inner = [
-      sectionHead(SITE.ui.rsvpNow, cfg.deadline)
+      /* No motif here: the band is dark, and a multiplied watercolour
+         figure just muddies into the brown. */
+      sectionHead(SITE.ui.rsvpNow, cfg.deadline, true)
     ];
 
     if (cfg.mode === "form") {

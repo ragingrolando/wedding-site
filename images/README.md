@@ -9,11 +9,26 @@ Anything missing is skipped silently. The page renders fine with none of it.
 
 | File | What it is | Size to aim for |
 |------|------------|-----------------|
-| `hero.jpg` | The watercolour of Villa Zarri with San Luca above | ~1400px on the long edge, under 600KB |
-| `dancers.png` | The row of dancers from the bottom of the painting | ~1600px wide |
-| `motif-1.png` … `motif-5.png` | Single dancers, cut out one per file | ~300px tall each |
+| `wedding-hero.jpeg` | The watercolour of Villa Zarri with San Luca above | ~1600px on the long edge, under 600KB |
+| `dancing-row.png` | The row of dancers from the bottom of the painting | ~1600px wide |
+| `dancing-bride-groom.png` | motif | ~300px tall |
+| `dancing-jump.png` | motif | ~300px tall |
+| `dancing-kick.png` | motif | ~300px tall |
+| `dancing-skank.png` | motif | ~300px tall |
+| `dancing-upsidedown.png` | motif | ~300px tall |
 
 Names are only a convention. Change them in `content.js` if you prefer others.
+
+## Keep the files small
+
+The originals off a camera or scanner run to several MB, which makes the page
+crawl on a phone. macOS has `sips` built in, so no extra tools:
+
+```
+sips -Z 1600 -s formatOptions 70 wedding-hero.jpeg --out wedding-hero.jpeg
+```
+
+`-Z 1600` caps the longest edge at 1600px. Do this on a copy, not your master.
 
 ## You do not need to cut out the background
 

@@ -23,7 +23,7 @@ const SITE = {
      heroMode "plate" shows the whole painting under the names, uncropped.
               "cover" fills the screen behind the names, which crops the
               top and bottom on wide screens.                             */
-  heroImage: "hero.png",
+  heroImage: "wedding-hero.jpeg",
   heroMode:  "plate",
   heroCaption: { en: "Villa Zarri, with San Luca above",
                  it: "Villa Zarri, con San Luca sopra" },
@@ -31,10 +31,16 @@ const SITE = {
   /* Single dancers, cut out of the painting. One sits beside each section
      heading, cycling through this list. A white background is fine: it is
      blended away against the page, so plain crops work.                  */
-  motifs: ["motif-1.png", "motif-2.png", "motif-3.png", "motif-4.png", "motif-5.png"],
+  motifs: [
+    "dancing-bride-groom.png",
+    "dancing-jump.png",
+    "dancing-kick.png",
+    "dancing-skank.png",
+    "dancing-upsidedown.png"
+  ],
 
   /* The row of dancers, shown as a band just above the footer. */
-  dancerStrip: "dancers.png",
+  dancerStrip: "dancing-row.png",
 
   /* ------------------------------------------------------------------ GATE
      A soft gate. It stops casual browsing and search engines, nothing more:

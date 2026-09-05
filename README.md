@@ -49,11 +49,20 @@ the EN / IT toggle in the header; the choice is remembered.
 | Hide a whole section    | delete its line from `nav`                              |
 | Reorder sections        | reorder `nav`                                           |
 
-### Adding the hero photo
+### Adding the artwork
 
-Drop a JPG into `images/`, then set `heroImage: "your-file.jpg"` in
-`content.js`. Aim for roughly 2000px wide and under 500KB. With no photo the
-hero falls back to a colour wash, which also looks fine.
+Three kinds, all optional, all listed in `content.js`:
+
+| Setting | What it draws |
+|---------|---------------|
+| `heroImage` | the watercolour, shown whole under the names |
+| `motifs` | single dancers, one beside each section heading |
+| `dancerStrip` | the row of dancers, as a band above the footer |
+
+Drop the files into `images/` and see [`images/README.md`](images/README.md)
+for names and sizes. White backgrounds are blended away, so plain crops off the
+painting work with no cutting out. Any file that is missing is skipped, so a
+typo costs nothing.
 
 ---
 

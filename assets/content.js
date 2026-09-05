@@ -16,9 +16,25 @@ const SITE = {
   date:     { iso: "2027-06-12", display: "12 June 2027", displayIt: "12 Giugno 2027" },
   place:    { en: "Bologna, Italy", it: "Bologna, Italia" },
 
-  /* Hero photo. Drop a file into images/ and put its name here.
-     Leave as "" to fall back to a plain colour wash. */
-  heroImage: "",
+  /* ----------------------------------------------------------- artwork
+     Drop files into images/ and name them here. Anything missing is
+     skipped silently, so a wrong filename breaks nothing.
+
+     heroMode "plate" shows the whole painting under the names, uncropped.
+              "cover" fills the screen behind the names, which crops the
+              top and bottom on wide screens.                             */
+  heroImage: "hero.png",
+  heroMode:  "plate",
+  heroCaption: { en: "Villa Zarri, with San Luca above",
+                 it: "Villa Zarri, con San Luca sopra" },
+
+  /* Single dancers, cut out of the painting. One sits beside each section
+     heading, cycling through this list. A white background is fine: it is
+     blended away against the page, so plain crops work.                  */
+  motifs: ["motif-1.png", "motif-2.png", "motif-3.png", "motif-4.png", "motif-5.png"],
+
+  /* The row of dancers, shown as a band just above the footer. */
+  dancerStrip: "dancers.png",
 
   /* ------------------------------------------------------------------ GATE
      A soft gate. It stops casual browsing and search engines, nothing more:

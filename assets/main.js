@@ -43,6 +43,35 @@
   function paras(list, cls) {
     return tList(list).map(function (s) { return el("p", { class: cls, text: s }); });
   }
+  /* An <img> from images/ that quietly removes itself if the file is
+     missing, so a typo or a not-yet-uploaded file never shows a broken icon. */
+  function art(file, cls, alt) {
+    if (!file) return null;
+    /* Deliberately not lazy. These images carry no width/height attributes,
+       so they lay out at zero height until decoded, and a lazy image with no
+       reserved space never enters the viewport to trigger its own load. It
+       also means a missing file fires error immediately and removes itself
+       instead of flashing a broken icon halfway down the page. */
+    var img = el("img", { class: cls, src: "images/" + file, alt: alt || "",
+                          loading: "eager", decoding: "async" });
+    if (!alt) img.setAttribute("aria-hidden", "true");
+    img.addEventListener("error", function () {
+      if (img.parentNode) img.parentNode.removeChild(img);
+    });
+    return img;
+  }
+
+  /* Motifs cycle through SITE.motifs and alternate sides down the page. */
+  var motifTurn = 0;
+  function nextMotif() {
+    var list = SITE.motifs || [];
+    if (!list.length) return null;
+    var side = motifTurn % 2 ? "right" : "left";
+    var file = list[motifTurn % list.length];
+    motifTurn++;
+    return art(file, "motif motif-" + side);
+  }
+
   function mapsUrl(q) {
     return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
   }
@@ -67,6 +96,7 @@
 
   function sectionHead(title, sub) {
     return el("div", { class: "sec-head" }, [
+      nextMotif(),
       el("h2", { text: t(title) }),
       sub ? el("p", { class: "sec-sub", text: t(sub) }) : null,
       el("div", { class: "rule" })
@@ -110,10 +140,11 @@
 
   /* ================================================================== hero */
   function buildHero() {
-    var hasPhoto = !!SITE.heroImage;
-    var hero = el("div", { class: "hero" + (hasPhoto ? "" : " no-photo"), id: "top" }, [
-      hasPhoto ? el("div", { class: "hero-photo",
-                             style: "background-image:url('images/" + SITE.heroImage + "')" }) : null,
+    var plate = SITE.heroImage && SITE.heroMode !== "cover";
+    var cover = SITE.heroImage && SITE.heroMode === "cover";
+    var hero = el("div", { class: "hero" + (cover ? "" : " no-photo") + (plate ? " has-plate" : ""), id: "top" }, [
+      cover ? el("div", { class: "hero-photo",
+                          style: "background-image:url('images/" + SITE.heroImage + "')" }) : null,
       el("div", { class: "hero-veil" }),
       el("div", {}, [
         el("p", { class: "hero-kicker",
@@ -132,7 +163,17 @@
         ])
       ])
     ]);
-    return hero;
+
+    if (!plate) return hero;
+
+    /* The painting is portrait and full of detail, so it is shown whole
+       beneath the names rather than cropped behind them. */
+    var img = art(SITE.heroImage, "hero-plate-img", SITE.couple + ", " + t(SITE.place));
+    var figure = el("figure", { class: "hero-plate" }, [
+      img,
+      t(SITE.heroCaption) ? el("figcaption", { text: t(SITE.heroCaption) }) : null
+    ]);
+    return el("div", { class: "hero-wrap" }, [hero, figure]);
   }
 
   /* ========================================================= when and where */
@@ -381,6 +422,7 @@
   /* ================================================================ footer */
   function buildFooter() {
     return el("footer", {}, [
+      art(SITE.dancerStrip, "dancer-strip"),
       el("div", { class: "wrap" }, [
         el("p", { class: "mono", text: SITE.names.first.charAt(0) + " & " + SITE.names.second.charAt(0) }),
         el("p", { text: (lang === "it" ? SITE.date.displayIt : SITE.date.display) + " · " + t(SITE.place) })
@@ -481,6 +523,7 @@
 
     var root = document.getElementById("app");
     root.textContent = "";
+    motifTurn = 0;
 
     if (!gatePassed()) {
       root.appendChild(buildGate(function () { render(); window.scrollTo(0, 0); }));

@@ -426,7 +426,10 @@ const SITE = {
 
   /* ---------------------------------------------------------------- ui strings */
   ui: {
-    rsvpNow:     { en: "RSVP",              it: "Conferma la presenza" },
+    /* RSVP in both. "Conferma la presenza" is correct Italian and three times
+       the width, which pushed the nav into a scroll on every Italian phone.
+       The initialism is understood either way. */
+    rsvpNow:     { en: "RSVP",              it: "RSVP" },
     appsLabel:   { en: "Apps to download on your smarpthone:" },
     addToCal:    { en: "Add to Calendar",   it: "Aggiungi al calendario" },
     directions:  { en: "Directions",        it: "Indicazioni" },

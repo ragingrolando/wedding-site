@@ -131,10 +131,10 @@
     return img;
   }
 
-  /* One wordmark, three places. The nav, the hero and the footer all used
-     Fraunces but landed on different ampersands: roman in two of them,
-     italic in the hero. They are built from the same helper now, so the
-     glyph and its axes are set once in .amp and cannot drift apart. */
+  /* The nav wordmark and the hero, and nowhere else. Every other ampersand
+     on the page is left as the plain character its surrounding face draws.
+     These two are the lockup, so they get the italic Fraunces "et" set once
+     in .amp, at the nav's optical size, and cannot drift apart. */
   function coupleMark(a, b) {
     return [
       document.createTextNode(a),
@@ -338,20 +338,27 @@
         el("a", { class: "btn ghost small", href: mapsUrl(where),
                   target: "_blank", rel: "noopener", text: t(SITE.ui.directions) })
       ]);
+      /* Each event stands in a bay of the portico: a drawn arch, open at the
+         foot. The date is inscribed in the head, above the impost, where a
+         keystone inscription goes; everything else stands under it. */
       return el("article", { class: "event" }, [
-        el("p", { class: "event-day", text: t(ev.day) }),
-        el("h3", { text: t(ev.name) }),
-        el("p", { class: "event-time", text: ev.time }),
-        el("p", { class: "event-addr" }, [
-          ev.venue ? el("strong", { text: ev.venue }) : null,
-          document.createTextNode(ev.address)
+        el("div", { class: "event-arch" }, [
+          el("p", { class: "event-day", text: t(ev.day) })
         ]),
-        el("span", { class: "tag" }, [
-          el("span", { class: "tag-label", text: t(SITE.ui.dressLabel) + ": " }),
-          document.createTextNode(t(ev.dress))
-        ]),
-        el("p", { class: "event-note", text: t(ev.note) }),
-        acts
+        el("div", { class: "event-bay" }, [
+          el("h3", { text: t(ev.name) }),
+          el("p", { class: "event-time", text: ev.time }),
+          el("p", { class: "event-addr" }, [
+            ev.venue ? el("strong", { text: ev.venue }) : null,
+            document.createTextNode(ev.address)
+          ]),
+          el("p", { class: "event-dress" }, [
+            el("span", { class: "dress-label", text: t(SITE.ui.dressLabel) + " " }),
+            document.createTextNode(t(ev.dress))
+          ]),
+          el("p", { class: "event-note", text: t(ev.note) }),
+          acts
+        ])
       ]);
     });
     return section("when", [
@@ -654,8 +661,8 @@
     return el("footer", {}, [
       art(SITE.bannerImage, "footer-banner", t(SITE.bannerAlt)),
       el("div", { class: "wrap" }, [
-        el("p", { class: "mono" },
-           coupleMark(SITE.names.first.charAt(0), SITE.names.second.charAt(0))),
+        el("p", { class: "mono",
+                  text: SITE.names.first.charAt(0) + " & " + SITE.names.second.charAt(0) }),
         el("p", { text: (lang === "it" ? SITE.date.displayIt : SITE.date.display) + " · " + t(SITE.place) })
       ])
     ]);
@@ -797,44 +804,7 @@
     root.appendChild(buildRsvp());
     root.appendChild(buildFooter());
 
-    ampifyAll(root);
     wireObservers();
-  }
-
-  /* --------------------------------------------------- ampersands, all of them
-     The wordmarks build their own .amp span, but every other "&" on the page
-     arrives as a plain character inside a string from content.js: the Q & A
-     heading, WHEN & WHERE in the nav, "Summer Chic & Colourful". Each one
-     rendered in whatever face its element happened to use, which is how four
-     different ampersands ended up on one page. This walks the finished tree
-     once and wraps every free-standing "&" in the same span, so there is one
-     rule deciding what an ampersand looks like here.
-
-     Text nodes only. Form controls are skipped because a span cannot live
-     inside them, and hrefs are attributes, so a "&" in a query string is
-     never touched. */
-  var AMP_SKIP = { SCRIPT: 1, STYLE: 1, TEXTAREA: 1, INPUT: 1, OPTION: 1, SELECT: 1 };
-  function ampifyAll(root) {
-    if (!root || !document.createTreeWalker) return;
-    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
-      acceptNode: function (n) {
-        if (n.nodeValue.indexOf("&") < 0) return NodeFilter.FILTER_REJECT;
-        var p = n.parentNode;
-        if (!p || AMP_SKIP[p.nodeName]) return NodeFilter.FILTER_REJECT;
-        if (p.classList && p.classList.contains("amp")) return NodeFilter.FILTER_REJECT;
-        return NodeFilter.FILTER_ACCEPT;
-      }
-    });
-    var hits = [], n;
-    while ((n = walker.nextNode())) hits.push(n);
-    hits.forEach(function (node) {
-      var frag = document.createDocumentFragment();
-      node.nodeValue.split("&").forEach(function (part, i) {
-        if (i) frag.appendChild(el("span", { class: "amp", text: "&" }));
-        if (part) frag.appendChild(document.createTextNode(part));
-      });
-      node.parentNode.replaceChild(frag, node);
-    });
   }
 
   /* -------------------------------------------- scroll reveal + active nav */

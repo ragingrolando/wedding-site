@@ -96,21 +96,30 @@ h1,h2,h3,.brand,.tl-name,.nm,.gate-kicker,.gate-title,.mono,.hero-names{
    lockups are the same mark at three sizes. opsz is left to track the size,
    which is what the axis is for: a 22px nav mark cut at display weight goes
    thin and brittle. */
+/* opsz is the whole reason these kept looking like different ampersands.
+   Fraunces cuts the italic "et" quite differently down the optical axis: at
+   opsz 21, the nav's size, it is a solid compact mark; left to track the
+   font size it thins out into a spidery swash by 56px. Every other property
+   already matched. So the axis is pinned to the nav's value and the glyph
+   is now literally the same drawing everywhere, only scaled. */
 .amp{
   font-family:var(--display);
   font-style:italic;font-weight:400;
-  font-variation-settings:"SOFT" 40,"WONK" 1;
+  font-variation-settings:"SOFT" 40,"WONK" 1,"opsz" 21;
+  font-optical-sizing:none;
   letter-spacing:0;
+  font-size:1.15em;
   color:var(--portico);
 }
-.brand .amp{margin:0 .2em}
-footer .mono .amp{margin:0 .18em}
+/* The nav wordmark is the reference, so it is the one that takes no bump. */
+.brand .amp{font-size:1em;margin:0 .2em}
+footer .mono .amp{font-size:1em;margin:0 .18em}
 /* Fraunces italic runs small against the tracked-out sans labels it now sits
    inside, so those get a bump. Everywhere else it is already the surrounding
    face and needs nothing. */
 .nav .amp,.sec-sub .amp,.subhead .amp,.chips-label .amp,
-.event-day .amp,.bank dt .amp,.field label .amp{font-size:1.3em;margin:0 .05em}
-.tag .amp,.hero-meta .amp{font-size:1.1em;margin:0 .03em}
+.event-day .amp,.bank dt .amp,.field label .amp{font-size:1.35em;margin:0 .05em}
+.tag .amp,.hero-meta .amp{margin:0 .03em}
 h2 .amp,h3 .amp,.tl-name .amp,.nm .amp{margin:0 .04em}
 
 /* ------------------------------------------------------------------ header */
@@ -402,58 +411,67 @@ section.alt .tl-body::before{background:var(--wash)}
 @media (prefers-reduced-motion:reduce){
   .flourish .ring{animation:none}
 }
-.food{list-style:none;display:grid;gap:22px 40px;
+/* Centred, like every other heading and rule on the page. The left rule that
+   used to run down each entry was the only thing anchoring the column, so it
+   goes: the underline on the name carries the link now. */
+.food{list-style:none;display:grid;gap:26px 40px;
   grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));
-  align-items:start;margin-top:8px}
+  align-items:start;margin-top:8px;text-align:center}
 .food li{display:block}
-.food a{display:block;padding-left:16px;text-decoration:none;color:inherit;
-  border-left:1px solid var(--line);transition:border-color .2s}
-.food a:hover,.food a:focus-visible{border-left-color:var(--verdigris)}
+.food a{display:block;text-decoration:none;color:inherit}
 .food .nm{display:block;font-size:18px;
   text-decoration:underline;text-decoration-color:var(--ink-24);
   text-underline-offset:3px;text-decoration-thickness:1px;
   transition:text-decoration-color .2s}
 .food a:hover .nm,.food a:focus-visible .nm{text-decoration-color:var(--verdigris)}
-.food .nt{display:block;font-size:15.5px;color:var(--ink-52);margin-top:2px;line-height:1.5}
+.food .nt{display:block;max-width:34ch;margin:3px auto 0;
+  font-size:15.5px;color:var(--ink-52);line-height:1.5}
 .subhead{text-align:center;margin:clamp(52px,7vw,84px) 0 28px;
   font-family:var(--util);font-size:12px;font-weight:600;letter-spacing:.18em;
   text-transform:uppercase;color:var(--ink-52)}
 
-/* --------------------------------------------------------------------- rsvp */
-.rsvp{background:var(--slate);color:var(--paper)}
-.rsvp::before{display:none}
-.rsvp h2{color:var(--paper)}
-.rsvp .sec-sub{color:rgba(247,244,236,.62)}
-.rsvp .rule{background:var(--ochre);opacity:.9}
-.rsvp .btn{background:var(--ochre);border-color:var(--ochre);color:var(--ink)}
-.rsvp .btn:hover{background:var(--paper);border-color:var(--paper);color:var(--ink)}
+/* --------------------------------------------------------------------- rsvp
+   On the same paper as everything else. It used to be a dark slate band with
+   an ochre button, which meant the one link that matters was the one link
+   that did not look like the rest of the site. The arch run above it now
+   does the separating the colour change used to do. */
 .rsvp-inner{text-align:center}
-.rsvp-note{margin:22px auto 0;color:rgba(247,244,236,.7);font-size:16px}
+.rsvp-note{margin:22px auto 0;color:var(--ink-52);font-size:16px}
+/* The dancers close the section, under the button. */
+.dancer-strip-rsvp{max-width:700px;margin:clamp(40px,6vw,64px) auto 0}
 form.rsvp-form{max-width:520px;margin:36px auto 0;display:grid;gap:15px;text-align:left}
 .row{display:grid;gap:15px;grid-template-columns:1fr 1fr}
 .field{display:grid;gap:7px}
+/* Drawn for paper. These were light-on-dark when the RSVP band was slate;
+   mode "link" does not render them, but switching to "form" would have put
+   cream text on a cream ground. */
 .field label{font-family:var(--util);font-size:10px;font-weight:600;letter-spacing:.16em;
-  text-transform:uppercase;color:rgba(247,244,236,.62)}
+  text-transform:uppercase;color:var(--ink-52)}
 .field input,.field select,.field textarea{
-  font-family:var(--body);font-weight:400;font-size:17px;color:var(--paper);
-  background:rgba(255,255,255,.07);border:1px solid rgba(247,244,236,.2);
+  font-family:var(--body);font-weight:400;font-size:17px;color:var(--ink);
+  background:var(--paper);border:1px solid var(--line);
   border-radius:2px;padding:13px 16px;width:100%;outline:none;
   transition:border-color .2s,background .2s;
 }
 .field textarea{resize:vertical;min-height:92px}
 .field input:focus,.field select:focus,.field textarea:focus{
-  border-color:var(--ochre);background:rgba(255,255,255,.11)}
-.field select option{background:#2b3739;color:var(--paper)}
-.form-status{min-height:22px;font-size:15px;text-align:center;color:var(--ochre)}
+  border-color:var(--verdigris);background:#fff}
+.field select option{background:var(--paper);color:var(--ink)}
+.form-status{min-height:22px;font-size:15px;text-align:center;color:var(--portico-deep)}
 
 /* ------------------------------------------------------------------- footer */
-footer{padding:clamp(56px,8vw,88px) 0;text-align:center;position:relative}
-footer::before{
-  content:"";position:absolute;left:0;right:0;top:0;height:34px;
-  background:var(--portico);opacity:.5;pointer-events:none;
-  -webkit-mask:var(--arch) repeat-x left top/46px 34px;
-          mask:var(--arch) repeat-x left top/46px 34px;
-}
+footer{padding:0 0 clamp(56px,8vw,88px);text-align:center;position:relative}
+/* Edge to edge, outside the measure, as the last thing on the page. */
+/* Edge to edge. max-height plus cover so an unexpectedly tall crop takes a
+   band across the bottom of the page rather than a whole screen of it. */
+.footer-banner{display:block;width:100%;height:auto;margin:0;
+  max-height:min(46vh,420px);object-fit:cover;object-position:50% 50%}
+/* Carried here rather than on the banner, so the spacing survives the file
+   being absent. */
+footer>.wrap{margin-top:clamp(44px,6vw,72px)}
+/* The arch run that used to sit here now sits above the RSVP section, where
+   it separates the Bologna recommendations from the one thing on the page a
+   guest has to act on. The banner closes the page instead. */
 footer .mono{font-size:36px;color:var(--portico)}
 footer p{max-width:none;margin-top:14px;font-family:var(--util);font-size:11px;
   font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-52)}

@@ -565,11 +565,9 @@
   /* ================================================================== rsvp */
   function buildRsvp() {
     var cfg = SITE.rsvp;
-    var inner = [
-      /* No motif here: the band is dark, and a multiplied watercolour
-         figure just muddies into the brown. */
-      sectionHead(SITE.ui.rsvpNow, cfg.deadline, true)
-    ];
+    /* No motif beside the heading: the dancer row below the button is the
+       decoration for this section, and two would be a crowd. */
+    var inner = [sectionHead(SITE.ui.rsvpNow, cfg.deadline, true)];
 
     if (cfg.mode === "form") {
       inner.push(buildRsvpForm(cfg));
@@ -579,8 +577,8 @@
                   text: t(SITE.ui.rsvpNow) })
       ]));
     }
-    var s = section("rsvp", inner, "rsvp");
-    return s;
+    inner.push(art(SITE.dancerStrip, "dancer-strip dancer-strip-rsvp"));
+    return section("rsvp", inner, "rsvp");
   }
 
   function buildRsvpForm(cfg) {
@@ -651,8 +649,10 @@
 
   /* ================================================================ footer */
   function buildFooter() {
+    /* Full-bleed, so it is placed outside .wrap. Missing file removes
+       itself, same as every other image on the page. */
     return el("footer", {}, [
-      art(SITE.dancerStrip, "dancer-strip"),
+      art(SITE.bannerImage, "footer-banner", t(SITE.bannerAlt)),
       el("div", { class: "wrap" }, [
         el("p", { class: "mono" },
            coupleMark(SITE.names.first.charAt(0), SITE.names.second.charAt(0))),

@@ -109,6 +109,11 @@ h1,h2,h3,.brand,.tl-name,.nm,.gate-kicker,.gate-title,.mono,.hero-names{
   font-optical-sizing:none;
   letter-spacing:0;
   font-size:1.15em;
+  /* Zero line box. Set larger than its neighbours and carrying a descender,
+     the ampersand was otherwise the tallest thing on any line it landed on:
+     it grew the nav row by 7px and pushed the active underline away from the
+     labels. The glyph still paints; it just stops voting on line height. */
+  line-height:0;
   color:var(--portico);
 }
 /* The nav wordmark is the reference, so it is the one that takes no bump. */
@@ -206,7 +211,8 @@ h2 .amp,h3 .amp,.tl-name .amp,.nm .amp{margin:0 .04em}
 /* A floor on the hero mark. At 390px the names drop to 34px, and .32em of
    that is an 11px ampersand: the one in the nav bar next to it is 17px, so
    the two lockups stopped matching exactly where they sit closest. */
-.hero-names .amp{display:block;font-size:max(17px,.34em);margin:.1em 0}
+/* The exception: here it is its own line, so it needs a line box. */
+.hero-names .amp{display:block;line-height:1;font-size:max(17px,.34em);margin:.1em 0}
 /* Sentence case, because "12 June 2027" set in tracked-out caps is the one
    line on the page a guest actually has to read and remember. */
 .hero-meta{
@@ -462,10 +468,11 @@ form.rsvp-form{max-width:520px;margin:36px auto 0;display:grid;gap:15px;text-ali
 /* ------------------------------------------------------------------- footer */
 footer{padding:0 0 clamp(56px,8vw,88px);text-align:center;position:relative}
 /* Edge to edge, outside the measure, as the last thing on the page. */
-/* Edge to edge. max-height plus cover so an unexpectedly tall crop takes a
-   band across the bottom of the page rather than a whole screen of it. */
+/* Edge to edge, shown whole. The cap is viewport-relative and generous: a
+   wide banner never reaches it, and something closer to square gets its
+   middle band rather than a screenful. */
 .footer-banner{display:block;width:100%;height:auto;margin:0;
-  max-height:min(46vh,420px);object-fit:cover;object-position:50% 50%}
+  max-height:60vh;object-fit:cover;object-position:50% 50%}
 /* Carried here rather than on the banner, so the spacing survives the file
    being absent. */
 footer>.wrap{margin-top:clamp(44px,6vw,72px)}

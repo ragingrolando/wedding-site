@@ -25,9 +25,11 @@ Names are only a convention. Change them in `content.js` if you prefer others.
 ## Adding the bottom banner
 
 It runs the full width of the browser, so it wants a wide, shallow crop.
-Anything up to 420px tall is shown in full; taller than that and the middle
-band is used and the rest cropped away. Until the file is there the footer
-simply starts at the initials, no gap and no broken icon.
+**Export it at least 2400px wide.** The current file is 1181px, which a
+laptop screen upscales past two to one, and full-bleed artwork is where that
+shows. Anything roughly 2.5:1 or wider is shown whole; closer to square and
+the middle band is used and the rest cropped away. Until the file is there
+the footer simply starts at the initials, no gap and no broken icon.
 
 ```
 cp ~/wedding-site/images/wedding-san-luca-banner.jpeg ~/wedding-site/images/

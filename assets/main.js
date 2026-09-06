@@ -110,18 +110,49 @@
   }
 
   /* ================================================================ header */
-  function buildHeader() {
-    var nav = el("nav", { class: "nav", "aria-label": "Sections" },
-      SITE.nav.map(function (n) {
-        return el("a", { href: "#" + n.id, text: t(n.label) });
-      })
-    );
-    var rsvpLink = el("a", { class: "nav-rsvp", href: "#rsvp", text: t(SITE.ui.rsvpNow) });
+  /* ------------------------------------------------------- language toggle
+     A teacup for English, a moka pot for Italian. Drawn inline rather than
+     set as emoji: there is no moka pot emoji, and these inherit the page
+     colour so they invert correctly on the active pill.                     */
+  var LANG_ICON = {
+    en:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" ' +
+      'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      '<path d="M5.2 9.4h11.1v3.1a5.55 5.55 0 0 1-11.1 0z"/>' +      /* cup */
+      '<path d="M16.3 10.4h1.4a2.1 2.1 0 0 1 0 4.2h-1.4"/>' +        /* handle */
+      '<path d="M3.4 19.2h14.7"/>' +                                 /* saucer */
+      '<path d="M9 6.6c0-.9 1-1.1 1-2s-1-1.1-1-2"/>' +               /* steam */
+      '<path d="M12.5 6.6c0-.9 1-1.1 1-2s-1-1.1-1-2"/>' +
+      '</svg>',
+    it:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" ' +
+      'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      /* A Bialetti is an hourglass: both chambers widen away from the waist.
+         Drawn chunky, because at 17px a thin outline reads as nothing. */
+      '<path d="M6.6 21.3 9.4 13.1h5.2l2.8 8.2z"/>' +      /* boiler, widens down */
+      '<path d="M9.4 13.1 8.1 6.7h7.8l-1.3 6.4z"/>' +      /* top, widens up */
+      '<path d="M9.1 13.1h5.8"/>' +                        /* waist band */
+      '<path d="M8.1 6.7h7.8"/>' +                         /* lid */
+      '<circle cx="12" cy="5" r="1.05"/>' +                /* knob */
+      '<path d="M15.9 8.1c2.9.5 3.3 3.3-.7 4.3"/>' +       /* handle */
+      '<path d="M8.1 7.6 5.9 6.4"/>' +                     /* pour lip */
+      '</svg>'
+  };
+  var LANG_NAME = { en: "English", it: "Italiano" };
 
-    var toggle = el("div", { class: "lang", role: "group", "aria-label": "Language" },
+  function langToggle() {
+    return el("div", { class: "lang", role: "group", "aria-label": "Language" },
       LANGS.map(function (code) {
-        var b = el("button", { type: "button", text: code.toUpperCase(),
-                               "aria-pressed": String(code === lang) });
+        var b = el("button", {
+          type: "button",
+          "aria-pressed": String(code === lang),
+          "aria-label": LANG_NAME[code],
+          title: LANG_NAME[code]
+        });
+        b.innerHTML = LANG_ICON[code];
+        /* The two-letter code stays: a teacup does not obviously read as
+           "English" to someone who has not been told. */
+        b.appendChild(el("span", { class: "lang-code", text: code.toUpperCase() }));
         b.addEventListener("click", function () {
           if (code === lang) return;
           try { localStorage.setItem("os-lang", code); } catch (e) {}
@@ -131,6 +162,17 @@
         return b;
       })
     );
+  }
+
+  function buildHeader() {
+    var nav = el("nav", { class: "nav", "aria-label": "Sections" },
+      SITE.nav.map(function (n) {
+        return el("a", { href: "#" + n.id, text: t(n.label) });
+      })
+    );
+    var rsvpLink = el("a", { class: "nav-rsvp", href: "#rsvp", text: t(SITE.ui.rsvpNow) });
+
+    var toggle = langToggle();
 
     return el("header", { class: "topbar" }, [
       el("div", { class: "wrap topbar-inner" }, [
@@ -510,19 +552,7 @@
       onPass();
     });
 
-    var toggle = el("div", { class: "lang", role: "group", "aria-label": "Language" },
-      LANGS.map(function (code) {
-        var b = el("button", { type: "button", text: code.toUpperCase(),
-                               "aria-pressed": String(code === lang) });
-        b.addEventListener("click", function () {
-          if (code === lang) return;
-          try { localStorage.setItem("os-lang", code); } catch (err) {}
-          lang = code;
-          render();
-        });
-        return b;
-      })
-    );
+    var toggle = langToggle();
 
     return el("div", { class: "gate" }, [
       el("div", { class: "gate-card" }, [

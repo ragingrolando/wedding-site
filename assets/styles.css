@@ -80,11 +80,15 @@ a{color:inherit}
 
 .lang{display:flex;flex:0 0 auto;border:1px solid var(--line);border-radius:999px;overflow:hidden}
 .lang button{
-  font:inherit;font-size:11px;font-weight:500;letter-spacing:.12em;
-  background:none;border:0;color:var(--ink-50);cursor:pointer;padding:5px 11px;
+  font:inherit;font-size:10px;font-weight:500;letter-spacing:.12em;
+  display:flex;align-items:center;gap:5px;
+  background:none;border:0;color:var(--ink-50);cursor:pointer;padding:5px 10px;
   transition:background .2s,color .2s;
 }
 .lang button[aria-pressed="true"]{background:var(--ink);color:var(--page)}
+/* The icons are stroked with currentColor, so they invert with the pill. */
+.lang svg{width:17px;height:17px;flex:0 0 auto;display:block}
+.lang-code{line-height:1}
 
 /* -------------------------------------------------------------------- hero */
 .hero{
@@ -316,7 +320,8 @@ footer p{max-width:none;margin-top:14px;font-size:11px;letter-spacing:.24em;
   .topbar-inner{gap:10px}
   .brand{font-size:16px;min-width:0;overflow:hidden;text-overflow:ellipsis}
   .nav-rsvp{font-size:10px;padding:7px 14px;letter-spacing:.12em}
-  .lang button{padding:5px 9px;font-size:10px}
+  .lang button{padding:5px 8px;gap:4px;font-size:9px}
+  .lang svg{width:16px;height:16px}
   .nav{gap:16px}
   .nav a{font-size:11px}
   .row{grid-template-columns:1fr}

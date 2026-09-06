@@ -58,15 +58,23 @@ const SITE = {
      the password sits in this file, which anyone can read via View Source.
      Treat it as a "not for strangers" sign, not as security.
 
-     enabled  false turns the gate off entirely
-     password what guests type (case and spaces are ignored)
-     hint     shown under the field, optional, leave "" to hide
+     enabled         false turns the gate off entirely
+     password        what most guests type (case and spaces are ignored)
+     fridayPassword  same, and also shows the Friday pre-drinks card
+     hint            shown under the field, optional, leave "" to hide
 
-     Guests who arrive on a link ending ?k=baci skip the gate. Put that on
-     the Joy invite so nobody has to type anything.                          */
+     Guests who arrive on a link ending ?k=baci or ?k=spritz skip the gate,
+     with whatever that password carries. Put the right one on each invite
+     and nobody has to type anything.                                       */
   gate: {
     enabled:  true,
-    password: "baci",
+    /* Two passwords, both opening the same site. `password` is what most
+       guests get. `fridayPassword` opens the site AND shows the Friday
+       pre-drinks card in When and Where, so the one word you send decides
+       which version of the day someone sees. Change either freely.
+       Neither is a secret: this file is public. */
+    password:       "baci",
+    fridayPassword: "spritz",
     title:    { en: "A quiet corner of the internet",
                 it: "Un angolo tranquillo di internet" },
     blurb:    { en: "Pop in the password from your invitation.",
@@ -113,8 +121,8 @@ const SITE = {
     title: { en: "When and Where", it: "Quando e Dove" },
     events: [
       {
-        /* Referenced by the ?friday=0 link option in main.js: guests who are
-           not invited to the drinks get a link that drops this card. */
+        /* Hidden by default. Shown to whoever came in on gate.fridayPassword,
+           or on a link carrying ?f=11. See the Friday block in main.js. */
         id:      "friday",
         day:     { en: "Friday, 11 June 2027", it: "Venerdì 11 Giugno 2027" },
         name:    { en: "Pre-Game Drinks",      it: "Pre-Game Drinks" },

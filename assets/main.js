@@ -10,26 +10,25 @@
      string, so different groups can be sent different versions of the same
      page without a second copy of it existing anywhere.
 
-       ?lang=it     open in Italian (also ?lang=en). Beats whatever the
-                    browser or a previous visit would have chosen, and is
-                    written through to the toggle's memory so it sticks.
-       ?friday=0    hide the Friday pre-drinks card in When and Where, in
-                    both languages. Deliberately not remembered: it lives
-                    for that visit only, so a guest who later opens a full
-                    link is not stuck on the cut-down page.
-       ?k=baci      skip the password gate (handled further down).          */
+       ?lang=it     open in Italian (also ?lang=en). Beats whatever a
+                    previous visit chose, and is written through to the
+                    toggle's memory so it sticks. With no parameter and no
+                    previous visit the site opens in English.
+       ?f=11        show the Friday pre-drinks card: the 11th, the date of
+                    the drinks. Any other value of f takes it away again.
+                    An override on top of the password, which is the real
+                    mechanism; see the Friday block further down.
+       ?k=<word>    skip the password gate, with whichever entitlement that
+                    password carries (handled further down).                */
   var PARAMS = (function () {
     try { return new URLSearchParams(location.search); } catch (e) { return null; }
   })();
   function param(name) { return PARAMS ? PARAMS.get(name) : null; }
-  function paramOff(name) {
-    var v = param(name);
-    if (v == null) return false;
-    v = String(v).trim().toLowerCase();
-    return v === "0" || v === "no" || v === "off" || v === "false" || v === "hide";
-  }
 
   /* ------------------------------------------------------------ language */
+  /* English unless something says otherwise. The browser's own language is
+     deliberately not consulted: an Italian speaker sent the English link
+     should get the English link, and the toggle is right there. */
   var LANGS = ["en", "it"];
   var lang = (function () {
     var q = (param("lang") || param("l") || "").toLowerCase().slice(0, 2);
@@ -38,11 +37,50 @@
       return q;
     }
     try { var s = localStorage.getItem("os-lang"); if (LANGS.indexOf(s) > -1) return s; } catch (e) {}
-    return (navigator.language || "en").toLowerCase().indexOf("it") === 0 ? "it" : "en";
+    return "en";
   })();
 
-  /* Guests who are not invited to the Friday drinks get ?friday=0. */
-  var SHOW_FRIDAY = !(paramOff("friday") || paramOff("drinks"));
+  /* -------------------------------------------------------------- Friday
+     The Friday pre-drinks card is hidden unless a guest has been given it.
+     Two ways to give it, in order of authority:
+
+       the password   whoever comes in on gate.fridayPassword has it, this
+                      visit and every later one, because the gate already
+                      remembers which password opened it. One word to send,
+                      and it survives a bookmark, a retyped address, or a
+                      messaging app that eats the query string.
+       ?f=11          the date of the drinks. Remembered too. Any other
+                      value of f takes the parameter grant away; it cannot
+                      take the password grant away, because the password is
+                      the stronger statement of the two.
+
+     Neither is a secret. Both words live in content.js, which is public, and
+     anyone can type ?f=11. This decides what a guest is shown, not what a
+     guest could find out. See the README.                                  */
+  var FRIDAY_KEY  = "os-friday";
+  var fridayParam = false;   /* this tab, even if localStorage is unavailable */
+
+  function grantFriday(on) {
+    fridayParam = !!on;
+    try {
+      if (on) localStorage.setItem(FRIDAY_KEY, "1");
+      else    localStorage.removeItem(FRIDAY_KEY);
+    } catch (e) {}
+  }
+  (function () {
+    var f = param("f");
+    if (f != null) grantFriday(String(f).trim() === "11");
+  })();
+
+  function showFriday() {
+    if (fridayParam) return true;
+    try {
+      if (localStorage.getItem(FRIDAY_KEY) === "1") return true;
+      var fp = normalise(SITE.gate && SITE.gate.fridayPassword);
+      if (fp && localStorage.getItem(GATE_KEY) === fp) return true;
+    } catch (e) {}
+    return false;
+  }
 
   /* t() takes either a plain string or {en,it} and returns the right one,
      falling back to English when a translation is missing. */
@@ -287,8 +325,9 @@
 
   /* ========================================================= when and where */
   function buildWhen() {
+    var friday = showFriday();
     var events = SITE.when.events.filter(function (ev) {
-      return SHOW_FRIDAY || ev.id !== "friday";
+      return friday || ev.id !== "friday";
     });
     var cards = events.map(function (ev) {
       var where = ev.venue ? ev.venue + ", " + ev.address : ev.address;
@@ -632,22 +671,47 @@
     return String(v || "").trim().toLowerCase().replace(/\s+/g, "");
   }
 
+  /* Two passwords, both opening the same site. gate.password is the one most
+     guests get; gate.fridayPassword additionally shows the Friday drinks. */
+  function gateKeys() {
+    var g = SITE.gate || {};
+    return { day: normalise(g.password), friday: normalise(g.fridayPassword) };
+  }
+  /* "friday", "day", or "" for no match. */
+  function matchPassword(v) {
+    var k = gateKeys(), n = normalise(v);
+    if (!n) return "";
+    if (k.friday && n === k.friday) return "friday";
+    if (k.day    && n === k.day)    return "day";
+    return "";
+  }
+  /* The password that opened the gate is what gets stored, so the Friday
+     entitlement is read back off it on every later visit. */
+  function openGate(which) {
+    gateOpen = true;
+    var k = gateKeys();
+    try { localStorage.setItem(GATE_KEY, which === "friday" ? k.friday : k.day); } catch (e) {}
+    if (which === "friday") grantFriday(true);
+  }
+
   function gatePassed() {
     var g = SITE.gate;
     if (!g || !g.enabled || !g.password) return true;
     if (gateOpen) return true;
-    var want = normalise(g.password);
-    /* A link ending ?k=baci lets guests in without typing anything. */
+    /* A link ending ?k=<password> lets guests in without typing anything,
+       and carries whatever that password carries. The query string is then
+       wiped from the address bar, which is why everything it said has
+       already been read and stored by this point. */
+    var hit = matchPassword(param("k"));
+    if (hit) {
+      openGate(hit);
+      try { history.replaceState(null, "", location.pathname + location.hash); } catch (e) {}
+      return true;
+    }
     try {
-      var k = new URLSearchParams(location.search).get("k");
-      if (k && normalise(k) === want) {
-        gateOpen = true;
-        localStorage.setItem(GATE_KEY, want);
-        history.replaceState(null, "", location.pathname + location.hash);
-        return true;
-      }
-    } catch (e) {}
-    try { return localStorage.getItem(GATE_KEY) === want; } catch (e) { return false; }
+      var stored = localStorage.getItem(GATE_KEY), k = gateKeys();
+      return !!stored && (stored === k.day || (!!k.friday && stored === k.friday));
+    } catch (e) { return false; }
   }
 
   function buildGate(onPass) {
@@ -667,7 +731,8 @@
 
     form.addEventListener("submit", function (e) {
       e.preventDefault();
-      if (normalise(input.value) !== normalise(g.password)) {
+      var hit = matchPassword(input.value);
+      if (!hit) {
         error.textContent = t(g.wrong);
         form.classList.remove("shake");
         void form.offsetWidth;
@@ -675,8 +740,7 @@
         input.select();
         return;
       }
-      gateOpen = true;
-      try { localStorage.setItem(GATE_KEY, normalise(g.password)); } catch (err) {}
+      openGate(hit);
       onPass();
     });
 

@@ -84,16 +84,14 @@ faking a success. No reply can be silently lost.
 
 ## The soft gate
 
-Visitors land on a password screen before they see anything. Password is `baci`,
-set in the `gate` block of `content.js`. Case and spaces are ignored, and once
-someone is in, their browser remembers it.
+Visitors land on a password screen before they see anything. Two passwords open
+it, `baci` and `spritz`, both set in the `gate` block of `content.js`. Case and
+spaces are ignored, and the browser remembers which one was used.
 
-Guests who arrive on a link ending **`?k=baci`** skip the screen entirely. Put
-that version of the link on the Joy invitation and nobody has to type anything:
-
-```
-https://ragingrolando.github.io/wedding-site/?k=baci
-```
+Guests who arrive on a link ending **`?k=baci`** or **`?k=spritz`** skip the
+screen entirely. Put the right one on each invitation and nobody has to type
+anything. Which password a guest gets also decides whether they see the Friday
+drinks: see **Guest links** below.
 
 Set `gate.enabled` to `false` to turn it off.
 
@@ -101,47 +99,64 @@ Set `gate.enabled` to `false` to turn it off.
 
 ## Guest links
 
-The page reads three options off the query string, so one deployed site can be
-sent to different groups in different shapes. Combine them freely with `&`.
+Two things vary between guests: the language, and whether they see the Friday
+pre-drinks card. **Both default to off.** No parameter and no previous visit
+means English, no Friday.
+
+### Friday: use the password
+
+There are two passwords, both in the `gate` block of `content.js`:
+
+| Password | Opens the site | Shows Friday |
+|---|---|---|
+| `baci` | yes | no |
+| `spritz` | yes | yes |
+
+Send each guest the one that matches their invitation. The gate remembers
+which password opened it, so the Friday card follows that guest to every
+later visit, on a bookmark, a retyped address, or a link that lost its query
+string on the way through WhatsApp.
+
+This is the robust mechanism. Prefer it.
+
+### The parameters
 
 | Option | Does |
 |---|---|
-| `?k=baci` | Skips the password screen |
+| `?k=baci` / `?k=spritz` | Skips the password screen, carrying that password's entitlement |
 | `?lang=it` | Opens in Italian. `?lang=en` forces English |
-| `?friday=0` | Hides the Friday pre-drinks card in When and Where |
+| `?f=11` | Shows Friday. Any other value of `f` takes it away again |
 
-**Everyone, in English**
+`?f=11` is an override for one-off links, so you can give somebody Friday
+without changing their password. It is remembered like the password is. It
+cannot take Friday away from someone holding `spritz`, because the password
+is the stronger statement of the two.
+
+**Ready to send**
 
 ```
+Saturday only, English
 https://ragingrolando.github.io/wedding-site/?k=baci
-```
 
-**Italian side of the family**
-
-```
+Saturday only, Italian
 https://ragingrolando.github.io/wedding-site/?k=baci&lang=it
+
+Friday and Saturday, English
+https://ragingrolando.github.io/wedding-site/?k=spritz
+
+Friday and Saturday, Italian
+https://ragingrolando.github.io/wedding-site/?k=spritz&lang=it
 ```
 
-**Saturday-only guests, not invited to the Friday drinks**
+### What this does not do
 
-```
-https://ragingrolando.github.io/wedding-site/?k=baci&friday=0
-https://ragingrolando.github.io/wedding-site/?k=baci&lang=it&friday=0
-```
+**It hides a card. It does not keep a secret.** Both passwords are written in
+`assets/content.js`, which anyone can open in a browser. `?f=11` is guessable
+in one try, because it is the date. A Saturday guest who is curious, or who is
+forwarded the wrong link by a friend, will see the Friday details.
 
-Two things to know before you send these.
-
-`lang` is sticky. It overrides the browser's own guess and is written to that
-guest's browser, so they stay in that language on later visits and the EN/IT
-toggle still works normally.
-
-`friday=0` is not sticky, on purpose. It applies to that visit only. Nothing is
-stored, so a guest who is later sent a full link sees the Friday card. The flip
-side is that a Saturday-only guest who bookmarks the bare address, or reaches
-the site any other way, will see the drinks card. **This hides a card, it does
-not keep a secret.** Anyone can read `assets/content.js` or strip the parameter
-off the URL. If the Friday guest list must not be inferable, the drinks details
-cannot live on this site at all.
+If the Friday guest list must not be inferable, the drinks details cannot live
+on this site at all. Put the address in the invitation instead.
 
 ### What "soft" means
 

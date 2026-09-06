@@ -474,15 +474,15 @@ footer p{max-width:none;margin-top:14px;font-family:var(--util);font-size:11px;
 .hero-plate figcaption{margin-top:16px;font-style:italic;font-size:16px;color:var(--ink-52)}
 
 .motif{position:absolute;top:50%;width:clamp(52px,6vw,84px);height:auto;
-  mix-blend-mode:multiply;opacity:.5;pointer-events:none;user-select:none}
+  mix-blend-mode:multiply;opacity:.8;pointer-events:none;user-select:none}
 .motif-left {left:0;  transform:translateY(-55%) rotate(-7deg)}
 .motif-right{right:0; transform:translateY(-55%) rotate(6deg) scaleX(-1)}
 
 .dancer-strip{display:block;width:100%;max-width:820px;height:auto;margin:0 auto 34px;
-  mix-blend-mode:multiply;opacity:.9}
-/* Same row, closing the running order. Smaller and paler, so the footer
-   band still reads as the louder of the two. */
-.dancer-strip-inline{max-width:640px;margin:clamp(44px,6vw,68px) auto 0;opacity:.72}
+  mix-blend-mode:multiply;opacity:.8}
+/* Same row, closing the running order. Smaller than the footer one, but
+   the same weight: every dancer and motif on the page sits at .8. */
+.dancer-strip-inline{max-width:640px;margin:clamp(44px,6vw,68px) auto 0;opacity:.8}
 
 .stay-more{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;
   margin-top:clamp(30px,4vw,44px)}

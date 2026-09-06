@@ -113,6 +113,9 @@ const SITE = {
     title: { en: "When and Where", it: "Quando e Dove" },
     events: [
       {
+        /* Referenced by the ?friday=0 link option in main.js: guests who are
+           not invited to the drinks get a link that drops this card. */
+        id:      "friday",
         day:     { en: "Friday, 11 June 2027", it: "Venerdì 11 Giugno 2027" },
         name:    { en: "Pre-Game Drinks",      it: "Pre-Game Drinks" },
         time:    "16:00 to 21:00",

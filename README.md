@@ -97,6 +97,52 @@ https://ragingrolando.github.io/wedding-site/?k=baci
 
 Set `gate.enabled` to `false` to turn it off.
 
+---
+
+## Guest links
+
+The page reads three options off the query string, so one deployed site can be
+sent to different groups in different shapes. Combine them freely with `&`.
+
+| Option | Does |
+|---|---|
+| `?k=baci` | Skips the password screen |
+| `?lang=it` | Opens in Italian. `?lang=en` forces English |
+| `?friday=0` | Hides the Friday pre-drinks card in When and Where |
+
+**Everyone, in English**
+
+```
+https://ragingrolando.github.io/wedding-site/?k=baci
+```
+
+**Italian side of the family**
+
+```
+https://ragingrolando.github.io/wedding-site/?k=baci&lang=it
+```
+
+**Saturday-only guests, not invited to the Friday drinks**
+
+```
+https://ragingrolando.github.io/wedding-site/?k=baci&friday=0
+https://ragingrolando.github.io/wedding-site/?k=baci&lang=it&friday=0
+```
+
+Two things to know before you send these.
+
+`lang` is sticky. It overrides the browser's own guess and is written to that
+guest's browser, so they stay in that language on later visits and the EN/IT
+toggle still works normally.
+
+`friday=0` is not sticky, on purpose. It applies to that visit only. Nothing is
+stored, so a guest who is later sent a full link sees the Friday card. The flip
+side is that a Saturday-only guest who bookmarks the bare address, or reaches
+the site any other way, will see the drinks card. **This hides a card, it does
+not keep a secret.** Anyone can read `assets/content.js` or strip the parameter
+off the URL. If the Friday guest list must not be inferable, the drinks details
+cannot live on this site at all.
+
 ### What "soft" means
 
 The password lives in `assets/content.js`, which is a public file. Anyone can

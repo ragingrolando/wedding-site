@@ -5,12 +5,44 @@
 (function () {
   "use strict";
 
+  /* --------------------------------------------------------- link options
+     Everything a guest link can carry. Read once, at boot, from the query
+     string, so different groups can be sent different versions of the same
+     page without a second copy of it existing anywhere.
+
+       ?lang=it     open in Italian (also ?lang=en). Beats whatever the
+                    browser or a previous visit would have chosen, and is
+                    written through to the toggle's memory so it sticks.
+       ?friday=0    hide the Friday pre-drinks card in When and Where, in
+                    both languages. Deliberately not remembered: it lives
+                    for that visit only, so a guest who later opens a full
+                    link is not stuck on the cut-down page.
+       ?k=baci      skip the password gate (handled further down).          */
+  var PARAMS = (function () {
+    try { return new URLSearchParams(location.search); } catch (e) { return null; }
+  })();
+  function param(name) { return PARAMS ? PARAMS.get(name) : null; }
+  function paramOff(name) {
+    var v = param(name);
+    if (v == null) return false;
+    v = String(v).trim().toLowerCase();
+    return v === "0" || v === "no" || v === "off" || v === "false" || v === "hide";
+  }
+
   /* ------------------------------------------------------------ language */
   var LANGS = ["en", "it"];
   var lang = (function () {
+    var q = (param("lang") || param("l") || "").toLowerCase().slice(0, 2);
+    if (LANGS.indexOf(q) > -1) {
+      try { localStorage.setItem("os-lang", q); } catch (e) {}
+      return q;
+    }
     try { var s = localStorage.getItem("os-lang"); if (LANGS.indexOf(s) > -1) return s; } catch (e) {}
     return (navigator.language || "en").toLowerCase().indexOf("it") === 0 ? "it" : "en";
   })();
+
+  /* Guests who are not invited to the Friday drinks get ?friday=0. */
+  var SHOW_FRIDAY = !(paramOff("friday") || paramOff("drinks"));
 
   /* t() takes either a plain string or {en,it} and returns the right one,
      falling back to English when a translation is missing. */
@@ -255,7 +287,10 @@
 
   /* ========================================================= when and where */
   function buildWhen() {
-    var cards = SITE.when.events.map(function (ev) {
+    var events = SITE.when.events.filter(function (ev) {
+      return SHOW_FRIDAY || ev.id !== "friday";
+    });
+    var cards = events.map(function (ev) {
       var where = ev.venue ? ev.venue + ", " + ev.address : ev.address;
       var acts = el("div", { class: "event-acts" }, [
         el("a", { class: "btn ghost small", href: icsHref(t(ev.name), ev.cal.start, ev.cal.end, where, t(ev.note)),
@@ -282,7 +317,7 @@
     });
     return section("when", [
       sectionHead(SITE.when.title),
-      el("div", { class: "events" }, cards)
+      el("div", { class: "events" + (cards.length < 2 ? " events-solo" : "") }, cards)
     ]);
   }
 
@@ -698,7 +733,44 @@
     root.appendChild(buildRsvp());
     root.appendChild(buildFooter());
 
+    ampifyAll(root);
     wireObservers();
+  }
+
+  /* --------------------------------------------------- ampersands, all of them
+     The wordmarks build their own .amp span, but every other "&" on the page
+     arrives as a plain character inside a string from content.js: the Q & A
+     heading, WHEN & WHERE in the nav, "Summer Chic & Colourful". Each one
+     rendered in whatever face its element happened to use, which is how four
+     different ampersands ended up on one page. This walks the finished tree
+     once and wraps every free-standing "&" in the same span, so there is one
+     rule deciding what an ampersand looks like here.
+
+     Text nodes only. Form controls are skipped because a span cannot live
+     inside them, and hrefs are attributes, so a "&" in a query string is
+     never touched. */
+  var AMP_SKIP = { SCRIPT: 1, STYLE: 1, TEXTAREA: 1, INPUT: 1, OPTION: 1, SELECT: 1 };
+  function ampifyAll(root) {
+    if (!root || !document.createTreeWalker) return;
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (n) {
+        if (n.nodeValue.indexOf("&") < 0) return NodeFilter.FILTER_REJECT;
+        var p = n.parentNode;
+        if (!p || AMP_SKIP[p.nodeName]) return NodeFilter.FILTER_REJECT;
+        if (p.classList && p.classList.contains("amp")) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    var hits = [], n;
+    while ((n = walker.nextNode())) hits.push(n);
+    hits.forEach(function (node) {
+      var frag = document.createDocumentFragment();
+      node.nodeValue.split("&").forEach(function (part, i) {
+        if (i) frag.appendChild(el("span", { class: "amp", text: "&" }));
+        if (part) frag.appendChild(document.createTextNode(part));
+      });
+      node.parentNode.replaceChild(frag, node);
+    });
   }
 
   /* -------------------------------------------- scroll reveal + active nav */
@@ -709,6 +781,26 @@
     window.__osScroll = onScroll;
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
+
+    /* The nav scrolls sideways on narrow screens and in Italian, where the
+       labels are longer. It used to end in a hard cut against the RSVP
+       button, which reads as the end of the list rather than as more to
+       come. A mask fades the last stretch out instead, and the classes
+       below switch it off at each end so nothing is dimmed for no reason. */
+    var scroller = document.querySelector(".nav");
+    if (scroller) {
+      var edges = function () {
+        var over = scroller.scrollWidth - scroller.clientWidth;
+        var x    = scroller.scrollLeft;
+        scroller.classList.toggle("fade-end",   over > 2 && x < over - 2);
+        scroller.classList.toggle("fade-start", over > 2 && x > 2);
+      };
+      scroller.addEventListener("scroll", edges, { passive: true });
+      window.addEventListener("resize", edges, { passive: true });
+      edges();
+      /* Fonts land after first paint and change every label's width. */
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(edges);
+    }
 
     var reveals = document.querySelectorAll(".reveal");
     if (!("IntersectionObserver" in window)) {

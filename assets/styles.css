@@ -97,12 +97,21 @@ h1,h2,h3,.brand,.tl-name,.nm,.gate-kicker,.gate-title,.mono,.hero-names{
    which is what the axis is for: a 22px nav mark cut at display weight goes
    thin and brittle. */
 .amp{
-  font-style:italic;
+  font-family:var(--display);
+  font-style:italic;font-weight:400;
   font-variation-settings:"SOFT" 40,"WONK" 1;
+  letter-spacing:0;
   color:var(--portico);
 }
 .brand .amp{margin:0 .2em}
 footer .mono .amp{margin:0 .18em}
+/* Fraunces italic runs small against the tracked-out sans labels it now sits
+   inside, so those get a bump. Everywhere else it is already the surrounding
+   face and needs nothing. */
+.nav .amp,.sec-sub .amp,.subhead .amp,.chips-label .amp,
+.event-day .amp,.bank dt .amp,.field label .amp{font-size:1.3em;margin:0 .05em}
+.tag .amp,.hero-meta .amp{font-size:1.1em;margin:0 .03em}
+h2 .amp,h3 .amp,.tl-name .amp,.nm .amp{margin:0 .04em}
 
 /* ------------------------------------------------------------------ header */
 .topbar{
@@ -119,8 +128,21 @@ footer .mono .amp{margin:0 .18em}
 .brand-mark{width:auto;height:30px;display:block;mix-blend-mode:multiply;
   flex:0 0 auto;transform:translateY(1px)}
 
+/* The nav scrolls sideways once the labels outrun the bar, which happens on
+   any phone and on a laptop in Italian. It used to end in a hard cut against
+   the RSVP button, which reads as the end of the list. A long mask fades the
+   last stretch out instead. main.js sets the two classes, so nothing is
+   dimmed once you have reached that end. */
 .nav{display:flex;gap:clamp(14px,1.7vw,26px);margin-left:auto;overflow-x:auto;
-  scrollbar-width:none;-ms-overflow-style:none}
+  scrollbar-width:none;-ms-overflow-style:none;
+  --fade-l:0px;--fade-r:0px;
+  -webkit-mask-image:linear-gradient(to right,transparent 0,#000 var(--fade-l),
+    #000 calc(100% - var(--fade-r)),transparent 100%);
+          mask-image:linear-gradient(to right,transparent 0,#000 var(--fade-l),
+    #000 calc(100% - var(--fade-r)),transparent 100%);
+  transition:--fade-r .2s}
+.nav.fade-start{--fade-l:40px}
+.nav.fade-end{--fade-r:84px}
 .nav::-webkit-scrollbar{display:none}
 .nav a{
   font-family:var(--util);font-size:clamp(10.5px,.85vw,12px);font-weight:500;
@@ -160,9 +182,12 @@ footer .mono .amp{margin:0 .18em}
 .hero-veil{position:absolute;inset:0;z-index:-1;
   background:radial-gradient(ellipse 70% 60% at 50% 45%,rgba(247,244,236,.84),rgba(247,244,236,.96))}
 .hero.no-photo .hero-veil{background:none}
+/* All three hero lines are serif now. The kicker and the date used to be
+   Instrument Sans, tracked out in caps, which is the least legible setting
+   there is to lay over a painting. */
 .hero-kicker{
-  font-family:var(--util);font-size:11px;font-weight:500;
-  letter-spacing:.28em;text-transform:uppercase;color:var(--verdigris);margin-bottom:26px;
+  font-family:var(--body);font-size:clamp(11.5px,1vw,13px);font-weight:500;
+  letter-spacing:.24em;text-transform:uppercase;color:var(--verdigris);margin-bottom:26px;
 }
 .hero-names{
   font-weight:400;line-height:.98;
@@ -173,9 +198,11 @@ footer .mono .amp{margin:0 .18em}
    that is an 11px ampersand: the one in the nav bar next to it is 17px, so
    the two lockups stopped matching exactly where they sit closest. */
 .hero-names .amp{display:block;font-size:max(17px,.34em);margin:.1em 0}
+/* Sentence case, because "12 June 2027" set in tracked-out caps is the one
+   line on the page a guest actually has to read and remember. */
 .hero-meta{
-  margin-top:32px;font-family:var(--util);font-size:13px;font-weight:500;
-  letter-spacing:.18em;text-transform:uppercase;color:var(--ink-72);
+  margin-top:32px;font-family:var(--body);font-size:clamp(16px,1.5vw,19px);
+  font-weight:500;letter-spacing:.01em;color:var(--ink-72);
 }
 .hero-meta span{display:inline-block;padding:0 14px}
 .hero-meta span+span{border-left:1px solid var(--line)}
@@ -460,33 +487,54 @@ footer p{max-width:none;margin-top:14px;font-family:var(--util);font-size:11px;
 
 /* heroMode "overlay": names in the sky, painting untouched underneath */
 .hero-over{position:relative;width:100%;max-width:min(760px,100%);margin:0 auto;
-  display:grid;grid-template-areas:"stack";align-items:start}
+  display:grid;grid-template-areas:"stack";align-items:center}
+/* The names sit in the middle of the painting now, so the lift behind them
+   has to travel with them: a soft ellipse centred on the text rather than a
+   wash down from the top edge. Weaker than the old one at every point, which
+   is the trade for putting the type over the busiest part of the picture. */
 .hero-over::after{
   content:"";grid-area:stack;position:relative;z-index:0;align-self:stretch;
   border-radius:3px;pointer-events:none;
-  background:linear-gradient(to bottom,
-    rgba(247,244,236,.62) 0%,
-    rgba(247,244,236,.58) 18%,
-    rgba(247,244,236,.34) 30%,
-    rgba(247,244,236,0)   44%);
+  background:radial-gradient(ellipse 72% 30% at 50% 50%,
+    rgba(247,244,236,.66) 0%,
+    rgba(247,244,236,.52) 46%,
+    rgba(247,244,236,.18) 76%,
+    rgba(247,244,236,0)   100%);
 }
 .hero-over-img{grid-area:stack;display:block;width:100%;height:auto;
   mix-blend-mode:multiply;border-radius:3px}
 .hero-over .hero{grid-area:stack;position:relative;z-index:2;min-height:0;
-  padding:clamp(22px,3.5vw,40px) clamp(20px,4vw,40px) 0;background:none;align-self:start}
+  padding:0 clamp(20px,4vw,40px);background:none;align-self:center}
 .hero-over .hero-veil{display:none}
+/* Matched to the nav wordmark: same face, same axes, same tight tracking,
+   just larger. It was two steps bigger before and read as a different mark. */
 .hero-over .hero-names{
-  font-size:clamp(34px,6.4vw,72px);
-  text-shadow:0 0 10px rgba(247,244,236,1),0 0 22px rgba(247,244,236,.95),
-              0 0 46px rgba(247,244,236,.85);
+  font-size:clamp(31px,5.2vw,58px);
+  font-variation-settings:"SOFT" 40,"WONK" 1,"opsz" 96;
+  letter-spacing:-.005em;
+  text-shadow:0 0 9px rgba(247,244,236,.9),0 0 20px rgba(247,244,236,.62);
 }
 .hero-over .hero-names .amp{font-size:max(17px,.32em);margin:.04em 0}
 .hero-over .hero-kicker,
-.hero-over .hero-meta{text-shadow:0 0 8px rgba(247,244,236,1),0 0 18px rgba(247,244,236,.95)}
+.hero-over .hero-meta{text-shadow:0 0 7px rgba(247,244,236,.92),0 0 16px rgba(247,244,236,.7)}
 .hero-over .hero-kicker{margin-bottom:12px}
 .hero-over .hero-meta{margin-top:14px}
 .hero-over .hero-cta{display:none}
-.hero-under-cta{text-align:center;margin:clamp(24px,4vw,34px) 0 clamp(44px,7vw,80px)}
+.hero-under-cta{text-align:center;margin:clamp(24px,4vw,34px) 0 clamp(26px,4vw,44px)}
+
+/* The hero used to run into When and Where across the better part of 200px
+   of nothing. The arch run already marks every other change of ground on the
+   page, so it marks this one too, and the section pulls its top padding in
+   behind it. */
+#when{padding-top:clamp(50px,6vw,84px)}
+#when::before{
+  content:"";position:absolute;left:0;right:0;top:0;height:34px;
+  background:var(--portico);opacity:.5;pointer-events:none;
+  -webkit-mask:var(--arch) repeat-x left top/46px 34px;
+          mask:var(--arch) repeat-x left top/46px 34px;
+}
+/* One card left, because the guest is on a ?friday=0 link. */
+.events-solo{grid-template-columns:minmax(0,min(520px,100%));justify-content:center}
 
 /* ============================ soft gate ================================== */
 .gate{
@@ -557,16 +605,18 @@ footer p{max-width:none;margin-top:14px;font-family:var(--util);font-size:11px;
   .nav{gap:16px}
   .nav a{font-size:11px}
   /* One line, or the second drops past the wash onto the hill */
-  .hero-over .hero-meta{font-size:11px;letter-spacing:.12em;margin-top:10px}
+  .hero-over .hero-meta{font-size:13.5px;letter-spacing:.01em;margin-top:10px}
   .hero-over .hero-meta span{display:inline-block;padding:0 8px}
   .hero-over .hero-meta span+span{border-left:1px solid var(--line)}
-  .hero-over .hero-kicker{font-size:10px;letter-spacing:.24em;margin-bottom:10px}
-  .hero-over .hero{padding:18px 14px 0}
+  .hero-over .hero-kicker{font-size:10.5px;letter-spacing:.22em;margin-bottom:10px}
+  .hero-over .hero{padding:0 14px}
+  /* Taller ellipse: the block is three lines deep against a much narrower
+     picture, so the lift has to cover more of the frame than on desktop. */
   .hero-over::after{
-    background:linear-gradient(to bottom,
-      rgba(247,244,236,.72) 0%,
-      rgba(247,244,236,.66) 22%,
-      rgba(247,244,236,.42) 38%,
-      rgba(247,244,236,0)   52%);
+    background:radial-gradient(ellipse 86% 26% at 50% 50%,
+      rgba(247,244,236,.60) 0%,
+      rgba(247,244,236,.46) 46%,
+      rgba(247,244,236,.16) 76%,
+      rgba(247,244,236,0)   100%);
   }
 }

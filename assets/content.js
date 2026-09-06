@@ -29,10 +29,15 @@ const SITE = {
               "plate"   shows the whole painting below the names instead.
               "cover"   fills the screen behind the names, which crops San
                         Luca and the dancers away on a wide screen.       */
-  heroImage: "wedding-hero.jpeg",
-  heroMode:  "overlay",
-  heroCaption: { en: "Villa Zarri, with San Luca above",
-                 it: "Villa Zarri, con San Luca sopra" },
+  /* "plate" rather than "overlay". The painting now carries its own paper
+     labels: ENGAGED HERE over San Luca, MARRYING HERE (YOU ARE INVITED) over
+     the villa, and 12th JUNE VILLA ZARRI along the bottom. Type laid over
+     that would land on top of somebody's handwriting, so the painting is
+     shown whole and the names sit above it. No caption either: the picture
+     names itself now. */
+  heroImage: "hero-extended.jpg",
+  heroMode:  "plate",
+  heroCaption: null,
 
   /* The bride and groom, cut out of the painting, sat beside the names in
      the top bar. Small: it is drawn at 30px, so a busy crop turns to mush. */

@@ -524,14 +524,25 @@ footer p{max-width:none;margin-top:14px;font-family:var(--util);font-size:11px;
 .reveal.in{opacity:1;transform:none}
 
 /* ============================ artwork ==================================== */
-.hero.has-plate{min-height:0;padding:clamp(44px,6vw,76px) var(--gut) clamp(20px,3vw,34px)}
-.hero.has-plate .hero-kicker{margin-bottom:18px}
-.hero.has-plate .hero-names{font-size:clamp(46px,8.4vw,92px)}
-.hero.has-plate .hero-meta{margin-top:22px}
-.hero.has-plate .hero-cta{margin-top:26px}
-.hero-plate{margin:0 auto clamp(44px,7vw,80px);padding:0 var(--gut);max-width:1080px;text-align:center}
-.hero-plate-img{display:block;margin:0 auto;width:auto;max-width:min(620px,100%);
-  max-height:min(62vh,700px);object-fit:contain;border-radius:3px;mix-blend-mode:multiply}
+/* The painting is the hero, so the type above it is a header, not a title
+   card. At the old 92px stacked it ran to ~600px before the picture even
+   started, which put the whole thing below the fold on a laptop. Compact,
+   names on one line like the nav wordmark, and no button: the nav carries a
+   permanent RSVP and the section is three screens down anyway. */
+.hero.has-plate{min-height:0;padding:clamp(30px,4vw,52px) var(--gut) clamp(18px,2.4vw,30px)}
+.hero.has-plate .hero-kicker{margin-bottom:14px;font-size:clamp(10.5px,.9vw,12px)}
+.hero.has-plate .hero-names{font-size:clamp(33px,4.6vw,60px);line-height:1.05}
+.hero.has-plate .hero-names .amp{
+  display:inline;line-height:0;font-size:1em;margin:0 .14em;vertical-align:baseline}
+.hero.has-plate .hero-meta{margin-top:13px;font-size:clamp(14.5px,1.25vw,17px)}
+.hero.has-plate .hero-cta{display:none}
+.hero-plate{margin:0 auto clamp(40px,6vw,68px);padding:0 var(--gut);max-width:1240px;text-align:center}
+/* The new plate is square and 2048px, so it can go a lot wider than the old
+   portrait crop did. Height is what actually holds it back: a square shown
+   at 1000px wide is 1000px tall, which is most of a laptop screen before a
+   guest has scrolled once. So width is generous and vh does the limiting. */
+.hero-plate-img{display:block;margin:0 auto;width:auto;max-width:min(1000px,100%);
+  max-height:min(74vh,860px);object-fit:contain;border-radius:3px}
 .hero-plate figcaption{margin-top:16px;font-style:italic;font-size:16px;color:var(--ink-52)}
 
 .motif{position:absolute;top:50%;width:clamp(52px,6vw,84px);height:auto;

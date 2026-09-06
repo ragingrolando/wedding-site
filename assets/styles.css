@@ -21,8 +21,12 @@
   --line-soft:#e6e0cd;
 
   --ink:#1d3320;          /* the pen line, verbatim */
-  --ink-72:rgba(29,51,32,.74);
-  --ink-52:rgba(29,51,32,.56);
+  /* Named for the old alphas. Both were raised after an audit: .56 gave the
+     muted tier only 3.3:1 on the wash ground, which fails AA, and it carries
+     the nav labels and the food notes. .70 clears 4.6:1 on every ground the
+     page uses; .78 keeps a visible step above it. */
+  --ink-72:rgba(29,51,32,.78);
+  --ink-52:rgba(29,51,32,.70);
   --ink-24:rgba(29,51,32,.24);
 
   --hill:#4f6b23;         /* the hill, darkened for contrast */
@@ -94,7 +98,12 @@ h1,h2,h3,.brand,.tl-name,.nm,.gate-kicker,.gate-title,.mono,.hero-names{
 }
 .topbar.stuck{border-bottom-color:var(--line)}
 .topbar-inner{display:flex;align-items:center;gap:22px;min-height:70px;max-width:1320px}
-.brand{font-size:21px;text-decoration:none;white-space:nowrap;flex:0 0 auto}
+.brand{font-size:21px;text-decoration:none;white-space:nowrap;flex:0 0 auto;
+  display:inline-flex;align-items:center;gap:9px;color:inherit}
+/* The cut-out has a white ground, so it is multiplied into the bar rather
+   than masked. Slightly larger than the cap height, hung on the baseline. */
+.brand-mark{width:auto;height:30px;display:block;mix-blend-mode:multiply;
+  flex:0 0 auto;transform:translateY(1px)}
 
 .nav{display:flex;gap:clamp(14px,1.7vw,26px);margin-left:auto;overflow-x:auto;
   scrollbar-width:none;-ms-overflow-style:none}
@@ -212,12 +221,17 @@ p+p{margin-top:.85em}
 .event-addr{font-size:16px;color:var(--ink-72);line-height:1.5}
 .event-addr strong{display:block;font-family:var(--display);font-weight:400;
   font-size:20px;color:var(--ink);line-height:1.3}
+/* Was 11px uppercase Instrument Sans with .08em tracking. "DRESS CODE:
+   CASUAL, WHATEVER YOUR HEART DESIRES" in that setting is 47 tracked-out
+   caps: it reads as a system label, not as a sentence someone wrote. Serif,
+   sentence case, italic label. */
 .tag{
   display:inline-block;align-self:flex-start;
   background:var(--paper);border:1px solid var(--line);border-radius:2px;
-  padding:6px 14px;font-family:var(--util);font-size:11px;font-weight:500;
-  letter-spacing:.08em;text-transform:uppercase;line-height:1.5;
+  padding:8px 15px;font-family:var(--body);font-size:16px;font-weight:400;
+  letter-spacing:0;text-transform:none;line-height:1.45;color:var(--ink);
 }
+.tag .tag-label{font-style:italic;color:var(--ink-52)}
 .event-note{font-size:16.5px;color:var(--ink-72)}
 .event-acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:auto;padding-top:6px}
 
@@ -289,6 +303,26 @@ section.alt .tl-body::before{background:var(--wash)}
 .bank dd{font-family:var(--util);font-size:15px;word-break:break-all}
 
 /* ------------------------------------------------------------------ bologna */
+/* The painting sits beside the opening paragraphs rather than above them.
+   This section is already the longest on the page; a full-width plate here
+   would push the list down by most of a screen. */
+.bol-open{display:grid;gap:clamp(24px,4vw,48px);align-items:center;
+  grid-template-columns:minmax(0,.85fr) minmax(0,1fr);margin-bottom:clamp(40px,5vw,60px)}
+/* No painting yet, or the file is missing: the text takes the whole row. */
+.bol-open-solo{grid-template-columns:1fr;max-width:var(--measure);margin-inline:auto}
+.bol-fig{margin:0}
+/* Capped rather than sized to the column: the intro is only two short
+   paragraphs, so a tall painting would strand them halfway up a hole. */
+.bol-img{display:block;width:auto;max-width:100%;height:auto;
+  max-height:min(56vh,480px);margin:0 auto;border-radius:3px;
+  mix-blend-mode:multiply}
+.bol-fig figcaption{margin-top:12px;text-align:center;font-style:italic;font-size:15.5px;
+  color:var(--ink-52);line-height:1.5}
+@media (max-width:820px){
+  .bol-open{grid-template-columns:1fr}
+  .bol-fig{max-width:520px;margin:0 auto}
+}
+
 .places{list-style:none;display:grid;gap:clamp(22px,3vw,34px);
   grid-template-columns:repeat(auto-fit,minmax(min(400px,100%),1fr));
   align-items:start;margin-top:8px}
@@ -296,11 +330,44 @@ section.alt .tl-body::before{background:var(--wash)}
 .place .ic{font-size:22px;line-height:1.35}
 .place .nm{font-size:20px;line-height:1.25}
 .place .tx{font-size:16.5px;color:var(--ink-72);margin-top:3px}
+
+/* The one sentence on this page that is about them and not about Bologna.
+   Pulled out of the paragraph, given an ochre rule and a ring that turns
+   as if catching the light. */
+.place-feature{position:relative}
+.flourish{
+  margin-top:14px;padding:12px 0 12px 16px;
+  border-left:2px solid var(--ochre);
+  font-family:var(--display);font-variation-settings:"SOFT" 40,"WONK" 1;
+  font-size:clamp(18px,1.6vw,21px);line-height:1.4;
+  color:var(--portico-deep);
+}
+.flourish .ring{
+  display:inline-block;font-family:var(--body);
+  transform-origin:50% 62%;
+  animation:ring-turn 3.6s ease-in-out infinite;
+}
+@keyframes ring-turn{
+  0%,62%,100%{transform:rotate(0) scale(1)}
+  70%{transform:rotate(-14deg) scale(1.18)}
+  78%{transform:rotate(10deg)  scale(1.14)}
+  86%{transform:rotate(-5deg)  scale(1.06)}
+}
+@media (prefers-reduced-motion:reduce){
+  .flourish .ring{animation:none}
+}
 .food{list-style:none;display:grid;gap:22px 40px;
   grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));
   align-items:start;margin-top:8px}
-.food li{display:block;padding-left:16px;border-left:1px solid var(--line)}
-.food .nm{display:block;font-size:18px}
+.food li{display:block}
+.food a{display:block;padding-left:16px;text-decoration:none;color:inherit;
+  border-left:1px solid var(--line);transition:border-color .2s}
+.food a:hover,.food a:focus-visible{border-left-color:var(--verdigris)}
+.food .nm{display:block;font-size:18px;
+  text-decoration:underline;text-decoration-color:var(--ink-24);
+  text-underline-offset:3px;text-decoration-thickness:1px;
+  transition:text-decoration-color .2s}
+.food a:hover .nm,.food a:focus-visible .nm{text-decoration-color:var(--verdigris)}
 .food .nt{display:block;font-size:15.5px;color:var(--ink-52);margin-top:2px;line-height:1.5}
 .subhead{text-align:center;margin:clamp(52px,7vw,84px) 0 28px;
   font-family:var(--util);font-size:12px;font-weight:600;letter-spacing:.18em;
@@ -367,6 +434,12 @@ footer p{max-width:none;margin-top:14px;font-family:var(--util);font-size:11px;
 
 .dancer-strip{display:block;width:100%;max-width:820px;height:auto;margin:0 auto 34px;
   mix-blend-mode:multiply;opacity:.9}
+/* Same row, closing the running order. Smaller and paler, so the footer
+   band still reads as the louder of the two. */
+.dancer-strip-inline{max-width:640px;margin:clamp(44px,6vw,68px) auto 0;opacity:.72}
+
+.stay-more{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;
+  margin-top:clamp(30px,4vw,44px)}
 
 /* heroMode "overlay": names in the sky, painting untouched underneath */
 .hero-over{position:relative;width:100%;max-width:min(760px,100%);margin:0 auto;

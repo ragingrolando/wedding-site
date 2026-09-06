@@ -50,23 +50,38 @@ const SITE = {
   ],
 
   /* The row of dancers. Shown twice: closing the running order, and again
-     as a band just above the footer. */
+     under the RSVP button. */
   dancerStrip: "dancing-row.png",
+
+  /* The band that closes the page, under the RSVP section. Full width of
+     the browser, edge to edge, so give it a wide crop. Leave the name here
+     and drop the file into images/; until it is there the footer simply
+     starts at the initials. */
+  bannerImage: "wedding-san-luca-banner.jpeg",
+  bannerAlt:   { en: "San Luca above Bologna", it: "San Luca sopra Bologna" },
 
   /* ------------------------------------------------------------------ GATE
      A soft gate. It stops casual browsing and search engines, nothing more:
      the password sits in this file, which anyone can read via View Source.
      Treat it as a "not for strangers" sign, not as security.
 
-     enabled  false turns the gate off entirely
-     password what guests type (case and spaces are ignored)
-     hint     shown under the field, optional, leave "" to hide
+     enabled         false turns the gate off entirely
+     password        what most guests type (case and spaces are ignored)
+     fridayPassword  same, and also shows the Friday pre-drinks card
+     hint            shown under the field, optional, leave "" to hide
 
-     Guests who arrive on a link ending ?k=baci skip the gate. Put that on
-     the Joy invite so nobody has to type anything.                          */
+     Guests who arrive on a link ending ?k=baci or ?k=spritz skip the gate,
+     with whatever that password carries. Put the right one on each invite
+     and nobody has to type anything.                                       */
   gate: {
     enabled:  true,
-    password: "baci",
+    /* Two passwords, both opening the same site. `password` is what most
+       guests get. `fridayPassword` opens the site AND shows the Friday
+       pre-drinks card in When and Where, so the one word you send decides
+       which version of the day someone sees. Change either freely.
+       Neither is a secret: this file is public. */
+    password:       "baci",
+    fridayPassword: "spritz",
     title:    { en: "A quiet corner of the internet",
                 it: "Un angolo tranquillo di internet" },
     blurb:    { en: "Pop in the password from your invitation.",
@@ -113,6 +128,9 @@ const SITE = {
     title: { en: "When and Where", it: "Quando e Dove" },
     events: [
       {
+        /* Hidden by default. Shown to whoever came in on gate.fridayPassword,
+           or on a link carrying ?f=11. See the Friday block in main.js. */
+        id:      "friday",
         day:     { en: "Friday, 11 June 2027", it: "Venerdì 11 Giugno 2027" },
         name:    { en: "Pre-Game Drinks",      it: "Pre-Game Drinks" },
         time:    "16:00 to 21:00",
@@ -236,12 +254,6 @@ const SITE = {
       { name: "Hotel Cavour",              km: 7.1, url: "https://withjoy.com/orlando-and-sofia/accommodation-place/fe46fe94-33a3-4720-91ce-cb5bd18c66e1" },
       { name: "Art Hotel Orologio",        km: 7.4, url: "https://withjoy.com/orlando-and-sofia/accommodation-place/832b2412-5321-47b8-a29a-39c0b1edf59f" },
       { name: "Hotel Metropolitan",        km: 6.9, url: "https://withjoy.com/orlando-and-sofia/accommodation-place/465e7038-b3f2-46fe-9f21-a2b328b353d6" }
-    ],
-    more: [
-      { label: { en: "See More Hotels" },
-        url: "https://withjoy.com/orlando-and-sofia/hotel/search?checkin=2027-06-11&checkout=2027-06-13" },
-      { label: { en: "See More Stays" },
-        url: "https://www.vrbo.com/search?adults=2&destination=Villa%20Zarri%20-%20dimora%20storica%20e%20distilleria&endDate=2027-06-13&latLong=44.5601257%2C11.3542557&sort=RECOMMENDED&startDate=2027-06-11" }
     ]
   },
 

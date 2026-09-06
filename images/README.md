@@ -13,6 +13,7 @@ Anything missing is skipped silently. The page renders fine with none of it.
 | `wedding-hero.jpeg` | The watercolour of Villa Zarri with San Luca above | ~1600px on the long edge, under 600KB |
 | `via-saragozza.webp` | The painting of Via Saragozza, shown beside the Bologna intro | ~1200px on the long edge, under 300KB |
 | `dancing-row.png` | The row of dancers from the bottom of the painting | ~1600px wide |
+| `wedding-san-luca-banner.jpeg` | The band across the very bottom of the page, edge to edge | ~2400px wide, wide and shallow, under 500KB |
 | `dancing-bride-groom.png` | motif | ~300px tall |
 | `dancing-jump.png` | motif | ~300px tall |
 | `dancing-kick.png` | motif | ~300px tall |
@@ -20,6 +21,24 @@ Anything missing is skipped silently. The page renders fine with none of it.
 | `dancing-upsidedown.png` | motif | ~300px tall |
 
 Names are only a convention. Change them in `content.js` if you prefer others.
+
+## Adding the bottom banner
+
+It runs the full width of the browser, so it wants a wide, shallow crop.
+Anything up to 420px tall is shown in full; taller than that and the middle
+band is used and the rest cropped away. Until the file is there the footer
+simply starts at the initials, no gap and no broken icon.
+
+```
+cp ~/wedding-site/images/wedding-san-luca-banner.jpeg ~/wedding-site/images/
+cd ~/wedding-site && git add images/wedding-san-luca-banner.jpeg \
+  && git commit -m "Add the San Luca banner" && git push
+```
+
+The filename is set in `bannerImage` in `assets/content.js`. Change it there
+if you name the file something else.
+
+---
 
 ## Adding the Via Saragozza painting
 

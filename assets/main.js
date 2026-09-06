@@ -5,12 +5,82 @@
 (function () {
   "use strict";
 
+  /* --------------------------------------------------------- link options
+     Everything a guest link can carry. Read once, at boot, from the query
+     string, so different groups can be sent different versions of the same
+     page without a second copy of it existing anywhere.
+
+       ?lang=it     open in Italian (also ?lang=en). Beats whatever a
+                    previous visit chose, and is written through to the
+                    toggle's memory so it sticks. With no parameter and no
+                    previous visit the site opens in English.
+       ?f=11        show the Friday pre-drinks card: the 11th, the date of
+                    the drinks. Any other value of f takes it away again.
+                    An override on top of the password, which is the real
+                    mechanism; see the Friday block further down.
+       ?k=<word>    skip the password gate, with whichever entitlement that
+                    password carries (handled further down).                */
+  var PARAMS = (function () {
+    try { return new URLSearchParams(location.search); } catch (e) { return null; }
+  })();
+  function param(name) { return PARAMS ? PARAMS.get(name) : null; }
+
   /* ------------------------------------------------------------ language */
+  /* English unless something says otherwise. The browser's own language is
+     deliberately not consulted: an Italian speaker sent the English link
+     should get the English link, and the toggle is right there. */
   var LANGS = ["en", "it"];
   var lang = (function () {
+    var q = (param("lang") || param("l") || "").toLowerCase().slice(0, 2);
+    if (LANGS.indexOf(q) > -1) {
+      try { localStorage.setItem("os-lang", q); } catch (e) {}
+      return q;
+    }
     try { var s = localStorage.getItem("os-lang"); if (LANGS.indexOf(s) > -1) return s; } catch (e) {}
-    return (navigator.language || "en").toLowerCase().indexOf("it") === 0 ? "it" : "en";
+    return "en";
   })();
+
+  /* -------------------------------------------------------------- Friday
+     The Friday pre-drinks card is hidden unless a guest has been given it.
+     Two ways to give it, in order of authority:
+
+       the password   whoever comes in on gate.fridayPassword has it, this
+                      visit and every later one, because the gate already
+                      remembers which password opened it. One word to send,
+                      and it survives a bookmark, a retyped address, or a
+                      messaging app that eats the query string.
+       ?f=11          the date of the drinks. Remembered too. Any other
+                      value of f takes the parameter grant away; it cannot
+                      take the password grant away, because the password is
+                      the stronger statement of the two.
+
+     Neither is a secret. Both words live in content.js, which is public, and
+     anyone can type ?f=11. This decides what a guest is shown, not what a
+     guest could find out. See the README.                                  */
+  var FRIDAY_KEY  = "os-friday";
+  var fridayParam = false;   /* this tab, even if localStorage is unavailable */
+
+  function grantFriday(on) {
+    fridayParam = !!on;
+    try {
+      if (on) localStorage.setItem(FRIDAY_KEY, "1");
+      else    localStorage.removeItem(FRIDAY_KEY);
+    } catch (e) {}
+  }
+  (function () {
+    var f = param("f");
+    if (f != null) grantFriday(String(f).trim() === "11");
+  })();
+
+  function showFriday() {
+    if (fridayParam) return true;
+    try {
+      if (localStorage.getItem(FRIDAY_KEY) === "1") return true;
+      var fp = normalise(SITE.gate && SITE.gate.fridayPassword);
+      if (fp && localStorage.getItem(GATE_KEY) === fp) return true;
+    } catch (e) {}
+    return false;
+  }
 
   /* t() takes either a plain string or {en,it} and returns the right one,
      falling back to English when a translation is missing. */
@@ -255,7 +325,11 @@
 
   /* ========================================================= when and where */
   function buildWhen() {
-    var cards = SITE.when.events.map(function (ev) {
+    var friday = showFriday();
+    var events = SITE.when.events.filter(function (ev) {
+      return friday || ev.id !== "friday";
+    });
+    var cards = events.map(function (ev) {
       var where = ev.venue ? ev.venue + ", " + ev.address : ev.address;
       var acts = el("div", { class: "event-acts" }, [
         el("a", { class: "btn ghost small", href: icsHref(t(ev.name), ev.cal.start, ev.cal.end, where, t(ev.note)),
@@ -282,7 +356,7 @@
     });
     return section("when", [
       sectionHead(SITE.when.title),
-      el("div", { class: "events" }, cards)
+      el("div", { class: "events" + (cards.length < 2 ? " events-solo" : "") }, cards)
     ]);
   }
 
@@ -491,11 +565,9 @@
   /* ================================================================== rsvp */
   function buildRsvp() {
     var cfg = SITE.rsvp;
-    var inner = [
-      /* No motif here: the band is dark, and a multiplied watercolour
-         figure just muddies into the brown. */
-      sectionHead(SITE.ui.rsvpNow, cfg.deadline, true)
-    ];
+    /* No motif beside the heading: the dancer row below the button is the
+       decoration for this section, and two would be a crowd. */
+    var inner = [sectionHead(SITE.ui.rsvpNow, cfg.deadline, true)];
 
     if (cfg.mode === "form") {
       inner.push(buildRsvpForm(cfg));
@@ -505,8 +577,8 @@
                   text: t(SITE.ui.rsvpNow) })
       ]));
     }
-    var s = section("rsvp", inner, "rsvp");
-    return s;
+    inner.push(art(SITE.dancerStrip, "dancer-strip dancer-strip-rsvp"));
+    return section("rsvp", inner, "rsvp");
   }
 
   function buildRsvpForm(cfg) {
@@ -577,8 +649,10 @@
 
   /* ================================================================ footer */
   function buildFooter() {
+    /* Full-bleed, so it is placed outside .wrap. Missing file removes
+       itself, same as every other image on the page. */
     return el("footer", {}, [
-      art(SITE.dancerStrip, "dancer-strip"),
+      art(SITE.bannerImage, "footer-banner", t(SITE.bannerAlt)),
       el("div", { class: "wrap" }, [
         el("p", { class: "mono" },
            coupleMark(SITE.names.first.charAt(0), SITE.names.second.charAt(0))),
@@ -597,22 +671,47 @@
     return String(v || "").trim().toLowerCase().replace(/\s+/g, "");
   }
 
+  /* Two passwords, both opening the same site. gate.password is the one most
+     guests get; gate.fridayPassword additionally shows the Friday drinks. */
+  function gateKeys() {
+    var g = SITE.gate || {};
+    return { day: normalise(g.password), friday: normalise(g.fridayPassword) };
+  }
+  /* "friday", "day", or "" for no match. */
+  function matchPassword(v) {
+    var k = gateKeys(), n = normalise(v);
+    if (!n) return "";
+    if (k.friday && n === k.friday) return "friday";
+    if (k.day    && n === k.day)    return "day";
+    return "";
+  }
+  /* The password that opened the gate is what gets stored, so the Friday
+     entitlement is read back off it on every later visit. */
+  function openGate(which) {
+    gateOpen = true;
+    var k = gateKeys();
+    try { localStorage.setItem(GATE_KEY, which === "friday" ? k.friday : k.day); } catch (e) {}
+    if (which === "friday") grantFriday(true);
+  }
+
   function gatePassed() {
     var g = SITE.gate;
     if (!g || !g.enabled || !g.password) return true;
     if (gateOpen) return true;
-    var want = normalise(g.password);
-    /* A link ending ?k=baci lets guests in without typing anything. */
+    /* A link ending ?k=<password> lets guests in without typing anything,
+       and carries whatever that password carries. The query string is then
+       wiped from the address bar, which is why everything it said has
+       already been read and stored by this point. */
+    var hit = matchPassword(param("k"));
+    if (hit) {
+      openGate(hit);
+      try { history.replaceState(null, "", location.pathname + location.hash); } catch (e) {}
+      return true;
+    }
     try {
-      var k = new URLSearchParams(location.search).get("k");
-      if (k && normalise(k) === want) {
-        gateOpen = true;
-        localStorage.setItem(GATE_KEY, want);
-        history.replaceState(null, "", location.pathname + location.hash);
-        return true;
-      }
-    } catch (e) {}
-    try { return localStorage.getItem(GATE_KEY) === want; } catch (e) { return false; }
+      var stored = localStorage.getItem(GATE_KEY), k = gateKeys();
+      return !!stored && (stored === k.day || (!!k.friday && stored === k.friday));
+    } catch (e) { return false; }
   }
 
   function buildGate(onPass) {
@@ -632,7 +731,8 @@
 
     form.addEventListener("submit", function (e) {
       e.preventDefault();
-      if (normalise(input.value) !== normalise(g.password)) {
+      var hit = matchPassword(input.value);
+      if (!hit) {
         error.textContent = t(g.wrong);
         form.classList.remove("shake");
         void form.offsetWidth;
@@ -640,8 +740,7 @@
         input.select();
         return;
       }
-      gateOpen = true;
-      try { localStorage.setItem(GATE_KEY, normalise(g.password)); } catch (err) {}
+      openGate(hit);
       onPass();
     });
 
@@ -698,7 +797,44 @@
     root.appendChild(buildRsvp());
     root.appendChild(buildFooter());
 
+    ampifyAll(root);
     wireObservers();
+  }
+
+  /* --------------------------------------------------- ampersands, all of them
+     The wordmarks build their own .amp span, but every other "&" on the page
+     arrives as a plain character inside a string from content.js: the Q & A
+     heading, WHEN & WHERE in the nav, "Summer Chic & Colourful". Each one
+     rendered in whatever face its element happened to use, which is how four
+     different ampersands ended up on one page. This walks the finished tree
+     once and wraps every free-standing "&" in the same span, so there is one
+     rule deciding what an ampersand looks like here.
+
+     Text nodes only. Form controls are skipped because a span cannot live
+     inside them, and hrefs are attributes, so a "&" in a query string is
+     never touched. */
+  var AMP_SKIP = { SCRIPT: 1, STYLE: 1, TEXTAREA: 1, INPUT: 1, OPTION: 1, SELECT: 1 };
+  function ampifyAll(root) {
+    if (!root || !document.createTreeWalker) return;
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (n) {
+        if (n.nodeValue.indexOf("&") < 0) return NodeFilter.FILTER_REJECT;
+        var p = n.parentNode;
+        if (!p || AMP_SKIP[p.nodeName]) return NodeFilter.FILTER_REJECT;
+        if (p.classList && p.classList.contains("amp")) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    var hits = [], n;
+    while ((n = walker.nextNode())) hits.push(n);
+    hits.forEach(function (node) {
+      var frag = document.createDocumentFragment();
+      node.nodeValue.split("&").forEach(function (part, i) {
+        if (i) frag.appendChild(el("span", { class: "amp", text: "&" }));
+        if (part) frag.appendChild(document.createTextNode(part));
+      });
+      node.parentNode.replaceChild(frag, node);
+    });
   }
 
   /* -------------------------------------------- scroll reveal + active nav */
@@ -709,6 +845,26 @@
     window.__osScroll = onScroll;
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
+
+    /* The nav scrolls sideways on narrow screens and in Italian, where the
+       labels are longer. It used to end in a hard cut against the RSVP
+       button, which reads as the end of the list rather than as more to
+       come. A mask fades the last stretch out instead, and the classes
+       below switch it off at each end so nothing is dimmed for no reason. */
+    var scroller = document.querySelector(".nav");
+    if (scroller) {
+      var edges = function () {
+        var over = scroller.scrollWidth - scroller.clientWidth;
+        var x    = scroller.scrollLeft;
+        scroller.classList.toggle("fade-end",   over > 2 && x < over - 2);
+        scroller.classList.toggle("fade-start", over > 2 && x > 2);
+      };
+      scroller.addEventListener("scroll", edges, { passive: true });
+      window.addEventListener("resize", edges, { passive: true });
+      edges();
+      /* Fonts land after first paint and change every label's width. */
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(edges);
+    }
 
     var reveals = document.querySelectorAll(".reveal");
     if (!("IntersectionObserver" in window)) {

@@ -46,10 +46,12 @@ No git needed.
 
 `heroMode` in `content.js` controls how the painting is shown.
 
-- `"plate"` (current): the whole painting, uncropped, under the names. Right
-  choice for a detailed portrait piece.
+- `"overlay"` (current): the names sit in the sky at the top of the painting,
+  over a light wash. Villa Zarri, the portico and the dancers stay untouched,
+  and San Luca still reads through behind the lettering.
+- `"plate"`: the whole painting below the names. Nothing overlaps at all.
 - `"cover"`: fills the screen behind the names. Crops the top and bottom hard
-  on a wide screen, which would lose San Luca and the dancers.
+  on a wide screen, which loses San Luca and the dancers.
 
 ## Where the motifs land
 

@@ -27,9 +27,22 @@
 
   --hill:#4f6b23;         /* the hill, darkened for contrast */
   --hill-bright:#65892a;
-  --portico:#c2622a;      /* the arches */
-  --portico-deep:#a9501f; /* buttons and links, for 5:1 on paper */
-  --ochre:#d3b02d;        /* Villa Zarri */
+
+  /* Accents from the Bologna colour study. Eight of its ten swatches sit in
+     one warm band, so only the ones doing structural work are used here.
+     Its ochre and the ochre sampled off the painting agree to within a hair. */
+  --portico:#c05b3c;      /* between the study's coral and its brick red */
+  --portico-deep:#a04a2c; /* buttons and links, for 5:1 on paper */
+  --ochre:#d2aa2e;        /* the study's ochre */
+  --slate:#3c4b4e;        /* shutters and shadow, the study's only true dark */
+
+  /* Verdigris: oxidised copper on the domes, and the only cool note in the
+     study. Reserved for things you can touch, so the warm stays architecture
+     and the cool stays interaction. */
+  --verdigris:#136d5f;      /* darkened from the study's #20A98D: at full
+                               strength it fails contrast wherever it carries
+                               text, which here is most of where it appears */
+  --verdigris-bright:#1a8f78; /* the study's own value, decoration only */
 
   --display:"Fraunces",Georgia,serif;
   --body:"Newsreader",Georgia,serif;
@@ -59,7 +72,7 @@ body{
 }
 img{max-width:100%;display:block}
 a{color:inherit}
-:focus-visible{outline:2px solid var(--portico-deep);outline-offset:3px;border-radius:2px}
+:focus-visible{outline:2px solid var(--verdigris);outline-offset:3px;border-radius:2px}
 ::selection{background:var(--ochre);color:var(--ink)}
 
 .wrap{width:100%;max-width:1080px;margin:0 auto;padding:0 var(--gut)}
@@ -92,7 +105,7 @@ h1,h2,h3,.brand,.tl-name,.nm,.gate-kicker,.gate-title,.mono,.hero-names{
   color:var(--ink-52);white-space:nowrap;padding:6px 0;
   border-bottom:1.5px solid transparent;transition:color .2s,border-color .2s;
 }
-.nav a:hover,.nav a.active{color:var(--ink);border-bottom-color:var(--portico)}
+.nav a:hover,.nav a.active{color:var(--ink);border-bottom-color:var(--verdigris)}
 
 .nav-rsvp{
   flex:0 0 auto;font-family:var(--util);font-size:11px;font-weight:600;
@@ -110,7 +123,7 @@ h1,h2,h3,.brand,.tl-name,.nm,.gate-kicker,.gate-title,.mono,.hero-names{
   background:none;border:0;color:var(--ink-52);cursor:pointer;padding:6px 10px;
   transition:background .2s,color .2s;
 }
-.lang button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.lang button[aria-pressed="true"]{background:var(--verdigris);color:var(--paper)}
 .lang svg{width:17px;height:17px;flex:0 0 auto;display:block}
 .lang-code{line-height:1}
 
@@ -126,7 +139,7 @@ h1,h2,h3,.brand,.tl-name,.nm,.gate-kicker,.gate-title,.mono,.hero-names{
 .hero.no-photo .hero-veil{background:none}
 .hero-kicker{
   font-family:var(--util);font-size:11px;font-weight:500;
-  letter-spacing:.28em;text-transform:uppercase;color:var(--hill);margin-bottom:26px;
+  letter-spacing:.28em;text-transform:uppercase;color:var(--verdigris);margin-bottom:26px;
 }
 .hero-names{
   font-weight:400;line-height:.98;
@@ -215,7 +228,7 @@ p+p{margin-top:.85em}
 .tl-item{position:relative;display:grid;grid-template-columns:66px 1fr;gap:40px;padding:0 0 36px}
 .tl-item:last-child{padding-bottom:0}
 .tl-time{font-family:var(--util);font-size:14px;font-weight:600;letter-spacing:.02em;
-  text-align:right;padding-top:5px;color:var(--hill)}
+  text-align:right;padding-top:5px;color:var(--verdigris)}
 .tl-body{position:relative}
 .tl-body::before{content:"";position:absolute;left:-24px;top:11px;width:9px;height:9px;
   border-radius:50%;background:var(--paper);border:1.5px solid var(--portico)}
@@ -231,7 +244,7 @@ section.alt .tl-body::before{background:var(--wash)}
   padding:12px 16px;background:var(--card);border:1px solid var(--line);border-radius:3px;
   font-size:16px;transition:border-color .2s,background .2s;
 }
-.phones a:hover{border-color:var(--portico);background:var(--paper)}
+.phones a:hover{border-color:var(--verdigris);background:var(--paper)}
 .phones .num{font-family:var(--util);font-size:15px;color:var(--portico-deep);white-space:nowrap}
 .chips-label{margin-top:22px;font-family:var(--util);font-size:11px;font-weight:600;
   letter-spacing:.16em;text-transform:uppercase;color:var(--ink-52)}
@@ -246,7 +259,7 @@ section.alt .tl-body::before{background:var(--wash)}
   text-decoration:none;padding:15px 18px;background:var(--card);
   border:1px solid var(--line);border-radius:3px;transition:border-color .2s,background .2s;
 }
-.hotels a:hover{border-color:var(--portico);background:var(--paper)}
+.hotels a:hover{border-color:var(--verdigris);background:var(--paper)}
 .hotels .km{font-family:var(--util);font-size:13px;color:var(--ink-52);white-space:nowrap}
 
 /* ---------------------------------------------------------------------- faq */
@@ -294,7 +307,7 @@ section.alt .tl-body::before{background:var(--wash)}
   text-transform:uppercase;color:var(--ink-52)}
 
 /* --------------------------------------------------------------------- rsvp */
-.rsvp{background:var(--ink);color:var(--paper)}
+.rsvp{background:var(--slate);color:var(--paper)}
 .rsvp::before{display:none}
 .rsvp h2{color:var(--paper)}
 .rsvp .sec-sub{color:rgba(247,244,236,.62)}
@@ -317,7 +330,7 @@ form.rsvp-form{max-width:520px;margin:36px auto 0;display:grid;gap:15px;text-ali
 .field textarea{resize:vertical;min-height:92px}
 .field input:focus,.field select:focus,.field textarea:focus{
   border-color:var(--ochre);background:rgba(255,255,255,.11)}
-.field select option{background:#152417;color:var(--paper)}
+.field select option{background:#2b3739;color:var(--paper)}
 .form-status{min-height:22px;font-size:15px;text-align:center;color:var(--ochre)}
 
 /* ------------------------------------------------------------------- footer */

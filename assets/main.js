@@ -61,6 +61,18 @@
     return img;
   }
 
+  /* One wordmark, three places. The nav, the hero and the footer all used
+     Fraunces but landed on different ampersands: roman in two of them,
+     italic in the hero. They are built from the same helper now, so the
+     glyph and its axes are set once in .amp and cannot drift apart. */
+  function coupleMark(a, b) {
+    return [
+      document.createTextNode(a),
+      el("span", { class: "amp", text: "&" }),
+      document.createTextNode(b)
+    ];
+  }
+
   /* Motifs cycle through SITE.motifs and alternate sides down the page. */
   var motifTurn = 0;
   function nextMotif() {
@@ -178,7 +190,7 @@
        at 30px the crop is a silhouette, so it needs the words beside it. */
     var brand = el("a", { class: "brand", href: "#top" }, [
       art(SITE.brandMark, "brand-mark"),
-      el("span", { text: SITE.couple })
+      el("span", { class: "wordmark" }, coupleMark(SITE.names.first, SITE.names.second))
     ]);
 
     return el("header", { class: "topbar" }, [
@@ -204,11 +216,8 @@
       el("div", {}, [
         el("p", { class: "hero-kicker",
                   text: lang === "it" ? "Ci sposiamo" : "We're getting married" }),
-        el("h1", { class: "hero-names" }, [
-          document.createTextNode(SITE.names.first),
-          el("span", { class: "amp", text: "&" }),
-          document.createTextNode(SITE.names.second)
-        ]),
+        el("h1", { class: "hero-names" },
+           coupleMark(SITE.names.first, SITE.names.second)),
         el("p", { class: "hero-meta" }, [
           el("span", { text: lang === "it" ? SITE.date.displayIt : SITE.date.display }),
           el("span", { text: t(SITE.place) })
@@ -571,7 +580,8 @@
     return el("footer", {}, [
       art(SITE.dancerStrip, "dancer-strip"),
       el("div", { class: "wrap" }, [
-        el("p", { class: "mono", text: SITE.names.first.charAt(0) + " & " + SITE.names.second.charAt(0) }),
+        el("p", { class: "mono" },
+           coupleMark(SITE.names.first.charAt(0), SITE.names.second.charAt(0))),
         el("p", { text: (lang === "it" ? SITE.date.displayIt : SITE.date.display) + " · " + t(SITE.place) })
       ])
     ]);

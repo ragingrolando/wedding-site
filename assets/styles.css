@@ -90,6 +90,20 @@ h1,h2,h3,.brand,.tl-name,.nm,.gate-kicker,.gate-title,.mono,.hero-names{
   letter-spacing:-.005em;
 }
 
+/* The ampersand is the wordmark. It appears in the nav, the hero and the
+   footer, and used to be a different glyph in each: roman in two, italic in
+   the third, on two different SOFT settings. Set once here so the three
+   lockups are the same mark at three sizes. opsz is left to track the size,
+   which is what the axis is for: a 22px nav mark cut at display weight goes
+   thin and brittle. */
+.amp{
+  font-style:italic;
+  font-variation-settings:"SOFT" 40,"WONK" 1;
+  color:var(--portico);
+}
+.brand .amp{margin:0 .2em}
+footer .mono .amp{margin:0 .18em}
+
 /* ------------------------------------------------------------------ header */
 .topbar{
   position:sticky;top:0;z-index:50;
@@ -153,9 +167,12 @@ h1,h2,h3,.brand,.tl-name,.nm,.gate-kicker,.gate-title,.mono,.hero-names{
 .hero-names{
   font-weight:400;line-height:.98;
   font-size:clamp(56px,13vw,132px);
-  font-variation-settings:"SOFT" 30,"WONK" 1,"opsz" 144;
+  font-variation-settings:"SOFT" 40,"WONK" 1,"opsz" 144;
 }
-.hero-names .amp{display:block;font-size:.34em;color:var(--portico);margin:.1em 0;font-style:italic}
+/* A floor on the hero mark. At 390px the names drop to 34px, and .32em of
+   that is an 11px ampersand: the one in the nav bar next to it is 17px, so
+   the two lockups stopped matching exactly where they sit closest. */
+.hero-names .amp{display:block;font-size:max(17px,.34em);margin:.1em 0}
 .hero-meta{
   margin-top:32px;font-family:var(--util);font-size:13px;font-weight:500;
   letter-spacing:.18em;text-transform:uppercase;color:var(--ink-72);
@@ -463,7 +480,7 @@ footer p{max-width:none;margin-top:14px;font-family:var(--util);font-size:11px;
   text-shadow:0 0 10px rgba(247,244,236,1),0 0 22px rgba(247,244,236,.95),
               0 0 46px rgba(247,244,236,.85);
 }
-.hero-over .hero-names .amp{font-size:.32em;margin:.04em 0}
+.hero-over .hero-names .amp{font-size:max(17px,.32em);margin:.04em 0}
 .hero-over .hero-kicker,
 .hero-over .hero-meta{text-shadow:0 0 8px rgba(247,244,236,1),0 0 18px rgba(247,244,236,.95)}
 .hero-over .hero-kicker{margin-bottom:12px}

@@ -1,7 +1,8 @@
 # Artwork
 
 Drop files in this folder, then check the names match the `heroImage`,
-`motifs` and `dancerStrip` entries in `assets/content.js`.
+`brandMark`, `motifs`, `dancerStrip` and `bologna.image` entries in
+`assets/content.js`.
 
 Anything missing is skipped silently. The page renders fine with none of it.
 
@@ -10,6 +11,7 @@ Anything missing is skipped silently. The page renders fine with none of it.
 | File | What it is | Size to aim for |
 |------|------------|-----------------|
 | `wedding-hero.jpeg` | The watercolour of Villa Zarri with San Luca above | ~1600px on the long edge, under 600KB |
+| `via-saragozza.webp` | The painting of Via Saragozza, shown beside the Bologna intro | ~1200px on the long edge, under 300KB |
 | `dancing-row.png` | The row of dancers from the bottom of the painting | ~1600px wide |
 | `dancing-bride-groom.png` | motif | ~300px tall |
 | `dancing-jump.png` | motif | ~300px tall |
@@ -18,6 +20,19 @@ Anything missing is skipped silently. The page renders fine with none of it.
 | `dancing-upsidedown.png` | motif | ~300px tall |
 
 Names are only a convention. Change them in `content.js` if you prefer others.
+
+## Adding the Via Saragozza painting
+
+The file has a long generated name. Rename it as you copy it in, so
+`content.js` does not have to carry a hash:
+
+```
+cp ~/Downloads/defa1040-*-via-saragozza-painting.webp ~/wedding-site/images/via-saragozza.webp
+cd ~/wedding-site && git add images/via-saragozza.webp && git commit -m "Add the Via Saragozza painting" && git push
+```
+
+Until it is there the Bologna intro simply runs full width, no gap and no
+broken icon.
 
 ## Keep the files small
 

@@ -61,6 +61,18 @@
     return img;
   }
 
+  /* One wordmark, three places. The nav, the hero and the footer all used
+     Fraunces but landed on different ampersands: roman in two of them,
+     italic in the hero. They are built from the same helper now, so the
+     glyph and its axes are set once in .amp and cannot drift apart. */
+  function coupleMark(a, b) {
+    return [
+      document.createTextNode(a),
+      el("span", { class: "amp", text: "&" }),
+      document.createTextNode(b)
+    ];
+  }
+
   /* Motifs cycle through SITE.motifs and alternate sides down the page. */
   var motifTurn = 0;
   function nextMotif() {
@@ -174,10 +186,16 @@
 
     var toggle = langToggle();
 
+    /* The bride and groom stand next to the names, not in place of them:
+       at 30px the crop is a silhouette, so it needs the words beside it. */
+    var brand = el("a", { class: "brand", href: "#top" }, [
+      art(SITE.brandMark, "brand-mark"),
+      el("span", { class: "wordmark" }, coupleMark(SITE.names.first, SITE.names.second))
+    ]);
+
     return el("header", { class: "topbar" }, [
       el("div", { class: "wrap topbar-inner" }, [
-        el("a", { class: "brand", href: "#top", text: SITE.couple }),
-        nav, rsvpLink, toggle
+        brand, nav, rsvpLink, toggle
       ])
     ]);
   }
@@ -198,11 +216,8 @@
       el("div", {}, [
         el("p", { class: "hero-kicker",
                   text: lang === "it" ? "Ci sposiamo" : "We're getting married" }),
-        el("h1", { class: "hero-names" }, [
-          document.createTextNode(SITE.names.first),
-          el("span", { class: "amp", text: "&" }),
-          document.createTextNode(SITE.names.second)
-        ]),
+        el("h1", { class: "hero-names" },
+           coupleMark(SITE.names.first, SITE.names.second)),
         el("p", { class: "hero-meta" }, [
           el("span", { text: lang === "it" ? SITE.date.displayIt : SITE.date.display }),
           el("span", { text: t(SITE.place) })
@@ -257,7 +272,10 @@
           ev.venue ? el("strong", { text: ev.venue }) : null,
           document.createTextNode(ev.address)
         ]),
-        el("span", { class: "tag", text: t(SITE.ui.dressLabel) + ": " + t(ev.dress) }),
+        el("span", { class: "tag" }, [
+          el("span", { class: "tag-label", text: t(SITE.ui.dressLabel) + ": " }),
+          document.createTextNode(t(ev.dress))
+        ]),
         el("p", { class: "event-note", text: t(ev.note) }),
         acts
       ]);
@@ -281,7 +299,10 @@
     });
     return section("order", [
       sectionHead(SITE.order.title, SITE.order.subtitle),
-      el("div", { class: "timeline" }, items)
+      el("div", { class: "timeline" }, items),
+      /* The row closes the running order the way it closes the page: the
+         03:00 carriages line lands on a floor of dancers. */
+      art(SITE.dancerStrip, "dancer-strip dancer-strip-inline")
     ]);
   }
 
@@ -310,7 +331,9 @@
       if (b.apps) {
         kids.push(el("p", { class: "chips-label", text: t(SITE.ui.appsLabel) }));
         kids.push(el("ul", { class: "chips" }, b.apps.map(function (a) {
-          return el("li", { text: a });
+          return el("li", {}, [
+            el("a", { href: a.url, target: "_blank", rel: "noopener", text: a.name })
+          ]);
         })));
       }
       return el("div", {}, kids);
@@ -324,26 +347,43 @@
   /* ======================================================== places to stay */
   function buildStay() {
     var list = el("ul", { class: "hotels" }, SITE.stay.hotels.map(function (h) {
+      /* Prefer the Joy page: that is where the group rate and the
+         ORLANDO-SOFIA code live. Maps is only the fallback. */
       return el("li", {}, [
-        el("a", { href: mapsUrl(h.name + ", Bologna, Italy"), target: "_blank", rel: "noopener" }, [
+        el("a", { href: h.url || mapsUrl(h.name + ", Bologna, Italy"),
+                  target: "_blank", rel: "noopener" }, [
           el("span", { text: h.name }),
           el("span", { class: "km", text: h.km + " km" })
         ])
       ]);
     }));
-    return section("stay", [
+    var kids = [
       sectionHead(SITE.stay.title),
       el("div", { class: "narrow", style: "margin:0 auto 32px" }, paras(SITE.stay.intro)),
       list
-    ]);
+    ];
+    if (SITE.stay.more && SITE.stay.more.length) {
+      kids.push(el("div", { class: "stay-more" }, SITE.stay.more.map(function (m) {
+        return el("a", { class: "btn ghost small", href: m.url,
+                         target: "_blank", rel: "noopener", text: t(m.label) });
+      })));
+    }
+    return section("stay", kids);
   }
 
   /* =================================================================== faq */
   function buildFaq() {
     var items = SITE.faq.items.map(function (f) {
+      var body = paras(f.a);
+      if (f.link) {
+        body.push(el("p", {}, [
+          el("a", { class: "inline-link", href: SITE.rsvp.joyUrl,
+                    target: "_blank", rel: "noopener", text: t(f.link) })
+        ]));
+      }
       return el("details", {}, [
         el("summary", { text: t(f.q) }),
-        el("div", { class: "answer" }, paras(f.a))
+        el("div", { class: "answer" }, body)
       ]);
     });
     return section("faq", [
@@ -373,27 +413,79 @@
   /* =============================================================== bologna */
   function buildBologna() {
     var places = el("ul", { class: "places" }, SITE.bologna.places.map(function (p) {
-      return el("li", { class: "place" }, [
+      var body = [
+        el("p", { class: "nm", text: p.name }),
+        el("p", { class: "tx", text: t(p.text) })
+      ];
+      /* The proposal line is the only sentence on this page that is about
+         them rather than about Bologna, so it is pulled out of the
+         paragraph and given its own rule and its own ring. */
+      if (p.flourish) {
+        var line = t(p.flourish);
+        var cut  = line.indexOf("\uD83D\uDC8D");          /* 💍 */
+        var node = el("p", { class: "flourish" });
+        if (cut > -1) {
+          node.appendChild(document.createTextNode(line.slice(0, cut)));
+          node.appendChild(el("span", { class: "ring", "aria-hidden": "true",
+                                        text: line.slice(cut, cut + 2) }));
+          node.appendChild(document.createTextNode(line.slice(cut + 2)));
+        } else {
+          node.textContent = line;
+        }
+        body.push(node);
+      }
+      return el("li", { class: "place" + (p.feature ? " place-feature" : "") }, [
         el("span", { class: "ic", "aria-hidden": "true", text: p.icon }),
-        el("div", {}, [
-          el("p", { class: "nm", text: p.name }),
-          el("p", { class: "tx", text: t(p.text) })
+        el("div", {}, body)
+      ]);
+    }));
+
+    /* Joy rendered these as buttons with the URL attached in script, so all
+       but three links were lost when the page was saved. A Maps search for
+       the name stands in: it is what a guest wants from a restaurant name
+       anyway, and it cannot rot. */
+    var food = el("ul", { class: "food" }, SITE.bologna.food.map(function (f) {
+      return el("li", {}, [
+        el("a", { href: f.url || mapsUrl(f.name + ", Bologna, Italy"),
+                  target: "_blank", rel: "noopener",
+                  class: f.url ? "has-own-link" : null }, [
+          el("span", { class: "nm", text: f.name }),
+          el("span", { class: "nt", text: f.note })
         ])
       ]);
     }));
-    var food = el("ul", { class: "food" }, SITE.bologna.food.map(function (f) {
-      return el("li", {}, [
-        el("span", { class: "nm", text: f.name }),
-        el("span", { class: "nt", text: f.note })
-      ]);
-    }));
-    return section("bologna", [
-      sectionHead(SITE.bologna.title, SITE.bologna.kicker),
-      el("div", { class: "narrow", style: "margin:0 auto 44px" }, paras(SITE.bologna.intro)),
-      places,
-      el("p", { class: "subhead", text: t(SITE.bologna.foodTitle) }),
-      food
+
+    var head = sectionHead(SITE.bologna.title, SITE.bologna.kicker);
+    var intro = el("div", { class: "narrow", style: "margin:0 auto" },
+                   paras(SITE.bologna.intro));
+
+    /* Painting beside the opening, not above it: the section is long and a
+       full-width plate here would push the list another screen down. */
+    var plate = art(SITE.bologna.image, "bol-img", t(SITE.bologna.imageCaption));
+    if (!plate) return section("bologna", [head, soloIntro(intro), places, foodHead(), food]);
+
+    var fig = el("figure", { class: "bol-fig" }, [
+      plate,
+      t(SITE.bologna.imageCaption)
+        ? el("figcaption", { text: t(SITE.bologna.imageCaption) }) : null
     ]);
+    var opener = el("div", { class: "bol-open" }, [fig, intro]);
+    /* art() takes the broken <img> out, but the empty <figure> would keep
+       holding its grid column open. Drop the whole caption block and let
+       the text run full width. */
+    plate.addEventListener("error", function () {
+      if (fig.parentNode) fig.parentNode.removeChild(fig);
+      opener.classList.add("bol-open-solo");
+    });
+
+    return section("bologna", [head, opener, places, foodHead(), food]);
+
+    function foodHead() {
+      return el("p", { class: "subhead", text: t(SITE.bologna.foodTitle) });
+    }
+    function soloIntro(node) {
+      return el("div", { class: "bol-open bol-open-solo" }, [node]);
+    }
   }
 
   /* ================================================================== rsvp */
@@ -488,7 +580,8 @@
     return el("footer", {}, [
       art(SITE.dancerStrip, "dancer-strip"),
       el("div", { class: "wrap" }, [
-        el("p", { class: "mono", text: SITE.names.first.charAt(0) + " & " + SITE.names.second.charAt(0) }),
+        el("p", { class: "mono" },
+           coupleMark(SITE.names.first.charAt(0), SITE.names.second.charAt(0))),
         el("p", { text: (lang === "it" ? SITE.date.displayIt : SITE.date.display) + " · " + t(SITE.place) })
       ])
     ]);
@@ -560,6 +653,7 @@
         el("p", { class: "gate-date",
                   text: (lang === "it" ? SITE.date.displayIt : SITE.date.display)
                         + " · " + t(SITE.place) }),
+        el("div", { class: "gate-arches", "aria-hidden": "true" }),
         el("h1", { class: "gate-title", text: t(g.title) }),
         el("p", { class: "gate-blurb", text: t(g.blurb) }),
         form,
@@ -590,9 +684,16 @@
 
     root.appendChild(buildHeader());
     root.appendChild(buildHero());
+    var band = 0;
     SITE.nav.forEach(function (n) {
       var b = builders[n.id];
-      if (b) root.appendChild(b());
+      if (!b) return;
+      var sec = b();
+      /* Alternating grounds. The arch run is drawn at each change of ground,
+         so the page reads as passing in and out of the colonnade. */
+      if (band % 2) sec.classList.add("alt");
+      band++;
+      root.appendChild(sec);
     });
     root.appendChild(buildRsvp());
     root.appendChild(buildFooter());

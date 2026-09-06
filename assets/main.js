@@ -560,6 +560,7 @@
         el("p", { class: "gate-date",
                   text: (lang === "it" ? SITE.date.displayIt : SITE.date.display)
                         + " · " + t(SITE.place) }),
+        el("div", { class: "gate-arches", "aria-hidden": "true" }),
         el("h1", { class: "gate-title", text: t(g.title) }),
         el("p", { class: "gate-blurb", text: t(g.blurb) }),
         form,
@@ -590,9 +591,16 @@
 
     root.appendChild(buildHeader());
     root.appendChild(buildHero());
+    var band = 0;
     SITE.nav.forEach(function (n) {
       var b = builders[n.id];
-      if (b) root.appendChild(b());
+      if (!b) return;
+      var sec = b();
+      /* Alternating grounds. The arch run is drawn at each change of ground,
+         so the page reads as passing in and out of the colonnade. */
+      if (band % 2) sec.classList.add("alt");
+      band++;
+      root.appendChild(sec);
     });
     root.appendChild(buildRsvp());
     root.appendChild(buildFooter());

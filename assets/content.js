@@ -67,7 +67,7 @@ const SITE = {
      the browser, edge to edge, so give it a wide crop. Leave the name here
      and drop the file into images/; until it is there the footer simply
      starts at the initials. */
-  bannerImage: "wedding-san-luca-banner.jpeg",
+  bannerImage: "wedding-san-luca-banner-wide.jpg",
   bannerAlt:   { en: "San Luca above Bologna", it: "San Luca sopra Bologna" },
 
   /* ------------------------------------------------------------------ GATE

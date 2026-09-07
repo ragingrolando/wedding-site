@@ -1,0 +1,8 @@
+# macOS writes one of these into every folder you open in Finder.
+.DS_Store
+
+# Editor and OS noise
+Thumbs.db
+*.swp
+.idea/
+.vscode/

@@ -13,7 +13,7 @@ Anything missing is skipped silently. The page renders fine with none of it.
 | `hero-extended.jpg` | The painting with the paper labels, shown whole at the top of the page | Square, ~2048px, under 1.5MB |
 | `via-saragozza.webp` | The painting of Via Saragozza, shown beside the Bologna intro | ~1200px on the long edge, under 300KB |
 | `dancing-row.png` | The row of dancers from the bottom of the painting | ~1600px wide |
-| `wedding-san-luca-banner.jpeg` | The band across the very bottom of the page, edge to edge | ~2400px wide, wide and shallow, under 500KB |
+| `wedding-san-luca-banner-wide.jpg` | The band across the very bottom of the page, edge to edge | ~2400px wide, wide and shallow, under 500KB |
 | `dancing-bride-groom.png` | motif | ~300px tall |
 | `dancing-jump.png` | motif | ~300px tall |
 | `dancing-kick.png` | motif | ~300px tall |

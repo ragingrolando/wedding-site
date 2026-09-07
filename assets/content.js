@@ -204,7 +204,7 @@ const SITE = {
     lead:  { en: "Summer Chic & Colourful", it: "Chic Estivo & Colorato" },
     body: {
       en: [
-        "The guide dress code is Summer Chic & Colourful. Think linen suits and summer dresses on a hot italian summer day. We want everyone to be comfortable, colourful, and happy. We honestly don't mind if you wear a tie or not, or if you don't want to wear heels. We only ask that you don't wear T-shirt, trainers or blue jeans",
+        "The guide dress code is Summer Chic & Colourful. Think linen suits and summer dresses on a hot Italian summer day. We want everyone to be comfortable, colourful, and happy. We honestly don't mind if you wear a tie or not, or if you don't want to wear heels. We only ask that you don't wear T-shirts, trainers or blue jeans",
         "A few things to keep in mind: It is likely to be very hot and the floor is mainly grass, so consider this when choosing your fabric and shoes.",
         "If you're not sure, drop us a text."
       ],

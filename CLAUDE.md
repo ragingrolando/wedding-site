@@ -201,7 +201,7 @@ More in `images/README.md`.
 
 Orlando asked for the exact original wording: *"I want you to copy it
 exactly."* It was reverse-engineered out of `joy-example/joy-example.html`.
-The copy is Joy's, with one exception: **six typos Joy carried have been
+The copy is Joy's, with one exception: **eight typos Joy carried have been
 corrected**, on Orlando's word. Line numbers are `assets/content.js`:
 
 | | Was | Now | Line |
@@ -212,6 +212,8 @@ corrected**, on Orlando's word. Line numbers are `assets/content.js`:
 | 4 | "benvenuti dalle **15;30**" | 15:30 | 182 |
 | 5 | "dovrebbe **rinferscarsi**" | rinfrescarsi | 299 |
 | 6 | "il regalo **di per sè**" | di per sé | 340 |
+| 7 | "a hot **italian** summer day" | Italian | 207 |
+| 8 | "don't wear **T-shirt**, trainers" | T-shirts | 207 |
 
 Everything else is verbatim. The dress code appears three times (lines 162,
 204, 207) and all three now read "Chic".

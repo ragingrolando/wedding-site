@@ -10,7 +10,7 @@ Anything missing is skipped silently. The page renders fine with none of it.
 
 | File | What it is | Size to aim for |
 |------|------------|-----------------|
-| `wedding-hero.jpeg` | The watercolour of Villa Zarri with San Luca above | ~1600px on the long edge, under 600KB |
+| `hero-extended.jpg` | The painting with the paper labels, shown whole at the top of the page | Square, ~2048px, under 1.5MB |
 | `via-saragozza.webp` | The painting of Via Saragozza, shown beside the Bologna intro | ~1200px on the long edge, under 300KB |
 | `dancing-row.png` | The row of dancers from the bottom of the painting | ~1600px wide |
 | `wedding-san-luca-banner.jpeg` | The band across the very bottom of the page, edge to edge | ~2400px wide, wide and shallow, under 500KB |
@@ -61,10 +61,12 @@ The originals off a camera or scanner run to several MB, which makes the page
 crawl on a phone. macOS has `sips` built in, so no extra tools:
 
 ```
-sips -Z 1600 -s formatOptions 70 wedding-hero.jpeg --out wedding-hero.jpeg
+sips -Z 2048 -s formatOptions 70 hero-extended.jpg --out hero-extended.jpg
 ```
 
-`-Z 1600` caps the longest edge at 1600px. Do this on a copy, not your master.
+`-Z 2048` caps the longest edge at 2048px. Do this on a copy, not your master.
+The hero and the bottom banner are the two that want that much: everything
+else is shown small and 1600px is plenty.
 
 ## You do not need to cut out the background
 

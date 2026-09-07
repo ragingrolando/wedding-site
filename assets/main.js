@@ -277,8 +277,7 @@
     var plate = mode === "plate";
     var over  = mode === "overlay";
     var hero = el("div", {
-      class: "hero" + (cover ? "" : " no-photo") + (plate ? " has-plate" : "") + (over ? " is-overlay" : ""),
-      id: "top"
+      class: "hero" + (cover ? "" : " no-photo") + (plate ? " has-plate" : "") + (over ? " is-overlay" : "")
     }, [
       cover ? el("div", { class: "hero-photo",
                           style: "background-image:url('images/" + SITE.heroImage + "')" }) : null,
@@ -301,7 +300,7 @@
     /* overlay: the whole painting, with the names sitting on it */
     if (over) {
       var oimg = art(SITE.heroImage, "hero-over-img", SITE.couple + ", " + t(SITE.place));
-      return el("div", { class: "hero-wrap" }, [
+      return el("div", { class: "hero-wrap", id: "top" }, [
         el("div", { class: "hero-over" }, [oimg, hero]),
         /* The RSVP button moves below the painting: over it, it lands on
            the villa's front door. */
@@ -311,16 +310,26 @@
       ]);
     }
 
-    if (!plate) return hero;
+    if (!plate) { hero.id = "top"; return hero; }
 
-    /* The painting is portrait and full of detail, so it is shown whole
-       beneath the names rather than cropped behind them. */
+    /* The painting is full of detail and labels itself, so it is shown whole
+       rather than cropped behind the names. */
     var img = art(SITE.heroImage, "hero-plate-img", SITE.couple + ", " + t(SITE.place));
     var figure = el("figure", { class: "hero-plate" }, [
       img,
       t(SITE.heroCaption) ? el("figcaption", { text: t(SITE.heroCaption) }) : null
     ]);
-    return el("div", { class: "hero-wrap" }, [hero, figure]);
+
+    /* heroTextBelow: the painting holds the first screen on its own and the
+       names arrive as you scroll to them, on the same reveal every other
+       section uses. No pinning and no scroll hijacking: the page scrolls at
+       the speed the guest scrolls it, and a guest who has turned animation
+       off just finds the names already there. */
+    if (SITE.heroTextBelow) {
+      hero.classList.add("hero-below", "reveal");
+      return el("div", { class: "hero-wrap hero-wrap-below", id: "top" }, [figure, hero]);
+    }
+    return el("div", { class: "hero-wrap", id: "top" }, [hero, figure]);
   }
 
   /* ========================================================= when and where */
@@ -846,7 +855,22 @@
         if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
       });
     }, { rootMargin: "0px 0px -8% 0px", threshold: 0.05 });
-    reveals.forEach(function (n) { io.observe(n); });
+
+    /* Wait for the hero image before observing. Undecoded, it lays out at
+       zero height, so everything below it sits near the top of the screen,
+       the observer calls it visible, marks it revealed and unobserves it.
+       Then the image loads, pushes it all down, and the reveal has already
+       been spent. Most visible on the hero text, which is meant to arrive on
+       the first scroll and was instead arriving before the first paint. */
+    var startReveals = function () { reveals.forEach(function (n) { io.observe(n); }); };
+    var heroImg = document.querySelector(".hero-plate-img,.hero-over-img");
+    if (heroImg && !heroImg.complete) {
+      var go = function () { requestAnimationFrame(startReveals); };
+      heroImg.addEventListener("load",  go, { once: true });
+      heroImg.addEventListener("error", go, { once: true });
+    } else {
+      startReveals();
+    }
 
     var links = Array.prototype.slice.call(document.querySelectorAll(".nav a"));
     var spy = new IntersectionObserver(function (entries) {

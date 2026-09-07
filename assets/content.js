@@ -179,7 +179,7 @@ const SITE = {
     items: [
       { time: "16:00", name: { en: "Arrival" },
         note: { en: "Guests are welcome from 15:30.",
-                it: "Gli ospiti sono benvenuti dalle 15;30." } },
+                it: "Gli ospiti sono benvenuti dalle 15:30." } },
       { time: "16:30", name: { en: "Ceremony" },
         note: { en: "The bit where we say “sì”.",
                 it: "Quando diciamo “sì”." } },
@@ -204,7 +204,7 @@ const SITE = {
     lead:  { en: "Summer Chic & Colourful", it: "Chic Estivo & Colorato" },
     body: {
       en: [
-        "The guide dress code is Summer Chich & Colourful. Think linen suits and summer dresses on a hot italian summer day. We want everyone to be comfortable, colourful, and happy. We honestly don't mind if you wear a tie or not, or if you don't want to wear heels. We only ask that you don't wear T-shirt, trainers or blue jeans",
+        "The guide dress code is Summer Chic & Colourful. Think linen suits and summer dresses on a hot italian summer day. We want everyone to be comfortable, colourful, and happy. We honestly don't mind if you wear a tie or not, or if you don't want to wear heels. We only ask that you don't wear T-shirt, trainers or blue jeans",
         "A few things to keep in mind: It is likely to be very hot and the floor is mainly grass, so consider this when choosing your fabric and shoes.",
         "If you're not sure, drop us a text."
       ],
@@ -296,7 +296,7 @@ const SITE = {
       {
         q: { en: "What will the weather be like?", it: "Come sarà il tempo?" },
         a: { en: ["Italy in June is likely to be generally warm (25°C - 35°C). But it should be much cooler by the afternoon. Maybe..."],
-             it: ["In italia in Giugno è generalmente caldo (25°C - 35°C). Ma dovrebbe rinferscarsi nel tardo pomeriggio. Forse..."] }
+             it: ["In italia in Giugno è generalmente caldo (25°C - 35°C). Ma dovrebbe rinfrescarsi nel tardo pomeriggio. Forse..."] }
       },
       {
         q: { en: "Is the wedding indoors or outdoors?", it: "L'evento sarà all'interno o all'esterno?" },
@@ -333,11 +333,11 @@ const SITE = {
     title: { en: "Gift List", it: "Gift List" },
     body: {
       en: [
-        "People say this. But we really do mean it: having you with us on the day is a gift in itself and we don't expect any additional contributions. We appreciate the efforts and resources you are investing to be celebrate in Bologna.",
+        "People say this. But we really do mean it: having you with us on the day is a gift in itself and we don't expect any additional contributions. We appreciate the efforts and resources you are investing to celebrate in Bologna.",
         "However, if you still feel like this is not enough and wish to contribute to our honeymoon, our details are as follows:"
       ],
       it: [
-        "È una cosa che si dice. Ma davvero lo pensiamo: avervi con noi in questa giornata è il regalo di per sè e non ci aspettiamo altro. Apprezziamo lo sforzo e le risorse impiegate per festeggiarci a Bologna.",
+        "È una cosa che si dice. Ma davvero lo pensiamo: avervi con noi in questa giornata è il regalo di per sé e non ci aspettiamo altro. Apprezziamo lo sforzo e le risorse impiegate per festeggiarci a Bologna.",
         "Se però desiderate comunque farci un regalo, e contribuire al nostro viaggio di nozze, qui sotto trovate i nostri riferimenti:"
       ]
     },
@@ -440,7 +440,7 @@ const SITE = {
        the width, which pushed the nav into a scroll on every Italian phone.
        The initialism is understood either way. */
     rsvpNow:     { en: "RSVP",              it: "RSVP" },
-    appsLabel:   { en: "Apps to download on your smarpthone:" },
+    appsLabel:   { en: "Apps to download on your smartphone:" },
     addToCal:    { en: "Add to Calendar",   it: "Aggiungi al calendario" },
     directions:  { en: "Directions",        it: "Indicazioni" },
     dressLabel:  { en: "Dress code",        it: "Dress code" },

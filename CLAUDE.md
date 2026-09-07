@@ -201,10 +201,10 @@ More in `images/README.md`.
 
 Orlando asked for the exact original wording: *"I want you to copy it
 exactly."* It was reverse-engineered out of `joy-example/joy-example.html`.
-**Six typos are live on the site on purpose**, awaiting his word. Line numbers
-are `assets/content.js` as of this writing:
+The copy is Joy's, with one exception: **six typos Joy carried have been
+corrected**, on Orlando's word. Line numbers are `assets/content.js`:
 
-| | Typo | Should be | Line |
+| | Was | Now | Line |
 |---|---|---|---|
 | 1 | "Summer **Chich** & Colourful" | Chic | 207 |
 | 2 | "Apps to download on your **smarpthone**" | smartphone | 443 |
@@ -213,9 +213,8 @@ are `assets/content.js` as of this writing:
 | 5 | "dovrebbe **rinferscarsi**" | rinfrescarsi | 299 |
 | 6 | "il regalo **di per sè**" | di per sé | 340 |
 
-Note the dress code appears twice: the chip on the event card and the lead
-line both read "Chic" correctly (lines 162, 204). Only the body paragraph at
-207 carries Joy's "Chich".
+Everything else is verbatim. The dress code appears three times (lines 162,
+204, 207) and all three now read "Chic".
 
 ### Italian is thinner in places
 
@@ -268,12 +267,11 @@ back to Georgia and typography changes cannot be judged.
 
 ## Still open
 
-1. **The five typos.** Live on the site. One commit to fix, waiting on his word.
-2. **`gifts.bank`** has empty `value` fields for account name, IBAN and BIC.
+1. **`gifts.bank`** has empty `value` fields for account name, IBAN and BIC.
    The section renders without them.
-3. **The teal.** `--verdigris` is the only cool colour on the page and the
+2. **The teal.** `--verdigris` is the only cool colour on the page and the
    choice most likely to be wrong. Never resolved.
-4. Never started, and would need confirming first: splitting the long Bologna
+3. Never started, and would need confirming first: splitting the long Bologna
    section, an "Our Story" section.
-5. The Via Saragozza painting is signed *Ramesh Jhawar*. Worth confirming the
+4. The Via Saragozza painting is signed *Ramesh Jhawar*. Worth confirming the
    right to publish it before the site is shared widely.

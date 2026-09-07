@@ -16,7 +16,7 @@ decided and why, and what is still open.
 | Ceremony | 16:00, guests welcome from 15:30 |
 | Friday drinks | 11 June, 16:00–21:00, Via Santo Stefano, Bologna |
 | Languages | English and Italian |
-| Live at | `https://ragingrolando.github.io/wedding-site/` |
+| Live at | `https://orlando-and-sofia.com` |
 
 ---
 
@@ -26,7 +26,19 @@ Plain HTML, CSS and JS. No build step, no framework, no dependencies. GitHub
 Pages serves `main` from the repository root, so a push is a deploy and it is
 live in about a minute.
 
+The custom domain `orlando-and-sofia.com` (registered at GoDaddy) points at
+Pages: four A records on `@` to GitHub's 185.199.108-111.153, and a `www`
+CNAME to `ragingrolando.github.io`. The root-level `CNAME` file is what tells
+Pages to answer on that domain. **Deleting it unsets the custom domain and the
+site 404s until it is put back.** The old `ragingrolando.github.io/wedding-site/`
+address redirects to the domain, so links sent before the move still work.
+
+Because the site is served from the domain root and not `/wedding-site/`, every
+path in the source is relative. Keep it that way. A leading slash would work on
+the domain and break on the github.io fallback.
+
 ```
+CNAME                 The custom domain. Do not delete. See below
 index.html            37 lines. Loads fonts, then content.js, then main.js
 assets/content.js    Every word and filename on the site. Edit this.
 assets/main.js       Renders the page from content.js. Rarely needs touching.
@@ -88,10 +100,10 @@ stronger statement.
 ### Ready to send
 
 ```
-Saturday only, English     ...?k=baci
-Saturday only, Italian     ...?k=baci&lang=it
-Friday and Saturday, EN    ...?k=spritz
-Friday and Saturday, IT    ...?k=spritz&lang=it
+Saturday only, English     https://orlando-and-sofia.com/?k=baci
+Saturday only, Italian     https://orlando-and-sofia.com/?k=baci&lang=it
+Friday and Saturday, EN    https://orlando-and-sofia.com/?k=spritz
+Friday and Saturday, IT    https://orlando-and-sofia.com/?k=spritz&lang=it
 ```
 
 ### It hides a card, it does not keep a secret

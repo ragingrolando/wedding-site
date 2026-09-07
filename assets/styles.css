@@ -536,6 +536,21 @@ footer p{max-width:none;margin-top:14px;font-family:var(--util);font-size:11px;
   display:inline;line-height:0;font-size:1em;margin:0 .14em;vertical-align:baseline}
 .hero.has-plate .hero-meta{margin-top:13px;font-size:clamp(14.5px,1.25vw,17px)}
 .hero.has-plate .hero-cta{display:none}
+/* ---------------------------------------------- painting first, names after
+   The painting holds the first screen on its own. It is fitted to the
+   viewport height rather than the width, because it is square and its labels
+   run right to all four edges: filling a 1440px screen sideways would crop
+   ENGAGED HERE off the top and VILLA ZARRI off the bottom.
+
+   The subtraction is the sticky bar plus a deliberate sliver of the next
+   thing, so the foot of the page shows there is more without needing an
+   arrow to say so. The names then arrive on the same reveal every section
+   uses: no pinning, no scroll hijacking, and nothing that fights a guest
+   scrolling with a thumb. */
+.hero-wrap-below .hero-plate{margin:0 auto clamp(26px,3.5vw,44px)}
+.hero-wrap-below .hero-plate-img{max-height:calc(100svh - 104px)}
+.hero.hero-below{padding-top:0;padding-bottom:clamp(30px,4.5vw,56px)}
+
 .hero-plate{margin:0 auto clamp(40px,6vw,68px);padding:0 var(--gut);max-width:1240px;text-align:center}
 /* The new plate is square and 2048px, so it can go a lot wider than the old
    portrait crop did. Height is what actually holds it back: a square shown

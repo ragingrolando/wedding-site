@@ -39,6 +39,11 @@ const SITE = {
   heroMode:  "plate",
   heroCaption: null,
 
+  /* true  -> the painting has the first screen to itself and the names
+              arrive as you scroll down to them
+     false -> the names sit above the painting, both visible on landing   */
+  heroTextBelow: true,
+
   /* The bride and groom, cut out of the painting, sat beside the names in
      the top bar. Small: it is drawn at 30px, so a busy crop turns to mush. */
   brandMark: "dancing-bride-groom.png",

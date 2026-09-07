@@ -32,8 +32,7 @@ the middle band is used and the rest cropped away. Until the file is there
 the footer simply starts at the initials, no gap and no broken icon.
 
 ```
-cp ~/wedding-site/images/wedding-san-luca-banner.jpeg ~/wedding-site/images/
-cd ~/wedding-site && git add images/wedding-san-luca-banner.jpeg \
+cd ~/wedding-site && git add images/wedding-san-luca-banner-wide.jpg \
   && git commit -m "Add the San Luca banner" && git push
 ```
 

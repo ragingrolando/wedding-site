@@ -106,6 +106,13 @@ Friday and Saturday, EN    https://orlando-and-sofia.com/?k=spritz
 Friday and Saturday, IT    https://orlando-and-sofia.com/?k=spritz&lang=it
 ```
 
+### The gate card is deliberately bare
+
+Its title, blurb and password hint were removed on request. `main.js` omits
+each of the three when the key is absent from `gate`, so the card closes up
+rather than leaving a gap. Add any of them back as `{ en, it }` and it
+reappears. The button reads `Andiamo!` in both languages.
+
 ### It hides a card, it does not keep a secret
 
 Both passwords are written in `assets/content.js`, which anyone can open in a
@@ -231,12 +238,23 @@ corrected**, on Orlando's word. Line numbers are `assets/content.js`:
 Everything else is verbatim. The dress code appears three times (lines 162,
 204, 207) and all three now read "Chic".
 
-### Italian is thinner in places
+### The Italian is now complete
 
-Joy never had Italian for: the Friday drinks note, four of the seven
+Joy never had Italian for the Friday drinks note, four of the seven
 running-order names, the shuttle paragraph, the Places to Stay intro, or the
-whole Bologna section. Those keys have no `it` and fall back to English. That
-is faithful, not a bug.
+whole Bologna section, and six section headings carried English in their `it`
+slot. Those were all translated on request. Nothing falls back to English any
+more except by choice.
+
+Left in English deliberately: proper nouns (hotels, restaurants, street
+names) and the words Italian uses unchanged (Password, Aperitivo, Gelato,
+Dress Code, IBAN, BIC, RSVP, Email).
+
+**`t()` is not applied everywhere.** Place names, restaurant names and notes,
+event times and addresses were once rendered as raw strings, so making one
+bilingual printed `[object Object]`. They now go through `t()`. If you make
+any other plain string bilingual, check `main.js` runs it through `t()` first.
+The translations are mine, not a native speaker's. Worth Sofia reading once.
 
 ### The restaurant links are mostly Google Maps
 

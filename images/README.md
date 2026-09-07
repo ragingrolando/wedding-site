@@ -10,10 +10,11 @@ Anything missing is skipped silently. The page renders fine with none of it.
 
 | File | What it is | Size to aim for |
 |------|------------|-----------------|
-| `hero-extended.jpg` | The painting with the paper labels, shown whole at the top of the page | Square, ~2048px, under 1.5MB |
+| `wedding-hero-with-text.jpeg` | The painting with the paper labels. Shown whole, holding the first screen | Portrait, ~2500px tall, under 1.2MB |
+| `hero-extended-with-text.jpg` | **Not used by the site.** The same painting with the canvas extended left, right and bottom, for the printed invitation | Square, 2048px |
 | `via-saragozza.webp` | The painting of Via Saragozza, shown beside the Bologna intro | ~1200px on the long edge, under 300KB |
 | `dancing-row.png` | The row of dancers from the bottom of the painting | ~1600px wide |
-| `wedding-san-luca-banner-wide.jpg` | The band across the very bottom of the page, edge to edge | ~2400px wide, wide and shallow, under 500KB |
+| `wedding-san-luca-banner-wide.jpg` | The band across the very bottom of the page, edge to edge | 2048 x 528, under 500KB |
 | `dancing-bride-groom.png` | motif | ~300px tall |
 | `dancing-jump.png` | motif | ~300px tall |
 | `dancing-kick.png` | motif | ~300px tall |
@@ -24,12 +25,11 @@ Names are only a convention. Change them in `content.js` if you prefer others.
 
 ## Adding the bottom banner
 
-It runs the full width of the browser, so it wants a wide, shallow crop.
-**Export it at least 2400px wide.** The current file is 1181px, which a
-laptop screen upscales past two to one, and full-bleed artwork is where that
-shows. Anything roughly 2.5:1 or wider is shown whole; closer to square and
-the middle band is used and the rest cropped away. Until the file is there
-the footer simply starts at the initials, no gap and no broken icon.
+It runs the full width of the browser, so it wants a wide, shallow crop. The
+current file is 2048 x 528, near enough 4:1, which is shown whole at any
+window width. Anything roughly 2.5:1 or wider is; closer to square and the
+middle band is used and the rest cropped away. If the file goes missing the
+footer simply starts at the initials, no gap and no broken icon.
 
 ```
 cd ~/wedding-site && git add images/wedding-san-luca-banner-wide.jpg \
@@ -60,12 +60,17 @@ The originals off a camera or scanner run to several MB, which makes the page
 crawl on a phone. macOS has `sips` built in, so no extra tools:
 
 ```
-sips -Z 2048 -s formatOptions 70 hero-extended.jpg --out hero-extended.jpg
+sips -s formatOptions 80 wedding-hero-with-text.jpeg --out wedding-hero-with-text.jpeg
 ```
 
-`-Z 2048` caps the longest edge at 2048px. Do this on a copy, not your master.
-The hero and the bottom banner are the two that want that much: everything
-else is shown small and 1600px is plenty.
+`formatOptions 80` re-encodes at the same size, which is usually enough on
+its own: the hero came in at 4.8MB and left at 1.0MB with nothing visible
+lost. Add `-Z 2048` to cap the longest edge as well. Do this on a copy, not
+your master.
+
+The hero and the bottom banner are the two that want the pixels, because
+they are the only two shown large. Everything else is drawn small and
+1600px is plenty.
 
 ## You do not need to cut out the background
 

@@ -35,7 +35,7 @@ const SITE = {
      that would land on top of somebody's handwriting, so the painting is
      shown whole and the names sit above it. No caption either: the picture
      names itself now. */
-  heroImage: "hero-extended.jpg",
+  heroImage: "wedding-hero-with-text.jpeg",
   heroMode:  "plate",
   heroCaption: null,
 

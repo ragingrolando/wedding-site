@@ -92,16 +92,13 @@ const SITE = {
        Neither is a secret: this file is public. */
     password:       "baci",
     fridayPassword: "spritz",
-    title:    { en: "A quiet corner of the internet",
-                it: "Un angolo tranquillo di internet" },
-    blurb:    { en: "Pop in the password from your invitation.",
-                it: "Inserisci la password che trovi sull'invito." },
+    /* title, blurb and hint were removed on request. main.js omits each of
+       them when the key is absent, so the card closes up cleanly. Add any
+       of them back as { en: "...", it: "..." } and it reappears. */
     label:    { en: "Password", it: "Password" },
-    button:   { en: "Come in", it: "Entra" },
+    button:   { en: "Andiamo!", it: "Andiamo!" },
     wrong:    { en: "Not quite. Try again, or text us.",
-                it: "Non è questa. Riprova, o scrivici." },
-    hint:     { en: "It is what Italians give on both cheeks.",
-                it: "È quello che ci si dà su entrambe le guance." }
+                it: "Non è questa. Riprova, o scrivici." }
   },
 
   /* ------------------------------------------------------------------ RSVP
@@ -142,23 +139,25 @@ const SITE = {
            or on a link carrying ?f=11. See the Friday block in main.js. */
         id:      "friday",
         day:     { en: "Friday, 11 June 2027", it: "Venerdì 11 Giugno 2027" },
-        name:    { en: "Pre-Game Drinks",      it: "Pre-Game Drinks" },
-        time:    "16:00 to 21:00",
-        address: "Via Santo Stefano, 40125 Bologna BO, Italy",
+        name:    { en: "Pre-Game Drinks",      it: "Aperitivo di benvenuto" },
+        time:    { en: "16:00 to 21:00", it: "dalle 16:00 alle 21:00" },
+        address: { en: "Via Santo Stefano, 40125 Bologna BO, Italy",
+                   it: "Via Santo Stefano, 40125 Bologna BO, Italia" },
         dress:   { en: "Casual, whatever your heart desires",
                    it: "Casual, come desideri" },
-        /* Joy had no Italian for this note. */
         note: {
-          en: "For those of you travelling from out of town, we're hosting a small welcome drinks in the heart of Bologna. There will be some food (!) but we would not count this as dinner."
+          en: "For those of you travelling from out of town, we're hosting a small welcome drinks in the heart of Bologna. There will be some food (!) but we would not count this as dinner.",
+          it: "Per chi arriva da fuori città, organizziamo un piccolo aperitivo di benvenuto nel cuore di Bologna. Ci sarà qualcosa da mangiare (!) ma non consideratelo una cena."
         },
         cal: { start: "2027-06-11T16:00:00", end: "2027-06-11T21:00:00" }
       },
       {
         day:     { en: "Saturday, 12 June 2027", it: "Sabato 12 Giugno 2027" },
-        name:    { en: "Ceremony and Reception", it: "Ceremony and Reception" },
-        time:    "15:30 to 23:30",
+        name:    { en: "Ceremony and Reception", it: "Cerimonia e ricevimento" },
+        time:    { en: "15:30 to 23:30", it: "dalle 15:30 alle 23:30" },
         venue:   "Villa Zarri",
-        address: "Via Ronco, 1, 40013 Castel Maggiore BO, Italy",
+        address: { en: "Via Ronco, 1, 40013 Castel Maggiore BO, Italy",
+                   it: "Via Ronco, 1, 40013 Castel Maggiore BO, Italia" },
         dress:   { en: "Summer Chic & Colourful", it: "Chic Estivo & Colorato" },
         note: {
           en: "The ceremony will be kicking off at 16:00.",
@@ -173,27 +172,28 @@ const SITE = {
      Joy wrote the event names in English only. Where an Italian line
      existed under one, it is kept below.                                   */
   order: {
-    title:    { en: "Order of Events", it: "Order of Events" },
+    title:    { en: "Order of Events", it: "Programma della giornata" },
     subtitle: { en: "Saturday, 12 June 2027 · Villa Zarri",
                 it: "Sabato 12 Giugno 2027 · Villa Zarri" },
     items: [
-      { time: "16:00", name: { en: "Arrival" },
+      { time: "16:00", name: { en: "Arrival", it: "Arrivo" },
         note: { en: "Guests are welcome from 15:30.",
                 it: "Gli ospiti sono benvenuti dalle 15:30." } },
-      { time: "16:30", name: { en: "Ceremony" },
+      { time: "16:30", name: { en: "Ceremony", it: "Cerimonia" },
         note: { en: "The bit where we say “sì”.",
                 it: "Quando diciamo “sì”." } },
-      { time: "18:00", name: { en: "Aperitivo" },
+      { time: "18:00", name: { en: "Aperitivo", it: "Aperitivo" },
         note: { en: "Aperol, nibbles and “ciao” to the newly married couple.",
                 it: "Aperol, stuzzichini e chiacchiere con gli sposi." } },
-      { time: "19:30", name: { en: "Dinner" },
-        note: { en: "La cena is served!" } },
-      { time: "21:00", name: { en: "Dance Floor" },
-        note: { en: "Dance to the moon and back!" } },
-      { time: "00:00", name: { en: "Late Night Snacks" },
+      { time: "19:30", name: { en: "Dinner", it: "Cena" },
+        note: { en: "La cena is served!", it: "La cena è servita!" } },
+      { time: "21:00", name: { en: "Dance Floor", it: "Pista da ballo" },
+        note: { en: "Dance to the moon and back!",
+                it: "Si balla fino alla luna e ritorno!" } },
+      { time: "00:00", name: { en: "Late Night Snacks", it: "Spuntino di mezzanotte" },
         note: { en: "A little something to fuel more dancing before saying good night.",
                 it: "Uno spuntino per ricaricare le danze prima della buonanotte." } },
-      { time: "03:00", name: { en: "Carriages" },
+      { time: "03:00", name: { en: "Carriages", it: "Si torna a casa" },
         note: { en: "Sweet dreams", it: "Sogni d'oro" } }
     ]
   },
@@ -219,16 +219,17 @@ const SITE = {
 
   /* ----------------------------------------------------------------- transport */
   transport: {
-    title: { en: "Transport", it: "Transport" },
+    title: { en: "Transport", it: "Trasporti" },
     blocks: [
       {
-        heading: { en: "Shuttle:" },
+        heading: { en: "Shuttle:", it: "Navetta:" },
         body: {
-          en: ["We are looking to organize a few shuttles, more information to follow..."]
+          en: ["We are looking to organize a few shuttles, more information to follow..."],
+          it: ["Stiamo organizzando alcune navette, seguiranno maggiori informazioni..."]
         }
       },
       {
-        heading: { en: "Taxis:" },
+        heading: { en: "Taxis:", it: "Taxi:" },
         body: {
           en: ["We would encourage you to book a taxi in advance, but there are also available apps that will allow you to call it at the time you need it."],
           it: ["Vi consigliamo di prenotare il taxi in anticipo, ma potete anche utilizzare alcune app per richiederne uno direttamente al momento del bisogno."]
@@ -250,9 +251,10 @@ const SITE = {
      The hotel links go to the Joy accommodation pages, which is where the
      group rate and the ORLANDO-SOFIA code actually live.                    */
   stay: {
-    title: { en: "Places to Stay", it: "Places to Stay" },
+    title: { en: "Places to Stay", it: "Dove alloggiare" },
     intro: {
-      en: ["We've sorted guest accommodation through Joy. To ensure your stay is included with the wedding group, please book one of the hotel options below using the wedding code ORLANDO-SOFIA."]
+      en: ["We've sorted guest accommodation through Joy. To ensure your stay is included with the wedding group, please book one of the hotel options below using the wedding code ORLANDO-SOFIA."],
+      it: ["Abbiamo organizzato gli alloggi tramite Joy. Per essere inseriti nel gruppo del matrimonio, prenotate una delle strutture qui sotto usando il codice ORLANDO-SOFIA."]
     },
     hotels: [
       { name: "Turati Apartments",         km: 8.0, url: "https://withjoy.com/orlando-and-sofia/accommodation-place/2e2040e8-e67a-4b1b-8374-5810bf117601" },
@@ -269,7 +271,7 @@ const SITE = {
 
   /* ----------------------------------------------------------------------- faq */
   faq: {
-    title: { en: "Q & A", it: "Q & A" },
+    title: { en: "Q & A", it: "Domande e risposte" },
     items: [
       {
         q: { en: "What’s the RSVP deadline?", it: "Entro quando bisogna dare conferma?" },
@@ -330,7 +332,7 @@ const SITE = {
 
   /* ----------------------------------------------------------------- gift list */
   gifts: {
-    title: { en: "Gift List", it: "Gift List" },
+    title: { en: "Gift List", it: "Lista nozze" },
     body: {
       en: [
         "People say this. But we really do mean it: having you with us on the day is a gift in itself and we don't expect any additional contributions. We appreciate the efforts and resources you are investing to celebrate in Bologna.",
@@ -352,8 +354,8 @@ const SITE = {
   /* ------------------------------------------------------------------- bologna
      Joy wrote this page in English only.                                     */
   bologna: {
-    title:   { en: "Spending time in Bologna", it: "Spending time in Bologna" },
-    kicker:  { en: "Living like a local" },
+    title:   { en: "Spending time in Bologna", it: "Passare del tempo a Bologna" },
+    kicker:  { en: "Living like a local", it: "Vivere come un bolognese" },
 
     /* The painting of Via Saragozza, shown beside the heading. Drop the
        file into images/ under this name. Missing file = quietly skipped. */
@@ -365,71 +367,109 @@ const SITE = {
       en: [
         "Bologna is a very special place for us. We come back regularly during the year, it's a second home and we are lucky to have many friends there. It's also the place where Orlando proposed.",
         "Immerse through the “portici”, walk around with a gelato, do a coffee scroll through bars of the city centre. We would love for you to enjoy the city as much as we do."
+      ],
+      it: [
+        "Bologna è un posto molto speciale per noi. Ci torniamo spesso durante l'anno, è una seconda casa e siamo fortunati ad avere tanti amici lì. È anche il posto dove Orlando ha fatto la proposta.",
+        "Perdetevi sotto i portici, passeggiate con un gelato in mano, fate il giro dei bar del centro per un caffè. Ci piacerebbe che vi godeste la città quanto noi."
       ]
     },
     places: [
       { icon: "🍝", name: "Quadrilatero",
-        text: { en: "The old market at the centre of Bologna. Explore Via Pescherie Vecchie, Via Clavature and Via degli Orefici for fresh pasta shops, delis, wine bars and tiny food stalls." } },
+        text: { en: "The old market at the centre of Bologna. Explore Via Pescherie Vecchie, Via Clavature and Via degli Orefici for fresh pasta shops, delis, wine bars and tiny food stalls.",
+               it: "L'antico mercato nel cuore di Bologna. Esplorate Via Pescherie Vecchie, Via Clavature e Via degli Orefici tra pastifici, salumerie, enoteche e piccoli banchi di cibo." } },
       { icon: "🥖", name: "Atti",
-        text: { en: "A true Bolognese institution for bread, focaccia and traditional baked goods." } },
+        text: { en: "A true Bolognese institution for bread, focaccia and traditional baked goods.",
+               it: "Una vera istituzione bolognese per pane, focaccia e prodotti da forno tradizionali." } },
       { icon: "🍫", name: "Gilberto",
-        text: { en: "For something a little more unexpected: chocolate tortellini. A playful Bolognese specialty." } },
+        text: { en: "For something a little more unexpected: chocolate tortellini. A playful Bolognese specialty.",
+               it: "Per qualcosa di più inaspettato: i tortellini di cioccolato. Una specialità bolognese giocosa." } },
       { icon: "🏛️", name: "Piazza Santo Stefano & Le Sette Chiese",
-        text: { en: "Probably one of the most magical corners of Bologna. Sit on the steps, wander through the Sette Chiese, and take your time." } },
+        text: { en: "Probably one of the most magical corners of Bologna. Sit on the steps, wander through the Sette Chiese, and take your time.",
+               it: "Probabilmente uno degli angoli più magici di Bologna. Sedetevi sui gradini, girate tra le Sette Chiese, con calma." } },
       { icon: "🌿", name: "Via d’Azeglio",
-        text: { en: "An elegant porticoed street leading from Piazza Maggiore towards the hills." } },
-      { icon: "✡️", name: "The Jewish Ghetto",
-        text: { en: "Wander through the narrow streets around Via dell'Inferno, Via de' Giudei and Vicolo San Giobbe. One of the quietest and most atmospheric parts of the historic centre." } },
+        text: { en: "An elegant porticoed street leading from Piazza Maggiore towards the hills.",
+               it: "Un'elegante strada porticata che da Piazza Maggiore porta verso i colli." } },
+      { icon: "✡️", name: { en: "The Jewish Ghetto", it: "Il Ghetto Ebraico" },
+        text: { en: "Wander through the narrow streets around Via dell'Inferno, Via de' Giudei and Vicolo San Giobbe. One of the quietest and most atmospheric parts of the historic centre.",
+               it: "Girate tra le vie strette attorno a Via dell'Inferno, Via de' Giudei e Vicolo San Giobbe. Una delle zone più tranquille e suggestive del centro storico." } },
       { icon: "❤️", name: "Piazza Maggiore & Piazza del Nettuno",
-        text: { en: "The very heart of Bologna. Start here, admire San Petronio, then simply wander into the streets around it." } },
+        text: { en: "The very heart of Bologna. Start here, admire San Petronio, then simply wander into the streets around it.",
+               it: "Il cuore di Bologna. Partite da qui, ammirate San Petronio, poi perdetevi nelle strade intorno." } },
       { icon: "📚", name: "Libreria.coop Ambasciatori",
-        text: { en: "A beautiful old market space turned into a bookshop, food hall and cultural spot." } },
+        text: { en: "A beautiful old market space turned into a bookshop, food hall and cultural spot.",
+               it: "Un vecchio e bellissimo mercato trasformato in libreria, spazio gastronomico e luogo di cultura." } },
       { icon: "💧", name: "La Finestrella di Via Piella",
-        text: { en: "A tiny window onto Bologna's hidden canals." } },
+        text: { en: "A tiny window onto Bologna's hidden canals.",
+               it: "Una piccola finestra sui canali nascosti di Bologna." } },
       { icon: "🗼", name: "Torre Prendiparte",
-        text: { en: "One of Bologna's medieval towers, tucked quietly into the historic centre." } },
+        text: { en: "One of Bologna's medieval towers, tucked quietly into the historic centre.",
+               it: "Una delle torri medievali di Bologna, nascosta nel centro storico." } },
       { icon: "🏰", name: "Le Due Torri",
-        text: { en: "The symbol of Bologna. Walk around Piazza di Porta Ravegnana and look up - then get lost in the streets beyond." } },
+        text: { en: "The symbol of Bologna. Walk around Piazza di Porta Ravegnana and look up - then get lost in the streets beyond.",
+               it: "Il simbolo di Bologna. Fate il giro di Piazza di Porta Ravegnana e guardate in alto, poi perdetevi nelle strade intorno." } },
       { icon: "🍷", name: "Via del Pratello",
-        text: { en: "A favourite for an aperitivo, an informal dinner or a late-night drink. Less polished, more lively, and very Bolognese." } },
-      { icon: "🌺", name: "The hidden courtyards",
-        text: { en: "One of the best things to do in Bologna is to look through open doorways. Behind the façades you'll find quiet courtyards, little gardens, cloisters and unexpected pockets of green." } },
+        text: { en: "A favourite for an aperitivo, an informal dinner or a late-night drink. Less polished, more lively, and very Bolognese.",
+               it: "Una delle nostre preferite per un aperitivo, una cena informale o un bicchiere a tarda notte. Meno curata, più viva, molto bolognese." } },
+      { icon: "🌺", name: { en: "The hidden courtyards", it: "I cortili nascosti" },
+        text: { en: "One of the best things to do in Bologna is to look through open doorways. Behind the façades you'll find quiet courtyards, little gardens, cloisters and unexpected pockets of green.",
+               it: "Una delle cose più belle da fare a Bologna è sbirciare dai portoni aperti. Dietro le facciate trovate cortili silenziosi, piccoli giardini, chiostri e angoli di verde inaspettati." } },
       /* `flourish` is drawn as its own pull-quote, with the ring animated.
          Delete the key and it becomes an ordinary sentence again. */
       { icon: "🌅", name: "San Luca", feature: true,
-        text: { en: "A little outside the centre, but absolutely worth the journey. Walk from Porta Saragozza beneath the world's longest portico, all the way up to the sanctuary. At the top, Bologna unfolds below you." },
-        flourish: { en: "But more importantly it's where Orlando popped the question 💍 👰🏻‍♀️" } },
-      { icon: "📚", name: "The Archiginnasio Courtyard",
-        text: { en: "Step inside the beautiful courtyard of the Archiginnasio, Bologna's historic university building, and look up at the walls and ceilings covered in hundreds of painted and carved coats of arms." } },
-      { icon: "🌿", name: "I Colli, The Bologna Hills",
-        text: { en: "If you have a car, take a drive through the hills around Bologna - winding roads, greenery and stunning views over the city. Explore around San Luca, Via di Casaglia and San Michele in Bosco." } }
+        text: { en: "A little outside the centre, but absolutely worth the journey. Walk from Porta Saragozza beneath the world's longest portico, all the way up to the sanctuary. At the top, Bologna unfolds below you.",
+               it: "Un po' fuori dal centro, ma vale assolutamente il viaggio. Salite da Porta Saragozza sotto il portico più lungo del mondo, fino al santuario. In cima, Bologna si apre sotto di voi." },
+        flourish: { en: "But more importantly it's where Orlando popped the question 💍 👰🏻‍♀️",
+               it: "Ma soprattutto è dove Orlando ha fatto la fatidica domanda 💍 👰🏻‍♀️" } },
+      { icon: "📚", name: { en: "The Archiginnasio Courtyard", it: "Il cortile dell'Archiginnasio" },
+        text: { en: "Step inside the beautiful courtyard of the Archiginnasio, Bologna's historic university building, and look up at the walls and ceilings covered in hundreds of painted and carved coats of arms.",
+               it: "Entrate nel bellissimo cortile dell'Archiginnasio, l'antica sede dell'università di Bologna, e guardate in alto: pareti e soffitti sono coperti da centinaia di stemmi dipinti e scolpiti." } },
+      { icon: "🌿", name: { en: "I Colli, The Bologna Hills", it: "I Colli" },
+        text: { en: "If you have a car, take a drive through the hills around Bologna - winding roads, greenery and stunning views over the city. Explore around San Luca, Via di Casaglia and San Michele in Bosco.",
+               it: "Se avete la macchina, fate un giro sui colli intorno a Bologna: strade tortuose, verde e viste bellissime sulla città. Esplorate tra San Luca, Via di Casaglia e San Michele in Bosco." } }
     ],
 
-    foodTitle: { en: "Our Favourite Food&Drinks Spots" },
+    foodTitle: { en: "Our Favourite Food&Drinks Spots",
+                it: "I nostri posti preferiti per mangiare e bere" },
 
     /* Three of these had real links on Joy and they are kept below.
        Anything without a `url` falls back to a Google Maps search for the
        name in Bologna, which is what a guest wants anyway. Paste a real
        URL over the top whenever you have one.                            */
     food: [
-      { name: "Bottega Ranocchi",            note: "Old deli style shop serving aperitif from their grocery" },
-      { name: "Mercato di Mezzo",            note: "Market style food hall" },
-      { name: "Antica Osteria Romagnola",    note: "Traditional osteria, proudly Bolognese, classic local dishes" },
-      { name: "Va Mo Là",                    note: "An old library become restaurant" },
-      { name: "Berberè",                     note: "Good pizza!" },
-      { name: "Cremeria Santo Stefano",      note: "Gelato!!",
+      { name: "Bottega Ranocchi",            note: { en: "Old deli style shop serving aperitif from their grocery",
+                                              it: "Vecchia salumeria che serve l'aperitivo con i prodotti del negozio" } },
+      { name: "Mercato di Mezzo",            note: { en: "Market style food hall",
+                                              it: "Mercato coperto con banchi di cibo" } },
+      { name: "Antica Osteria Romagnola",    note: { en: "Traditional osteria, proudly Bolognese, classic local dishes",
+                                              it: "Osteria tradizionale, orgogliosamente bolognese, piatti classici del posto" } },
+      { name: "Va Mo Là",                    note: { en: "An old library become restaurant",
+                                              it: "Una vecchia libreria diventata ristorante" } },
+      { name: "Berberè",                     note: { en: "Good pizza!",
+                                              it: "Ottima pizza!" } },
+      { name: "Cremeria Santo Stefano",      note: { en: "Gelato!!",
+                                              it: "Gelato!!" },
         url: "https://www.instagram.com/cremeriasantostefano/" },
-      { name: "Corner Bar",                  note: "Favourite coffee and breakfast" },
-      { name: "Trattoria da me nella torre", note: "Revisited traditional dishes inside an old tower" },
-      { name: "Sorbole Que Tapas",           note: "Lively aperitif spot" },
-      { name: "Le Moline",                   note: "Eating traditional bolognese food al fresco" },
-      { name: "Le Stanze",                   note: "For a drink immersed in history" },
-      { name: "Fienile Fluò",                note: "For a meal on the hills of Bologna" },
-      { name: "Le Serre dei Giardini Margherita", note: "Coffee or drinks in a greenhouse of the city park" },
-      { name: "Spaccio Belfiore",            note: "For a drink on the hills",
+      { name: "Corner Bar",                  note: { en: "Favourite coffee and breakfast",
+                                              it: "Il nostro caffè e la nostra colazione preferiti" } },
+      { name: "Trattoria da me nella torre", note: { en: "Revisited traditional dishes inside an old tower",
+                                              it: "Piatti tradizionali rivisitati dentro un'antica torre" } },
+      { name: "Sorbole Que Tapas",           note: { en: "Lively aperitif spot",
+                                              it: "Posto vivace per l'aperitivo" } },
+      { name: "Le Moline",                   note: { en: "Eating traditional bolognese food al fresco",
+                                              it: "Cucina bolognese tradizionale all'aperto" } },
+      { name: "Le Stanze",                   note: { en: "For a drink immersed in history",
+                                              it: "Per un drink immersi nella storia" } },
+      { name: "Fienile Fluò",                note: { en: "For a meal on the hills of Bologna",
+                                              it: "Per una cena sui colli di Bologna" } },
+      { name: "Le Serre dei Giardini Margherita", note: { en: "Coffee or drinks in a greenhouse of the city park",
+                                              it: "Caffè o drink in una serra nel parco della città" } },
+      { name: "Spaccio Belfiore",            note: { en: "For a drink on the hills",
+                                              it: "Per un drink sui colli" },
         url: "https://www.instagram.com/lospaccio_belfiore/" },
-      { name: "Ristorante Biagi",            note: "For a super traditional Bolognese meal and a secret garden" },
-      { name: "Casa Minghetti",              note: "Coffee or aperitif - you go for the square!",
+      { name: "Ristorante Biagi",            note: { en: "For a super traditional Bolognese meal and a secret garden",
+                                              it: "Per un pasto bolognese super tradizionale e un giardino segreto" } },
+      { name: "Casa Minghetti",              note: { en: "Coffee or aperitif - you go for the square!",
+                                              it: "Caffè o aperitivo, ci vai per la piazza!" },
         url: "https://www.instagram.com/casaminghettibologna/" }
     ]
   },
@@ -440,7 +480,8 @@ const SITE = {
        the width, which pushed the nav into a scroll on every Italian phone.
        The initialism is understood either way. */
     rsvpNow:     { en: "RSVP",              it: "RSVP" },
-    appsLabel:   { en: "Apps to download on your smartphone:" },
+    appsLabel:   { en: "Apps to download on your smartphone:",
+                   it: "App da scaricare sullo smartphone:" },
     addToCal:    { en: "Add to Calendar",   it: "Aggiungi al calendario" },
     directions:  { en: "Directions",        it: "Indicazioni" },
     dressLabel:  { en: "Dress code",        it: "Dress code" },

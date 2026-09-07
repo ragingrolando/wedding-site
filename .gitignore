@@ -6,3 +6,7 @@ Thumbs.db
 *.swp
 .idea/
 .vscode/
+
+# Installed only to run the Playwright render checks. Never deployed.
+node_modules/
+package-lock.json

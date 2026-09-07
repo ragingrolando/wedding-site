@@ -339,7 +339,7 @@
       return friday || ev.id !== "friday";
     });
     var cards = events.map(function (ev) {
-      var where = ev.venue ? ev.venue + ", " + ev.address : ev.address;
+      var where = ev.venue ? ev.venue + ", " + t(ev.address) : t(ev.address);
       var acts = el("div", { class: "event-acts" }, [
         el("a", { class: "btn ghost small", href: icsHref(t(ev.name), ev.cal.start, ev.cal.end, where, t(ev.note)),
                   download: "orlando-sofia-" + ev.cal.start.slice(0, 10) + ".ics",
@@ -356,10 +356,10 @@
         ]),
         el("div", { class: "event-bay" }, [
           el("h3", { text: t(ev.name) }),
-          el("p", { class: "event-time", text: ev.time }),
+          el("p", { class: "event-time", text: t(ev.time) }),
           el("p", { class: "event-addr" }, [
             ev.venue ? el("strong", { text: ev.venue }) : null,
-            document.createTextNode(ev.address)
+            document.createTextNode(t(ev.address))
           ]),
           el("p", { class: "event-dress" }, [
             el("span", { class: "dress-label", text: t(SITE.ui.dressLabel) + " " }),
@@ -504,7 +504,7 @@
   function buildBologna() {
     var places = el("ul", { class: "places" }, SITE.bologna.places.map(function (p) {
       var body = [
-        el("p", { class: "nm", text: p.name }),
+        el("p", { class: "nm", text: t(p.name) }),
         el("p", { class: "tx", text: t(p.text) })
       ];
       /* The proposal line is the only sentence on this page that is about
@@ -536,11 +536,11 @@
        anyway, and it cannot rot. */
     var food = el("ul", { class: "food" }, SITE.bologna.food.map(function (f) {
       return el("li", {}, [
-        el("a", { href: f.url || mapsUrl(f.name + ", Bologna, Italy"),
+        el("a", { href: f.url || mapsUrl(t(f.name) + ", Bologna, Italy"),
                   target: "_blank", rel: "noopener",
                   class: f.url ? "has-own-link" : null }, [
-          el("span", { class: "nm", text: f.name }),
-          el("span", { class: "nt", text: f.note })
+          el("span", { class: "nm", text: t(f.name) }),
+          el("span", { class: "nt", text: t(f.note) })
         ])
       ]);
     }));
@@ -769,8 +769,8 @@
                   text: (lang === "it" ? SITE.date.displayIt : SITE.date.display)
                         + " · " + t(SITE.place) }),
         el("div", { class: "gate-arches", "aria-hidden": "true" }),
-        el("h1", { class: "gate-title", text: t(g.title) }),
-        el("p", { class: "gate-blurb", text: t(g.blurb) }),
+        t(g.title) ? el("h1", { class: "gate-title", text: t(g.title) }) : null,
+        t(g.blurb) ? el("p", { class: "gate-blurb", text: t(g.blurb) }) : null,
         form,
         toggle
       ])

@@ -662,12 +662,18 @@ footer p{max-width:none;margin-top:14px;font-family:var(--util);font-size:11px;
 }
 
 /* ============================== mobile =================================== */
-@media (max-width:1080px){
+/* 1200, not 1080. Eight Italian labels need 684px and the inline bar offers
+   584 at 1100px, so Bologna sat behind the fade on any laptop. Dropping the
+   nav to its own full-width row earlier gives it the width it needs. The gap
+   and size ease down with the viewport so the row still fits at tablet
+   widths in Italian, which is the longest the labels ever get. */
+@media (max-width:1200px){
   .topbar-inner{flex-wrap:wrap;padding:10px var(--gut);gap:12px}
-  .nav{order:3;width:100%;margin-left:0;gap:20px;padding-bottom:2px;
-       -webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);
-       mask-image:linear-gradient(90deg,#000 88%,transparent)}
-  .nav a{font-size:12px}
+  /* No mask override here. The base .nav mask is driven by --fade-r, which
+     main.js only sets when the row genuinely has more to scroll to. The old
+     hardcoded gradient dimmed the last label even when everything fitted. */
+  .nav{order:3;width:100%;margin-left:0;gap:clamp(13px,2vw,20px);padding-bottom:2px}
+  .nav a{font-size:clamp(11px,1.42vw,12px)}
   .nav-rsvp{margin-left:auto}
   .lang{margin-left:0}
 }

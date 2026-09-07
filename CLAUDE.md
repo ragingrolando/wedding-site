@@ -162,6 +162,20 @@ The arch head is a separate element, not a `border-radius` on the card. A
 percentage radius keys off the card's height, so two cards of different lengths
 would stand under two different arches.
 
+### The nav is a scroller, not a menu
+
+There is no burger. The nav is a flex row with `overflow-x:auto` and a mask
+that fades its last stretch when there is more to scroll to. `main.js` toggles
+`.fade-start` / `.fade-end` so nothing is dimmed at either end.
+
+Below **1200px** it drops to its own full-width row, and its gap and label size
+taper with the viewport. That number is set by Italian, not English: eight
+Italian labels need 684px and the inline bar offers 584 at 1100px, so at the
+old 1080px breakpoint "Bologna" sat behind the fade on any laptop. Every label
+is now fully visible down to 768px in both languages; below that it scrolls,
+which is the intent on a phone. **Check Italian at 1100 and 768 before
+touching this block.** English fits in less and will not show the problem.
+
 ### The ampersand
 
 Only two on the page get the Fraunces italic "et": the nav wordmark and the

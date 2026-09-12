@@ -223,6 +223,37 @@ h1,h2,h3,.brand,.tl-name,.nm,.gate-kicker,.gate-title,.mono,.hero-names{
 .btn.ghost:hover{background:var(--portico-deep);border-color:var(--portico-deep);color:var(--paper)}
 .btn.small{font-size:11px;padding:10px 18px;letter-spacing:.1em}
 
+/* ------------------------------------------------------------- photo strip
+   A row of squares under the Bologna intro. It drifts left on its own and
+   can be dragged or swiped. The track holds the list twice and the keyframe
+   travels exactly -50%, so it loops with no visible seam. Nothing in it is
+   a link. Hovering, focusing or dragging stops the drift, and it never
+   starts at all for a reader who asked for less motion. */
+.strip{
+  margin:clamp(30px,4.5vw,48px) 0 0;overflow-x:auto;overflow-y:hidden;
+  scrollbar-width:none;-ms-overflow-style:none;
+  -webkit-mask-image:linear-gradient(to right,transparent,#000 6%,#000 94%,transparent);
+          mask-image:linear-gradient(to right,transparent,#000 6%,#000 94%,transparent);
+}
+.strip::-webkit-scrollbar{display:none}
+.strip-track{display:flex;gap:clamp(10px,1.4vw,18px);width:max-content;
+  animation:stripDrift 60s linear infinite}
+.strip:hover .strip-track,
+.strip:focus-within .strip-track,
+.strip.dragging .strip-track{animation-play-state:paused}
+.strip-cell{flex:0 0 auto}
+.strip-img{
+  display:block;width:clamp(120px,15vw,168px);aspect-ratio:1/1;object-fit:cover;
+  border-radius:2px;background:var(--card);
+  /* Decoration, not navigation: no pointer, no drag ghost, no selection. */
+  pointer-events:none;user-select:none;-webkit-user-select:none;-webkit-user-drag:none;
+}
+.strip.dragging{cursor:grabbing}
+@keyframes stripDrift{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){
+  .strip-track{animation:none}
+}
+
 /* ----------------------------------------------------------------- section */
 section{padding:var(--rhythm) 0;scroll-margin-top:84px;position:relative}
 
@@ -468,7 +499,10 @@ section.alt .tl-body::before{background:var(--wash)}
 .food a:hover .nm,.food a:focus-visible .nm{text-decoration-color:var(--verdigris)}
 .food .nt{display:block;max-width:34ch;margin:3px auto 0;
   font-size:15.5px;color:var(--ink-52);line-height:1.5}
-.subhead{text-align:center;margin:clamp(52px,7vw,84px) 0 28px;
+/* text-align centres the words inside the box; the box itself was still
+   left-aligned, because p carries max-width:var(--measure) and the margin
+   here was 0. auto centres the box, which is what centred actually means. */
+.subhead{text-align:center;margin:clamp(52px,7vw,84px) auto 28px;
   font-family:var(--util);font-size:12px;font-weight:600;letter-spacing:.18em;
   text-transform:uppercase;color:var(--ink-52)}
 
@@ -653,6 +687,15 @@ footer p{max-width:none;margin-top:14px;font-family:var(--util);font-size:11px;
 .gate-hint{color:var(--ink-52);font-style:italic;font-size:16px}
 .gate-error{color:var(--portico-deep);min-height:20px}
 .gate .lang{margin:30px auto 0;width:max-content}
+/* The submit button carries an arrow instead of a word. It keeps the full
+   width of the field above it, so the tap target does not shrink with the
+   label; aria-label on the button holds the accessible name. */
+.gate-go{padding:15px 34px}
+.gate-go svg{width:22px;height:22px;display:block}
+.gate-go:hover svg{transform:translateX(2px)}
+.gate-go svg{transition:transform .2s}
+@media (prefers-reduced-motion:reduce){.gate-go svg{transition:none}}
+
 .gate-form.shake{animation:gateShake .34s ease}
 @keyframes gateShake{
   0%,100%{transform:translateX(0)}

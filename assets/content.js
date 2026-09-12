@@ -96,7 +96,9 @@ const SITE = {
        them when the key is absent, so the card closes up cleanly. Add any
        of them back as { en: "...", it: "..." } and it reappears. */
     label:    { en: "Password", it: "Password" },
-    button:   { en: "Andiamo!", it: "Andiamo!" },
+    /* Not shown. The button renders an arrow; this is its accessible name,
+       so a screen reader announces "Enter", not "button". */
+    button:   { en: "Enter", it: "Entra" },
     wrong:    { en: "Not quite. Try again, or text us.",
                 it: "Non è questa. Riprova, o scrivici." }
   },
@@ -113,8 +115,8 @@ const SITE = {
     mode:     "link",
     joyUrl:   "https://withjoy.com/orlando-and-sofia/rsvp",
     endpoint: "",
-    deadline: { en: "Please RSVP by 1 November",
-                it: "Ti chiediamo di confermare entro l'1 Novembre" }
+    deadline: { en: "Please RSVP by 31 January 2027",
+                it: "Ti chiediamo di confermare entro il 31 Gennaio 2027" }
   },
 
   /* -------------------------------------------------------------- nav order
@@ -125,7 +127,7 @@ const SITE = {
     { id: "dress",     label: { en: "Dress Code",   it: "Dress Code" } },
     { id: "transport", label: { en: "Transport",    it: "Trasporti" } },
     { id: "stay",      label: { en: "Stay",         it: "Dormire" } },
-    { id: "faq",       label: { en: "Q & A",        it: "Domande" } },
+    { id: "faq",       label: { en: "Q & A",        it: "Q & A" } },
     { id: "gifts",     label: { en: "Gifts",        it: "Regali" } },
     { id: "bologna",   label: { en: "Bologna",      it: "Bologna" } }
   ],
@@ -139,7 +141,7 @@ const SITE = {
            or on a link carrying ?f=11. See the Friday block in main.js. */
         id:      "friday",
         day:     { en: "Friday, 11 June 2027", it: "Venerdì 11 Giugno 2027" },
-        name:    { en: "Pre-Game Drinks",      it: "Aperitivo di benvenuto" },
+        name:    { en: "Welcome Drinks",       it: "Aperitivo di benvenuto" },
         time:    { en: "16:00 to 21:00", it: "dalle 16:00 alle 21:00" },
         address: { en: "Via Santo Stefano, 40125 Bologna BO, Italy",
                    it: "Via Santo Stefano, 40125 Bologna BO, Italia" },
@@ -154,15 +156,13 @@ const SITE = {
       {
         day:     { en: "Saturday, 12 June 2027", it: "Sabato 12 Giugno 2027" },
         name:    { en: "Ceremony and Reception", it: "Cerimonia e ricevimento" },
-        time:    { en: "15:30 to 23:30", it: "dalle 15:30 alle 23:30" },
+        time:    { en: "From 15:30", it: "Dalle 15:30" },
         venue:   "Villa Zarri",
         address: { en: "Via Ronco, 1, 40013 Castel Maggiore BO, Italy",
                    it: "Via Ronco, 1, 40013 Castel Maggiore BO, Italia" },
         dress:   { en: "Summer Chic & Colourful", it: "Chic Estivo & Colorato" },
-        note: {
-          en: "The ceremony will be kicking off at 16:00.",
-          it: "La cerimonia comincerà alle 16:00."
-        },
+        /* The end time is off the card on purpose. The calendar file still
+           runs to 23:30 so the .ics blocks out the whole evening. */
         cal: { start: "2027-06-12T15:30:00", end: "2027-06-12T23:30:00" }
       }
     ]
@@ -188,8 +188,9 @@ const SITE = {
       { time: "19:30", name: { en: "Dinner", it: "Cena" },
         note: { en: "La cena is served!", it: "La cena è servita!" } },
       { time: "21:00", name: { en: "Dance Floor", it: "Pista da ballo" },
+        /* English in both. The line does not survive translation. */
         note: { en: "Dance to the moon and back!",
-                it: "Si balla fino alla luna e ritorno!" } },
+                it: "Dance to the moon and back!" } },
       { time: "00:00", name: { en: "Late Night Snacks", it: "Spuntino di mezzanotte" },
         note: { en: "A little something to fuel more dancing before saying good night.",
                 it: "Uno spuntino per ricaricare le danze prima della buonanotte." } },
@@ -232,7 +233,7 @@ const SITE = {
         heading: { en: "Taxis:", it: "Taxi:" },
         body: {
           en: ["We would encourage you to book a taxi in advance, but there are also available apps that will allow you to call it at the time you need it."],
-          it: ["Vi consigliamo di prenotare il taxi in anticipo, ma potete anche utilizzare alcune app per richiederne uno direttamente al momento del bisogno."]
+          it: ["Vi consigliamo di prenotare taxi in anticipo utilizzando i numeri di telefono qui sotto. Altrimenti, potete utilizzare alcune app per chiamare un taxi direttamente al momento del bisogno."]
         },
         phones: [
           { name: "Taxi Co.Ta.Bo",    number: "+39 051372727" },
@@ -257,8 +258,7 @@ const SITE = {
       it: ["Abbiamo organizzato gli alloggi tramite Joy. Per essere inseriti nel gruppo del matrimonio, prenotate una delle strutture qui sotto usando il codice ORLANDO-SOFIA."]
     },
     hotels: [
-      { name: "Turati Apartments",         km: 8.0, url: "https://withjoy.com/orlando-and-sofia/accommodation-place/2e2040e8-e67a-4b1b-8374-5810bf117601" },
-      { name: "Hotel Brunelli",            km: 7.6, url: "https://withjoy.com/orlando-and-sofia/accommodation-place/96d47209-7d34-465e-826f-daa324b47ddc" },
+      { name: "Hotel Brun",                km: 7.6, url: "https://withjoy.com/orlando-and-sofia/accommodation-place/96d47209-7d34-465e-826f-daa324b47ddc" },
       { name: "Hotel Touring Bologna",     km: 8.0, url: "https://withjoy.com/orlando-and-sofia/accommodation-place/8c21ca0c-f5f4-43b9-9cce-958410b7df87" },
       { name: "Saragozza Apartments",      km: 8.0, url: "https://withjoy.com/orlando-and-sofia/accommodation-place/c7d95b56-0339-47bf-9799-0e860990a09a" },
       { name: "Residence Porta Saragozza", km: 8.2, url: "https://withjoy.com/orlando-and-sofia/accommodation-place/0f0d8688-9300-4298-b171-162b4a656488" },
@@ -271,7 +271,7 @@ const SITE = {
 
   /* ----------------------------------------------------------------------- faq */
   faq: {
-    title: { en: "Q & A", it: "Domande e risposte" },
+    title: { en: "Q & A", it: "Q & A" },
     items: [
       {
         q: { en: "What’s the RSVP deadline?", it: "Entro quando bisogna dare conferma?" },
@@ -332,15 +332,15 @@ const SITE = {
 
   /* ----------------------------------------------------------------- gift list */
   gifts: {
-    title: { en: "Gift List", it: "Lista nozze" },
+    title: { en: "Gift List", it: "Regali" },
     body: {
       en: [
-        "People say this. But we really do mean it: having you with us on the day is a gift in itself and we don't expect any additional contributions. We appreciate the efforts and resources you are investing to celebrate in Bologna.",
+        "We mean this: having you with us on the day is a gift in itself and we don't expect any additional contributions. We appreciate the efforts and resources you are investing to celebrate in Bologna.",
         "However, if you still feel like this is not enough and wish to contribute to our honeymoon, our details are as follows:"
       ],
       it: [
-        "È una cosa che si dice. Ma davvero lo pensiamo: avervi con noi in questa giornata è il regalo di per sé e non ci aspettiamo altro. Apprezziamo lo sforzo e le risorse impiegate per festeggiarci a Bologna.",
-        "Se però desiderate comunque farci un regalo, e contribuire al nostro viaggio di nozze, qui sotto trovate i nostri riferimenti:"
+        "Lo diciamo davvero: avervi con noi in questa giornata è il regalo di per sé e non ci aspettiamo altro. Apprezziamo lo sforzo e le risorse impiegate per festeggiarci a Bologna.",
+        "Se però pensate che questo non sia abbastanza davvero e desiderate contribuire al nostro viaggio di nozze, qui sotto trovate i nostri riferimenti:"
       ]
     },
     /* Fill these in when you are ready. Any row left empty is hidden. */
@@ -360,8 +360,8 @@ const SITE = {
     /* The painting of Via Saragozza, shown beside the heading. Drop the
        file into images/ under this name. Missing file = quietly skipped. */
     image:        "via-saragozza.webp",
-    imageCaption: { en: "Via Saragozza, on the way up to San Luca",
-                    it: "Via Saragozza, salendo verso San Luca" },
+    imageCaption: { en: "Via Saragozza, Orlando & Sofia on the way up to San Luca",
+                    it: "Via Saragozza, Orlando & Sofia salendo verso San Luca" },
 
     intro: {
       en: [
@@ -369,10 +369,22 @@ const SITE = {
         "Immerse through the “portici”, walk around with a gelato, do a coffee scroll through bars of the city centre. We would love for you to enjoy the city as much as we do."
       ],
       it: [
-        "Bologna è un posto molto speciale per noi. Ci torniamo spesso durante l'anno, è una seconda casa e siamo fortunati ad avere tanti amici lì. È anche il posto dove Orlando ha fatto la proposta.",
+        "Bologna è un posto molto speciale per noi. Ci torniamo spesso durante l'anno, è una seconda casa e siamo fortunati ad avere tanti amici ad accoglierci. È anche il posto dove Orlando ha fatto la proposta.",
         "Perdetevi sotto i portici, passeggiate con un gelato in mano, fate il giro dei bar del centro per un caffè. Ci piacerebbe che vi godeste la città quanto noi."
       ]
     },
+    /* A strip of squares under the intro. Auto-scrolls, drags and swipes,
+       and nothing is clickable. Drop your own photos in over these files,
+       keeping the names, and nothing else needs changing. Square crops:
+       anything else is centre-cropped to a square by CSS. A missing file
+       drops out of the strip rather than showing a broken icon, and an
+       empty list removes the strip altogether. */
+    carousel: {
+      alt:    { en: "Orlando and Sofia", it: "Orlando e Sofia" },
+      images: ["story-1.png", "story-2.png", "story-3.png",
+               "story-4.png", "story-5.png", "story-6.png"]
+    },
+
     places: [
       { icon: "🍝", name: "Quadrilatero",
         text: { en: "The old market at the centre of Bologna. Explore Via Pescherie Vecchie, Via Clavature and Via degli Orefici for fresh pasta shops, delis, wine bars and tiny food stalls.",
@@ -382,10 +394,10 @@ const SITE = {
                it: "Una vera istituzione bolognese per pane, focaccia e prodotti da forno tradizionali." } },
       { icon: "🍫", name: "Gilberto",
         text: { en: "For something a little more unexpected: chocolate tortellini. A playful Bolognese specialty.",
-               it: "Per qualcosa di più inaspettato: i tortellini di cioccolato. Una specialità bolognese giocosa." } },
+               it: "Per qualcosa di più inaspettato: i tortellini di cioccolato." } },
       { icon: "🏛️", name: "Piazza Santo Stefano & Le Sette Chiese",
         text: { en: "Probably one of the most magical corners of Bologna. Sit on the steps, wander through the Sette Chiese, and take your time.",
-               it: "Probabilmente uno degli angoli più magici di Bologna. Sedetevi sui gradini, girate tra le Sette Chiese, con calma." } },
+               it: "Probabilmente uno degli angoli più magici di Bologna. Sedetevi sui gradini, girate tra le Sette Chiese." } },
       { icon: "🌿", name: "Via d’Azeglio",
         text: { en: "An elegant porticoed street leading from Piazza Maggiore towards the hills.",
                it: "Un'elegante strada porticata che da Piazza Maggiore porta verso i colli." } },
@@ -406,29 +418,29 @@ const SITE = {
                it: "Una delle torri medievali di Bologna, nascosta nel centro storico." } },
       { icon: "🏰", name: "Le Due Torri",
         text: { en: "The symbol of Bologna. Walk around Piazza di Porta Ravegnana and look up - then get lost in the streets beyond.",
-               it: "Il simbolo di Bologna. Fate il giro di Piazza di Porta Ravegnana e guardate in alto, poi perdetevi nelle strade intorno." } },
+               it: "Il simbolo di Bologna. Fate il giro di Piazza di Porta Ravegnana e guardate in alto." } },
       { icon: "🍷", name: "Via del Pratello",
-        text: { en: "A favourite for an aperitivo, an informal dinner or a late-night drink. Less polished, more lively, and very Bolognese.",
-               it: "Una delle nostre preferite per un aperitivo, una cena informale o un bicchiere a tarda notte. Meno curata, più viva, molto bolognese." } },
+        text: { en: "A favourite for an aperitivo or a late-night drink. Less polished, more lively, and very Bolognese.",
+               it: "Una via piena di vita (e un po’ alternativa). Perfetta per un aperitivo o un bicchiere a tarda notte." } },
       { icon: "🌺", name: { en: "The hidden courtyards", it: "I cortili nascosti" },
         text: { en: "One of the best things to do in Bologna is to look through open doorways. Behind the façades you'll find quiet courtyards, little gardens, cloisters and unexpected pockets of green.",
                it: "Una delle cose più belle da fare a Bologna è sbirciare dai portoni aperti. Dietro le facciate trovate cortili silenziosi, piccoli giardini, chiostri e angoli di verde inaspettati." } },
       /* `flourish` is drawn as its own pull-quote, with the ring animated.
          Delete the key and it becomes an ordinary sentence again. */
       { icon: "🌅", name: "San Luca", feature: true,
-        text: { en: "A little outside the centre, but absolutely worth the journey. Walk from Porta Saragozza beneath the world's longest portico, all the way up to the sanctuary. At the top, Bologna unfolds below you.",
-               it: "Un po' fuori dal centro, ma vale assolutamente il viaggio. Salite da Porta Saragozza sotto il portico più lungo del mondo, fino al santuario. In cima, Bologna si apre sotto di voi." },
+        text: { en: "A little outside the centre, but absolutely worth the journey. Make sure to wear trainers and walk from Porta Saragozza beneath the world's longest portico, all the way up to the sanctuary. At the top, Bologna unfolds below you. (About 1h round trip walking)",
+               it: "Un po' fuori dal centro, ma vale assolutamente la camminata. Munitevi di scarpe da ginnastica e salite da Porta Saragozza sotto il portico più lungo del mondo, fino al santuario. In cima, Bologna si apre sotto di voi. (Circa un’oretta andata e ritorno)" },
         flourish: { en: "But more importantly it's where Orlando popped the question 💍 👰🏻‍♀️",
                it: "Ma soprattutto è dove Orlando ha fatto la fatidica domanda 💍 👰🏻‍♀️" } },
       { icon: "📚", name: { en: "The Archiginnasio Courtyard", it: "Il cortile dell'Archiginnasio" },
         text: { en: "Step inside the beautiful courtyard of the Archiginnasio, Bologna's historic university building, and look up at the walls and ceilings covered in hundreds of painted and carved coats of arms.",
                it: "Entrate nel bellissimo cortile dell'Archiginnasio, l'antica sede dell'università di Bologna, e guardate in alto: pareti e soffitti sono coperti da centinaia di stemmi dipinti e scolpiti." } },
       { icon: "🌿", name: { en: "I Colli, The Bologna Hills", it: "I Colli" },
-        text: { en: "If you have a car, take a drive through the hills around Bologna - winding roads, greenery and stunning views over the city. Explore around San Luca, Via di Casaglia and San Michele in Bosco.",
-               it: "Se avete la macchina, fate un giro sui colli intorno a Bologna: strade tortuose, verde e viste bellissime sulla città. Esplorate tra San Luca, Via di Casaglia e San Michele in Bosco." } }
+        text: { en: "If you have a car, take a drive through the hills around Bologna - winding roads, greenery and stunning views over the city. Explore around San Luca, Via di Casaglia, Parco Cavaioni and San Michele in Bosco.",
+               it: "Se avete la macchina, fate un giro sui colli intorno a Bologna: strade tortuose, verde e viste bellissime sulla città. Esplorate tra San Luca, Via di Casaglia, Parco Cavaioni e San Michele in Bosco." } }
     ],
 
-    foodTitle: { en: "Our Favourite Food&Drinks Spots",
+    foodTitle: { en: "Our Favourite Food & Drinks Spots",
                 it: "I nostri posti preferiti per mangiare e bere" },
 
     /* Three of these had real links on Joy and they are kept below.
@@ -437,9 +449,9 @@ const SITE = {
        URL over the top whenever you have one.                            */
     food: [
       { name: "Bottega Ranocchi",            note: { en: "Old deli style shop serving aperitif from their grocery",
-                                              it: "Vecchia salumeria che serve l'aperitivo con i prodotti del negozio" } },
+                                              it: "Antica bottega in un angolo storico della città, per un aperitivo servito con prodotti locali." } },
       { name: "Mercato di Mezzo",            note: { en: "Market style food hall",
-                                              it: "Mercato coperto con banchi di cibo" } },
+                                              it: "Mercato coperto con diversi tavoli e diversi tipi di cibo." } },
       { name: "Antica Osteria Romagnola",    note: { en: "Traditional osteria, proudly Bolognese, classic local dishes",
                                               it: "Osteria tradizionale, orgogliosamente bolognese, piatti classici del posto" } },
       { name: "Va Mo Là",                    note: { en: "An old library become restaurant",
@@ -450,7 +462,7 @@ const SITE = {
                                               it: "Gelato!!" },
         url: "https://www.instagram.com/cremeriasantostefano/" },
       { name: "Corner Bar",                  note: { en: "Favourite coffee and breakfast",
-                                              it: "Il nostro caffè e la nostra colazione preferiti" } },
+                                              it: "Caffè e colazione preferiti" } },
       { name: "Trattoria da me nella torre", note: { en: "Revisited traditional dishes inside an old tower",
                                               it: "Piatti tradizionali rivisitati dentro un'antica torre" } },
       { name: "Sorbole Que Tapas",           note: { en: "Lively aperitif spot",

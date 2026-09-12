@@ -551,8 +551,10 @@
 
     /* Painting beside the opening, not above it: the section is long and a
        full-width plate here would push the list another screen down. */
+    var strip = buildStrip(SITE.bologna.carousel);
+
     var plate = art(SITE.bologna.image, "bol-img", t(SITE.bologna.imageCaption));
-    if (!plate) return section("bologna", [head, soloIntro(intro), places, foodHead(), food]);
+    if (!plate) return section("bologna", [head, soloIntro(intro), strip, places, foodHead(), food]);
 
     var fig = el("figure", { class: "bol-fig" }, [
       plate,
@@ -568,10 +570,64 @@
       opener.classList.add("bol-open-solo");
     });
 
-    return section("bologna", [head, opener, places, foodHead(), food]);
+    return section("bologna", [head, opener, strip, places, foodHead(), food]);
 
     function foodHead() {
       return el("p", { class: "subhead", text: t(SITE.bologna.foodTitle) });
+    }
+
+    /* A row of squares that drifts leftwards on its own and can be dragged
+       or swiped. The list is rendered twice and the animation travels
+       exactly half the track, so the seam between the copies never shows.
+       Nothing here is a link: the images are decoration, not navigation.
+       Touching it stops the drift, and prefers-reduced-motion never starts
+       it (see styles.css). */
+    function buildStrip(c) {
+      if (!c || !c.images || !c.images.length) return null;
+      var alt = t(c.alt);
+      var track = el("div", { class: "strip-track" });
+      var live = 0;
+      [0, 1].forEach(function (pass) {
+        c.images.forEach(function (file) {
+          var img = art(file, "strip-img", pass ? "" : alt);
+          if (!img) return;
+          if (pass) img.setAttribute("aria-hidden", "true");   /* the copy */
+          img.setAttribute("draggable", "false");
+          if (!pass) live++;
+          track.appendChild(el("div", { class: "strip-cell" }, [img]));
+        });
+      });
+      if (!live) return null;
+      var strip = el("div", { class: "strip", role: "group",
+                              "aria-label": alt }, [track]);
+      /* Every file could still 404. Then the row is empty and should go. */
+      window.setTimeout(function () {
+        if (!track.querySelector("img") && strip.parentNode) {
+          strip.parentNode.removeChild(strip);
+        }
+      }, 4000);
+      dragScroll(strip);
+      return strip;
+    }
+
+    /* Click-drag on a desktop. Touch already scrolls the container itself. */
+    function dragScroll(box) {
+      var down = false, startX = 0, startLeft = 0;
+      box.addEventListener("pointerdown", function (e) {
+        if (e.pointerType === "touch") return;
+        down = true; startX = e.clientX; startLeft = box.scrollLeft;
+        box.classList.add("dragging");
+      });
+      box.addEventListener("pointermove", function (e) {
+        if (!down) return;
+        e.preventDefault();
+        box.scrollLeft = startLeft - (e.clientX - startX);
+      });
+      ["pointerup", "pointercancel", "pointerleave"].forEach(function (ev) {
+        box.addEventListener(ev, function () {
+          down = false; box.classList.remove("dragging");
+        });
+      });
     }
     function soloIntro(node) {
       return el("div", { class: "bol-open bol-open-solo" }, [node]);
@@ -740,7 +796,15 @@
       el("div", { class: "field" }, [
         el("label", { for: "gate-pw", text: t(g.label) }), input
       ]),
-      el("button", { class: "btn", type: "submit", text: t(g.button) }),
+      /* An arrow, not a word. t(g.button) survives as the accessible name,
+         so a screen reader still hears "Enter" rather than "button". */
+      el("button", { class: "btn gate-go", type: "submit",
+                     "aria-label": t(g.button),
+                     html: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true" ' +
+                           'stroke="currentColor" stroke-width="1.6" ' +
+                           'stroke-linecap="round" stroke-linejoin="round">' +
+                           '<path d="M5 12h13"/><path d="M12.5 5.8 18.7 12l-6.2 6.2"/>' +
+                           '</svg>' }),
       t(g.hint) ? el("p", { class: "gate-hint", text: t(g.hint) }) : null,
       error
     ]);

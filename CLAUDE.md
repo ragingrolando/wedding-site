@@ -185,12 +185,20 @@ touching this block.** English fits in less and will not show the problem.
 
 ### The photo strip
 
-Six squares at the foot of the RSVP section, from `SITE.carousel`. That
-section now reads: dancers, heading, deadline, button, photos. It drifts
-left on its own, drags with a mouse and swipes on touch, and nothing in it is
-a link. The track holds the list twice and the keyframe travels exactly
-`-50%`, so the loop has no seam. It pauses on hover, focus and drag, and
-never animates under `prefers-reduced-motion`.
+Six prints at the foot of the RSVP section, from `SITE.carousel`. That
+section reads: dancers, heading, deadline, button, photos. Each print is a
+Polaroid: white mount, deeper at the foot, 3px corners, soft shadow, turned a
+few degrees and lapping over the one before it. It drifts left on its own,
+drags with a mouse and swipes on touch, and nothing in it is a link. It
+pauses on hover, focus and drag, and never animates under
+`prefers-reduced-motion`.
+
+**Every tilt, lift and overlap is keyed off the index in the original image
+list** (`cellStyle(i)` in `main.js`), not off the position in the rendered
+track. The track holds the list twice and the keyframe travels exactly
+`-50%`, so print *i* of the copy lands exactly where print *i* of the
+original was. Key off anything else, `nth-child` or `Math.random` included,
+and the two halves disagree and the loop visibly jumps once per cycle.
 
 `images/story-1.png` … `story-6.png` are placeholders: flat squares in the
 page palette. **Overwrite the files, keep the names**, and nothing else needs
@@ -209,6 +217,27 @@ dancers rendered at the base 820px, never the 700 that rule asked for. It now
 sits below `.dancer-strip`, beside `.dancer-strip-inline`, where it applies.
 **Keep it there.** Any new `.dancer-strip-*` variant goes below the base rule
 too, or it will silently do nothing.
+
+### The plaster
+
+`section:not(.alt)` carries a terracotta wall texture; the `--wash` bands stay
+flat so the two grounds still read as two. It is three turbulences in one
+280px SVG tile, no file to download: a broad mottle, a fine grain in
+`--portico` that darkens, and a second grain in near-white that lifts.
+
+**Balancing the two grains is the point.** A terracotta-only version moved the
+ground from `(247,244,236)` to `(243,230,219)`, which is repainting the
+palette rather than adding texture. As built, the mean moves 3.6 levels in
+total and the reds spread over six values *straddling* the base colour. If
+you retune it, measure it: screenshot an empty gutter with
+`--plaster-opacity` at `.4` and at `0` and compare, because by eye at this
+strength you cannot tell a working texture from a broken one.
+
+It uses `::after`, because `::before` is already the arch run on
+`section.alt`, `section.alt+section` and `#when`. It sits at `z-index:-1`,
+which works only because `html` has no background and `body`'s propagates to
+the canvas. **Set a background on `html` and the texture vanishes.**
+`--plaster-opacity` is the only knob: `.4` by default, `1` is 2.5x.
 
 ### The ampersand
 

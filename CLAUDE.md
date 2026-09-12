@@ -227,17 +227,31 @@ flat so the two grounds still read as two. It is three turbulences in one
 
 **Balancing the two grains is the point.** A terracotta-only version moved the
 ground from `(247,244,236)` to `(243,230,219)`, which is repainting the
-palette rather than adding texture. As built, the mean moves 3.6 levels in
-total and the reds spread over six values *straddling* the base colour. If
-you retune it, measure it: screenshot an empty gutter with
-`--plaster-opacity` at `.4` and at `0` and compare, because by eye at this
-strength you cannot tell a working texture from a broken one.
+palette rather than adding texture. As built at `.6`, the mean moves 5.3
+levels in total and the reds spread over eight values *straddling* the base
+colour, 244 to 251.
+
+If you retune it, measure it: screenshot an empty gutter at the strength you
+want and at `0`, and compare. By eye at this strength you cannot tell a
+working texture from a broken one. Two things will wreck the measurement, and
+both caught me out: `html{scroll-behavior:smooth}` means a `scrollIntoView`
+is still moving when the first screenshot fires, and the scroll-reveal
+animation changes the pixels between shots. Force `scroll-behavior:auto`,
+pin `.reveal{opacity:1}`, and take the `0` baseline twice, once at each end.
+If the two baselines do not match exactly, the numbers in between mean
+nothing.
+
+| `--plaster-opacity` | variance | range | distinct |
+|---|---|---|---|
+| 0 | 0.00 | 247–247 | 1 |
+| .4 | 0.54 | 245–250 | 6 |
+| .6 (current) | 1.07 | 244–251 | 8 |
 
 It uses `::after`, because `::before` is already the arch run on
 `section.alt`, `section.alt+section` and `#when`. It sits at `z-index:-1`,
 which works only because `html` has no background and `body`'s propagates to
 the canvas. **Set a background on `html` and the texture vanishes.**
-`--plaster-opacity` is the only knob: `.4` by default, `1` is 2.5x.
+`--plaster-opacity` is the only knob: `.6` now, `1` is the ceiling.
 
 ### The ampersand
 

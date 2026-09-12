@@ -551,10 +551,8 @@
 
     /* Painting beside the opening, not above it: the section is long and a
        full-width plate here would push the list another screen down. */
-    var strip = buildStrip(SITE.bologna.carousel);
-
     var plate = art(SITE.bologna.image, "bol-img", t(SITE.bologna.imageCaption));
-    if (!plate) return section("bologna", [head, soloIntro(intro), strip, places, foodHead(), food]);
+    if (!plate) return section("bologna", [head, soloIntro(intro), places, foodHead(), food]);
 
     var fig = el("figure", { class: "bol-fig" }, [
       plate,
@@ -570,76 +568,79 @@
       opener.classList.add("bol-open-solo");
     });
 
-    return section("bologna", [head, opener, strip, places, foodHead(), food]);
+    return section("bologna", [head, opener, places, foodHead(), food]);
 
     function foodHead() {
       return el("p", { class: "subhead", text: t(SITE.bologna.foodTitle) });
     }
 
-    /* A row of squares that drifts leftwards on its own and can be dragged
-       or swiped. The list is rendered twice and the animation travels
-       exactly half the track, so the seam between the copies never shows.
-       Nothing here is a link: the images are decoration, not navigation.
-       Touching it stops the drift, and prefers-reduced-motion never starts
-       it (see styles.css). */
-    function buildStrip(c) {
-      if (!c || !c.images || !c.images.length) return null;
-      var alt = t(c.alt);
-      var track = el("div", { class: "strip-track" });
-      var live = 0;
-      [0, 1].forEach(function (pass) {
-        c.images.forEach(function (file) {
-          var img = art(file, "strip-img", pass ? "" : alt);
-          if (!img) return;
-          if (pass) img.setAttribute("aria-hidden", "true");   /* the copy */
-          img.setAttribute("draggable", "false");
-          if (!pass) live++;
-          track.appendChild(el("div", { class: "strip-cell" }, [img]));
-        });
-      });
-      if (!live) return null;
-      var strip = el("div", { class: "strip", role: "group",
-                              "aria-label": alt }, [track]);
-      /* Every file could still 404. Then the row is empty and should go. */
-      window.setTimeout(function () {
-        if (!track.querySelector("img") && strip.parentNode) {
-          strip.parentNode.removeChild(strip);
-        }
-      }, 4000);
-      dragScroll(strip);
-      return strip;
-    }
-
-    /* Click-drag on a desktop. Touch already scrolls the container itself. */
-    function dragScroll(box) {
-      var down = false, startX = 0, startLeft = 0;
-      box.addEventListener("pointerdown", function (e) {
-        if (e.pointerType === "touch") return;
-        down = true; startX = e.clientX; startLeft = box.scrollLeft;
-        box.classList.add("dragging");
-      });
-      box.addEventListener("pointermove", function (e) {
-        if (!down) return;
-        e.preventDefault();
-        box.scrollLeft = startLeft - (e.clientX - startX);
-      });
-      ["pointerup", "pointercancel", "pointerleave"].forEach(function (ev) {
-        box.addEventListener(ev, function () {
-          down = false; box.classList.remove("dragging");
-        });
-      });
-    }
     function soloIntro(node) {
       return el("div", { class: "bol-open bol-open-solo" }, [node]);
     }
   }
 
+  /* ========================================================= photo strip */
+  /* A row of squares that drifts leftwards on its own and can be dragged
+     or swiped. The list is rendered twice and the animation travels
+     exactly half the track, so the seam between the copies never shows.
+     Nothing here is a link: the images are decoration, not navigation.
+     Touching it stops the drift, and prefers-reduced-motion never starts
+     it (see styles.css). */
+  function buildStrip(c) {
+    if (!c || !c.images || !c.images.length) return null;
+    var alt = t(c.alt);
+    var track = el("div", { class: "strip-track" });
+    var live = 0;
+    [0, 1].forEach(function (pass) {
+      c.images.forEach(function (file) {
+        var img = art(file, "strip-img", pass ? "" : alt);
+        if (!img) return;
+        if (pass) img.setAttribute("aria-hidden", "true");   /* the copy */
+        img.setAttribute("draggable", "false");
+        if (!pass) live++;
+        track.appendChild(el("div", { class: "strip-cell" }, [img]));
+      });
+    });
+    if (!live) return null;
+    var strip = el("div", { class: "strip", role: "group",
+                            "aria-label": alt }, [track]);
+    /* Every file could still 404. Then the row is empty and should go. */
+    window.setTimeout(function () {
+      if (!track.querySelector("img") && strip.parentNode) {
+        strip.parentNode.removeChild(strip);
+      }
+    }, 4000);
+    dragScroll(strip);
+    return strip;
+  }
+
+  /* Click-drag on a desktop. Touch already scrolls the container itself. */
+  function dragScroll(box) {
+    var down = false, startX = 0, startLeft = 0;
+    box.addEventListener("pointerdown", function (e) {
+      if (e.pointerType === "touch") return;
+      down = true; startX = e.clientX; startLeft = box.scrollLeft;
+      box.classList.add("dragging");
+    });
+    box.addEventListener("pointermove", function (e) {
+      if (!down) return;
+      e.preventDefault();
+      box.scrollLeft = startLeft - (e.clientX - startX);
+    });
+    ["pointerup", "pointercancel", "pointerleave"].forEach(function (ev) {
+      box.addEventListener(ev, function () {
+        down = false; box.classList.remove("dragging");
+      });
+    });
+  }
+
   /* ================================================================== rsvp */
   function buildRsvp() {
     var cfg = SITE.rsvp;
-    /* No motif beside the heading: the dancer row below the button is the
-       decoration for this section, and two would be a crowd. */
-    var inner = [sectionHead(SITE.ui.rsvpNow, cfg.deadline, true)];
+    /* No motif beside the heading: the dancer row above it is the decoration
+       for this section, and two would be a crowd. */
+    var inner = [art(SITE.dancerStrip, "dancer-strip dancer-strip-rsvp"),
+                 sectionHead(SITE.ui.rsvpNow, cfg.deadline, true)];
 
     if (cfg.mode === "form") {
       inner.push(buildRsvpForm(cfg));
@@ -649,7 +650,7 @@
                   text: t(SITE.ui.rsvpNow) })
       ]));
     }
-    inner.push(art(SITE.dancerStrip, "dancer-strip dancer-strip-rsvp"));
+    inner.push(buildStrip(SITE.carousel));
     return section("rsvp", inner, "rsvp");
   }
 

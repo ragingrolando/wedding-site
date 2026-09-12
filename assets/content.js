@@ -111,6 +111,19 @@ const SITE = {
                       paste the deployed Web App URL into endpoint.
      The form refuses to submit while endpoint is empty, so no reply can
      ever be silently lost.                                                  */
+  /* --------------------------------------------------------------- carousel
+     A strip of squares at the foot of the RSVP section. Auto-scrolls, drags
+     and swipes, and nothing is clickable. Drop your own photos in over these
+     files, keeping the names, and nothing else needs changing. Square crops:
+     anything else is centre-cropped by CSS. A missing file drops out of the
+     strip; an empty list removes the strip altogether. Move the
+     buildStrip(SITE.carousel) call in main.js to put it somewhere else. */
+  carousel: {
+    alt:    { en: "Orlando and Sofia", it: "Orlando e Sofia" },
+    images: ["story-1.png", "story-2.png", "story-3.png",
+             "story-4.png", "story-5.png", "story-6.png"]
+  },
+
   rsvp: {
     mode:     "link",
     joyUrl:   "https://withjoy.com/orlando-and-sofia/rsvp",
@@ -373,18 +386,6 @@ const SITE = {
         "Perdetevi sotto i portici, passeggiate con un gelato in mano, fate il giro dei bar del centro per un caffè. Ci piacerebbe che vi godeste la città quanto noi."
       ]
     },
-    /* A strip of squares under the intro. Auto-scrolls, drags and swipes,
-       and nothing is clickable. Drop your own photos in over these files,
-       keeping the names, and nothing else needs changing. Square crops:
-       anything else is centre-cropped to a square by CSS. A missing file
-       drops out of the strip rather than showing a broken icon, and an
-       empty list removes the strip altogether. */
-    carousel: {
-      alt:    { en: "Orlando and Sofia", it: "Orlando e Sofia" },
-      images: ["story-1.png", "story-2.png", "story-3.png",
-               "story-4.png", "story-5.png", "story-6.png"]
-    },
-
     places: [
       { icon: "🍝", name: "Quadrilatero",
         text: { en: "The old market at the centre of Bologna. Explore Via Pescherie Vecchie, Via Clavature and Via degli Orefici for fresh pasta shops, delis, wine bars and tiny food stalls.",

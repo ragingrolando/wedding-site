@@ -514,7 +514,6 @@ section.alt .tl-body::before{background:var(--wash)}
 .rsvp-inner{text-align:center}
 .rsvp-note{margin:22px auto 0;color:var(--ink-52);font-size:16px}
 /* The dancers close the section, under the button. */
-.dancer-strip-rsvp{max-width:700px;margin:clamp(40px,6vw,64px) auto 0}
 form.rsvp-form{max-width:520px;margin:36px auto 0;display:grid;gap:15px;text-align:left}
 .row{display:grid;gap:15px;grid-template-columns:1fr 1fr}
 .field{display:grid;gap:7px}
@@ -604,6 +603,12 @@ footer p{max-width:none;margin-top:14px;font-family:var(--util);font-size:11px;
 /* Same row, closing the running order. Smaller than the footer one, but
    the same weight: every dancer and motif on the page sits at .8. */
 .dancer-strip-inline{max-width:640px;margin:clamp(44px,6vw,68px) auto 0;opacity:.8}
+/* Above the RSVP heading, not under the button. 656px is 20% off the 820 it
+   actually rendered at: this rule used to sit ABOVE .dancer-strip with the
+   same specificity, so its max-width never applied and the 700px it asked
+   for was never what you saw. Keep it below .dancer-strip. The margin is
+   under the image now, so the gap falls between dancers and heading. */
+.dancer-strip-rsvp{max-width:656px;margin:0 auto clamp(26px,3.6vw,38px)}
 
 .stay-more{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;
   margin-top:clamp(30px,4vw,44px)}

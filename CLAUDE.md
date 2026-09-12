@@ -225,33 +225,38 @@ flat so the two grounds still read as two. It is three turbulences in one
 280px SVG tile, no file to download: a broad mottle, a fine grain in
 `--portico` that darkens, and a second grain in near-white that lifts.
 
-**Balancing the two grains is the point.** A terracotta-only version moved the
-ground from `(247,244,236)` to `(243,230,219)`, which is repainting the
-palette rather than adding texture. As built at `.6`, the mean moves 5.3
-levels in total and the reds spread over eight values *straddling* the base
-colour, 244 to 251.
+**Two things move together here, and they are easy to confuse.** *Grain* is
+how mottled the surface is; *warmth* is how far the ground shifts towards
+terracotta. The first build balanced a darkening terracotta grain against a
+lifting near-white one specifically so the colour would not move: it added
+grain and kept the ground at `(247,244,236)`. That was the wrong reading of
+the brief. The current build lets the terracotta win, so the ground itself is
+warm and the grain rides on top.
 
-If you retune it, measure it: screenshot an empty gutter at the strength you
-want and at `0`, and compare. By eye at this strength you cannot tell a
-working texture from a broken one. Two things will wreck the measurement, and
-both caught me out: `html{scroll-behavior:smooth}` means a `scrollIntoView`
-is still moving when the first screenshot fires, and the scroll-reveal
-animation changes the pixels between shots. Force `scroll-behavior:auto`,
-pin `.reveal{opacity:1}`, and take the `0` baseline twice, once at each end.
-If the two baselines do not match exactly, the numbers in between mean
-nothing.
+| `--plaster-opacity` | ground RGB | warmth | variance | distinct | ink-52 |
+|---|---|---|---|---|---|
+| 0 | (247,244,236) | 0 | 0.00 | 1 | 5.00 |
+| earlier build at .6 | (248,242,234) | 5 | 1.07 | 8 | 4.98 |
+| **.75 (current)** | **(245,230,219)** | **33** | **4.13** | **17** | **4.74** |
+| 1 (ceiling) | (245,225,214) | 43 | 7.30 | 22 | 4.68 |
 
-| `--plaster-opacity` | variance | range | distinct |
-|---|---|---|---|
-| 0 | 0.00 | 247–247 | 1 |
-| .4 | 0.54 | 245–250 | 6 |
-| .6 (current) | 1.07 | 244–251 | 8 |
+**Warming the ground costs contrast.** `--ink-52` is the worst case, and it
+falls 5.00 → 4.74 at the current setting, 4.68 at the ceiling. Both clear the
+4.6 floor above and WCAG's 4.5, but there is not much room left: a warmer
+ground than the ceiling means re-checking the ink, not just eyeballing it.
+
+If you retune it, measure it. Two things will wreck the measurement, and both
+caught me out: `html{scroll-behavior:smooth}` means a `scrollIntoView` is
+still moving when the first screenshot fires, and the scroll-reveal animation
+changes the pixels between shots. Force `scroll-behavior:auto`, pin
+`.reveal{opacity:1}`, and take the `0` baseline twice, once at each end. If
+the two baselines do not match exactly, the numbers between them mean nothing.
 
 It uses `::after`, because `::before` is already the arch run on
 `section.alt`, `section.alt+section` and `#when`. It sits at `z-index:-1`,
 which works only because `html` has no background and `body`'s propagates to
 the canvas. **Set a background on `html` and the texture vanishes.**
-`--plaster-opacity` is the only knob: `.6` now, `1` is the ceiling.
+`--plaster-opacity` is the only knob: `.75` now, `1` is a third more and is the ceiling of this tile. Past that, rebuild the tile and re-check the ink.
 
 ### The ampersand
 

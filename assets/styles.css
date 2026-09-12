@@ -67,9 +67,11 @@
      measured against flat paper it drifts about 8 levels warm across G and
      B, and spreads the reds over six values instead of one.
      No file to download, and stitchTiles keeps the tile seamless.
-     --plaster-opacity is the only knob: .6 now, 1 is the ceiling. */
-  --plaster:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='280'%3E%3Cfilter id='m' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.021' numOctaves='4' stitchTiles='stitch' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 .753 0 0 0 0 .357 0 0 0 0 .235 .05 0 0 0 0'/%3E%3C/filter%3E%3Cfilter id='d' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 .753 0 0 0 0 .357 0 0 0 0 .235 .40 0 0 0 0'/%3E%3C/filter%3E%3Cfilter id='l' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch' seed='19'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .996 0 0 0 0 .972 1 0 0 0 0'/%3E%3C/filter%3E%3Crect width='280' height='280' filter='url(%23m)'/%3E%3Crect width='280' height='280' filter='url(%23d)'/%3E%3Crect width='280' height='280' filter='url(%23l)'/%3E%3C/svg%3E");
-  --plaster-opacity:.6;
+     --plaster-opacity is the only knob: .75 now, 1 is a third more.
+     Raising it warms the ground as well as deepening the grain, so
+     re-check the ink contrast if you push it. */
+  --plaster:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='280'%3E%3Cfilter id='m' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.021' numOctaves='4' stitchTiles='stitch' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 .753 0 0 0 0 .357 0 0 0 0 .235 .45 0 0 0 0'/%3E%3C/filter%3E%3Cfilter id='d' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 .753 0 0 0 0 .357 0 0 0 0 .235 .93 0 0 0 0'/%3E%3C/filter%3E%3Cfilter id='l' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch' seed='19'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .996 0 0 0 0 .972 1 0 0 0 0'/%3E%3C/filter%3E%3Crect width='280' height='280' filter='url(%23m)'/%3E%3Crect width='280' height='280' filter='url(%23d)'/%3E%3Crect width='280' height='280' filter='url(%23l)'/%3E%3C/svg%3E");
+  --plaster-opacity:.75;
   --arch:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='34' viewBox='0 0 46 34'%3E%3Cpath d='M3 34V22a20 20 0 0 1 40 0v12' fill='none' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E");
 }
 

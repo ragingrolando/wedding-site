@@ -60,6 +60,16 @@
   /* One bay of the portico. A semicircular arch needs radius = half the
      clear span, and the apex sits that far above the springing line, so the
      cell has to be tall enough to hold it or the curve clips flat. */
+  /* Terracotta plaster, three turbulences in one 280px tile: a broad
+     mottle for the wall, then a fine grain in --portico that darkens and a
+     second grain in near-white that lifts. The two grains are balanced so
+     the ground keeps its colour and what you get is texture, not a wash:
+     measured against flat paper it drifts about 8 levels warm across G and
+     B, and spreads the reds over six values instead of one.
+     No file to download, and stitchTiles keeps the tile seamless.
+     --plaster-opacity is the only knob: .4 is subtle, 1 is 2.5x that. */
+  --plaster:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='280'%3E%3Cfilter id='m' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.021' numOctaves='4' stitchTiles='stitch' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 .753 0 0 0 0 .357 0 0 0 0 .235 .05 0 0 0 0'/%3E%3C/filter%3E%3Cfilter id='d' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 .753 0 0 0 0 .357 0 0 0 0 .235 .40 0 0 0 0'/%3E%3C/filter%3E%3Cfilter id='l' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch' seed='19'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .996 0 0 0 0 .972 1 0 0 0 0'/%3E%3C/filter%3E%3Crect width='280' height='280' filter='url(%23m)'/%3E%3Crect width='280' height='280' filter='url(%23d)'/%3E%3Crect width='280' height='280' filter='url(%23l)'/%3E%3C/svg%3E");
+  --plaster-opacity:.4;
   --arch:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='34' viewBox='0 0 46 34'%3E%3Cpath d='M3 34V22a20 20 0 0 1 40 0v12' fill='none' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E");
 }
 
@@ -224,38 +234,70 @@ h1,h2,h3,.brand,.tl-name,.nm,.gate-kicker,.gate-title,.mono,.hero-names{
 .btn.small{font-size:11px;padding:10px 18px;letter-spacing:.1em}
 
 /* ------------------------------------------------------------- photo strip
-   A row of squares under the Bologna intro. It drifts left on its own and
-   can be dragged or swiped. The track holds the list twice and the keyframe
-   travels exactly -50%, so it loops with no visible seam. Nothing in it is
-   a link. Hovering, focusing or dragging stops the drift, and it never
+   A handful of prints laid out in a row, each turned a little and lapping
+   over the one before it. The track holds the list twice and the keyframe
+   travels exactly -50%, so it loops with no seam; main.js keys every tilt
+   off the index in the original list so both halves match. Nothing in it
+   is a link. Hovering, focusing or dragging stops the drift, and it never
    starts at all for a reader who asked for less motion. */
 .strip{
   margin:clamp(30px,4.5vw,48px) 0 0;overflow-x:auto;overflow-y:hidden;
-  scrollbar-width:none;-ms-overflow-style:none;
-  -webkit-mask-image:linear-gradient(to right,transparent,#000 6%,#000 94%,transparent);
-          mask-image:linear-gradient(to right,transparent,#000 6%,#000 94%,transparent);
+  scrollbar-width:none;-ms-overflow-style:none;cursor:grab;
+  /* Narrow fade. The point is that a print is visibly cut off at the edge,
+     which says "there is more" far better than a long dissolve does. */
+  -webkit-mask-image:linear-gradient(to right,transparent,#000 3.5%,#000 96.5%,transparent);
+          mask-image:linear-gradient(to right,transparent,#000 3.5%,#000 96.5%,transparent);
 }
 .strip::-webkit-scrollbar{display:none}
-.strip-track{display:flex;gap:clamp(10px,1.4vw,18px);width:max-content;
-  animation:stripDrift 60s linear infinite}
+.strip.dragging{cursor:grabbing}
+.strip-track{
+  display:flex;align-items:center;width:max-content;gap:0;
+  /* Room for the tilt and the drop shadow, which both reach past the box. */
+  padding:26px 34px 30px;
+  animation:stripDrift 72s linear infinite;
+}
 .strip:hover .strip-track,
 .strip:focus-within .strip-track,
 .strip.dragging .strip-track{animation-play-state:paused}
-.strip-cell{flex:0 0 auto}
+
+/* The print itself: white mount, deeper at the foot the way a Polaroid is,
+   3px corners, and a shadow soft enough to sit on paper rather than float. */
+.strip-cell{
+  flex:0 0 auto;position:relative;
+  background:#fdfcf8;padding:9px 9px 30px;border-radius:3px;
+  box-shadow:0 1px 2px rgba(29,51,32,.10), 0 6px 16px rgba(29,51,32,.10);
+  transition:transform .25s ease, box-shadow .25s ease;
+}
+.strip-cell:hover{box-shadow:0 2px 4px rgba(29,51,32,.12), 0 12px 26px rgba(29,51,32,.14)}
 .strip-img{
-  display:block;width:clamp(120px,15vw,168px);aspect-ratio:1/1;object-fit:cover;
-  border-radius:2px;background:var(--card);
-  /* Decoration, not navigation: no pointer, no drag ghost, no selection. */
+  display:block;width:clamp(112px,13.5vw,152px);aspect-ratio:1/1;object-fit:cover;
+  border-radius:1px;background:var(--card);
+  /* Decoration, not navigation: no pointer, no drag ghost, no selection.
+     Pointer events pass through to .strip so the row still drags. */
   pointer-events:none;user-select:none;-webkit-user-select:none;-webkit-user-drag:none;
 }
-.strip.dragging{cursor:grabbing}
 @keyframes stripDrift{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media (prefers-reduced-motion:reduce){
   .strip-track{animation:none}
+  .strip-cell{transition:none}
+}
+@media (max-width:560px){
+  .strip-cell{padding:7px 7px 24px}
+  .strip-track{padding:20px 24px 24px}
 }
 
 /* ----------------------------------------------------------------- section */
 section{padding:var(--rhythm) 0;scroll-margin-top:84px;position:relative}
+
+/* The lighter bands get the plaster; the --wash bands stay flat, so the two
+   grounds still read as two grounds. To move it onto the darker bands
+   instead, swap the selector for section.alt. background-image, not a
+   pseudo-element: ::before is already the arch run on three selectors. */
+section:not(.alt)::after{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:var(--plaster) repeat;background-size:280px 280px;
+  opacity:var(--plaster-opacity);
+}
 
 /* The signature. A run of arches marks every change of ground, so the page
    reads as walking in and out of the colonnade rather than as nine

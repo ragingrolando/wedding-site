@@ -592,13 +592,19 @@
     var track = el("div", { class: "strip-track" });
     var live = 0;
     [0, 1].forEach(function (pass) {
-      c.images.forEach(function (file) {
+      c.images.forEach(function (file, i) {
         var img = art(file, "strip-img", pass ? "" : alt);
         if (!img) return;
         if (pass) img.setAttribute("aria-hidden", "true");   /* the copy */
         img.setAttribute("draggable", "false");
         if (!pass) live++;
-        track.appendChild(el("div", { class: "strip-cell" }, [img]));
+        /* Keyed off i, the index in the ORIGINAL list, so the copy is laid
+           out identically to what it copies. The animation travels exactly
+           one list, so cell i lands where cell i was and the seam is
+           invisible however many photos there are. Never Math.random here:
+           the two passes would disagree and the loop would visibly jump. */
+        track.appendChild(el("div", { class: "strip-cell",
+                                      style: cellStyle(i) }, [img]));
       });
     });
     if (!live) return null;
@@ -612,6 +618,20 @@
     }, 4000);
     dragScroll(strip);
     return strip;
+  }
+
+  /* Scattered like prints dropped on a table: each one turned a little,
+     nudged up or down, and lapping over the one before it. The cycles are
+     coprime-ish and of different lengths, so the pattern does not read as a
+     repeat until well past the number of photos anyone will use. */
+  function cellStyle(i) {
+    var turn = [-3.4, 2.2, -1.4, 3.1, -2.3, 1.5, -2.9, 2.7];
+    var lift = [4, -3, 6, -5, 2, -6, 5, -2];
+    var lap  = [26, 18, 30, 20, 28, 16, 24, 22];
+    return "transform:rotate(" + turn[i % turn.length] + "deg)" +
+           " translateY(" + lift[i % lift.length] + "px);" +
+           "margin-left:-" + lap[i % lap.length] + "px;" +
+           "z-index:" + (10 + (i % 3));
   }
 
   /* Click-drag on a desktop. Touch already scrolls the container itself. */

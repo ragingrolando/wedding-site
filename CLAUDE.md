@@ -44,6 +44,7 @@ assets/content.js    Every word and filename on the site. Edit this.
 assets/main.js       Renders the page from content.js. Rarely needs touching.
 assets/styles.css    All styling. Tokens at the top.
 images/              Artwork. See images/README.md
+tools/plaster.js     Regenerates the wall-texture tile. Not a build step
 apps-script/         Unused. A Google Sheet RSVP backend, for if Joy is dropped
 joy-example/         The saved original Joy page. Reference only, never served
 ```
@@ -144,7 +145,8 @@ portico that runs through it.
 --wash       #efeade   alternating band
 --card       #e9e3d1
 --ink        #1d3320   the pen line, verbatim from the painting
---portico    #c05b3c   the arches
+--portico    #c05b3c   the arches. NOT the plaster pigment, see The plaster
+--plaster    the wall texture, a generated SVG tile. tools/plaster.js
 --verdigris  #136d5f   darkened from the study's #20A98D for contrast
 --ochre      #d2aa2e
 --display    Fraunces      variable: opsz, SOFT, WONK
@@ -220,43 +222,158 @@ too, or it will silently do nothing.
 
 ### The plaster
 
-`section:not(.alt)` carries a terracotta wall texture; the `--wash` bands stay
-flat so the two grounds still read as two. It is three turbulences in one
-280px SVG tile, no file to download: a broad mottle, a fine grain in
-`--portico` that darkens, and a second grain in near-white that lifts.
+**Every section carries the same terracotta wall texture.** Only the ground
+colour under it changes: `--paper` normally, `--wash` on `section.alt`. That
+is one token, `--band`, so a new band variant only has to set it. It is three
+turbulences in one 560px SVG tile, no file to download: a broad mottle, a
+coarse grain in terracotta that darkens, and a second grain in warm near-white
+that lifts.
 
-**Two things move together here, and they are easy to confuse.** *Grain* is
-how mottled the surface is; *warmth* is how far the ground shifts towards
-terracotta. The first build balanced a darkening terracotta grain against a
-lifting near-white one specifically so the colour would not move: it added
-grain and kept the ground at `(247,244,236)`. That was the wrong reading of
-the brief. The current build lets the terracotta win, so the ground itself is
-warm and the grain rides on top.
+Earlier builds put it on `section:not(.alt)` only, so the `--wash` bands stayed
+flat. That was not really a choice (see the z-index note below).
 
-| `--plaster-opacity` | ground RGB | warmth | variance | distinct | ink-52 |
+#### It reads pink when the two grounds disagree
+
+The first warm build used `--portico` as the pigment. `--portico` is `#c05b3c`,
+hue 14. At texture strength it dragged the ground to **hue 25**, and the flat
+`--wash` band next to it sat at **hue 42**. Two grounds seventeen degrees apart,
+the redder one directly above the yellower one, is what read as pink: nothing
+on the page was pink on its own, the comparison made it pink.
+
+The fix was the pigment, not the strength. It is now `#c87328`, hue 28, and
+both bands measure **hue 36-37**, so neither band is the red one any more.
+
+| | old build | now |
+|---|---|---|
+| pigment | `#c05b3c` (`--portico`), hue 14 | `#c87328`, hue 28 |
+| paper band | (245,230,219) hue 25 | (246,232,211) hue 36 |
+| wash band | (239,234,222) hue 42, **flat** | (243,228,206) hue 36, textured |
+| worst ink-52 | 4.735 | 4.701 |
+
+**If it ever reads pink again, measure both bands' hue before touching
+anything.** A single band's colour tells you nothing; the gap is the bug.
+
+#### Grain size lives in two numbers, and one is a trap
+
+```
+baseFrequency   INVERSE. Lower is coarser. .14 is roughly 7px features.
+numOctaves      each octave adds a layer at DOUBLE the frequency, so MORE
+                octaves makes the grain FINER, not richer.
+```
+
+The old build ran `.85` with 3 octaves. Measured, that has a lag-1
+autocorrelation of **-0.07**: adjacent pixels uncorrelated, which is per-pixel
+noise and reads as sensor grain, not as a wall. It is now `.14` with 2
+octaves, which measures **0.88**. Past about `.10` it stops reading as plaster
+and starts reading as damp.
+
+**Standard deviation does not measure grain size.** It was 4.93 before and
+4.85 after, while the feature size went up roughly sevenfold. Use the
+autocorrelation, or amplify a screenshot's contrast and look at it; at the real
+amplitude (sd 4 of 255, about 1.6%) the structure is invisible in a screenshot
+that has been downscaled at all.
+
+The tile is 560px rather than 280px only to halve how often it repeats across a
+wide screen. It is free: the whole tile paints in about 20ms at every size
+tried, and the data URI is the same 1047 bytes either way.
+
+#### Regenerate the tile, do not hand-edit it
+
+```
+node tools/plaster.js                 the tile exactly as committed
+node tools/plaster.js --grain=0.10    coarser
+```
+
+Paste the whole `url("...")` into `--plaster`. `tools/plaster.js` is not a
+build step; its output is committed and nothing runs at deploy time. It exists
+because the tile is a URL-encoded SVG and hand-editing one is how you get a
+texture that silently fails to parse.
+
+#### Strength, and what it costs
+
+`--plaster-opacity` is the only live knob: `.75` now, `1` is the ceiling of
+this tile.
+
+| `--plaster-opacity` | paper band | wash band | warmth | sd | worst ink-52 |
 |---|---|---|---|---|---|
-| 0 | (247,244,236) | 0 | 0.00 | 1 | 5.00 |
-| earlier build at .6 | (248,242,234) | 5 | 1.07 | 8 | 4.98 |
-| **.75 (current)** | **(245,230,219)** | **33** | **4.13** | **17** | **4.74** |
-| 1 (ceiling) | (245,225,214) | 43 | 7.30 | 22 | 4.68 |
+| 0 (off) | (247,244,236) h44 | (239,234,222) h42 | 0 | 0.1 | 4.78 |
+| .4 | (246,238,223) h39 | (241,231,213) h39 | 13 / 9 | 2.6 | 4.73 |
+| .6 | (246,235,217) h37 | (242,230,209) h38 | 19 / 13 | 3.9 | 4.70 |
+| **.75 (current)** | **(246,233,212) h37** | **(243,229,206) h37** | **24 / 16** | **4.8** | **4.70** |
+| 1 (ceiling) | (246,229,204) h36 | (244,227,201) h36 | 32 / 21 | 6.4 | 4.66 |
 
-**Warming the ground costs contrast.** `--ink-52` is the worst case, and it
-falls 5.00 → 4.74 at the current setting, 4.68 at the ceiling. Both clear the
-4.6 floor above and WCAG's 4.5, but there is not much room left: a warmer
-ground than the ceiling means re-checking the ink, not just eyeballing it.
+*warmth* is how many levels of blue the plaster pulls out of each band. Note
+the hues converge as the knob comes up: at `0` the two bands sit at 44 and 42
+with the texture off, and the pigment brings both to 36-37. Measured on a
+120px patch; a small patch lands a little differently depending on where the
+mottle falls, so the worst single sample seen anywhere on the page is 4.70,
+not 4.73.
 
-If you retune it, measure it. Two things will wreck the measurement, and both
-caught me out: `html{scroll-behavior:smooth}` means a `scrollIntoView` is
-still moving when the first screenshot fires, and the scroll-reveal animation
-changes the pixels between shots. Force `scroll-behavior:auto`, pin
-`.reveal{opacity:1}`, and take the `0` baseline twice, once at each end. If
-the two baselines do not match exactly, the numbers between them mean nothing.
+**Warming the ground costs contrast, and the `--wash` band is the worst case**
+because it starts darker. `--ink-52` there is 4.701 at the current setting.
+That clears the 4.6 floor above and WCAG's 4.5, but not by much: anything
+warmer or stronger means measuring the ink, not eyeballing it.
 
-It uses `::after`, because `::before` is already the arch run on
-`section.alt`, `section.alt+section` and `#when`. It sits at `z-index:-1`,
-which works only because `html` has no background and `body`'s propagates to
-the canvas. **Set a background on `html` and the texture vanishes.**
-`--plaster-opacity` is the only knob: `.75` now, `1` is a third more and is the ceiling of this tile. Past that, rebuild the tile and re-check the ink.
+It no longer works by `opacity` on a pseudo-element. The texture is a
+background layer on the section itself, and the knob veils it with the band's
+own colour at `1 - opacity`, which is arithmetically identical. Verified live:
+forcing the knob to `0` takes the measured variance to sd 0.12, i.e. flat.
+The veil uses `color-mix()`. On a browser too old for that (pre-2023) the
+declaration drops and the bands render as flat colour, which is the old look,
+not a broken one.
+
+#### What putting it on every band cost
+
+The plaster is a partly-opaque layer. Solved from the two measured band pairs
+it is **alpha .656, colour (245,226,198)**, and that model reproduces both
+bands exactly. Being partly opaque, it pulls the two grounds towards each
+other: whatever is underneath contributes only a third.
+
+So the bands now separate far less than they used to. As a contrast ratio,
+paper against wash:
+
+| | separation | as a fraction of the old |
+|---|---|---|
+| flat paper vs flat wash (old) | 1.0922 | 100% |
+| textured paper vs textured wash (now) | 1.0359 | **39%** |
+
+The arch run at every change of ground is doing that work now, which was
+always its job. But if the bands should read as two again, the lever is
+`--wash`, and it runs straight into the ink:
+
+| `--wash` | separation | ink-52 |
+|---|---|---|
+| `#efeade` (current) | 1.036 | 4.73 |
+| `#e9e2d6` | 1.055 | 4.62 |
+| `#e6ded3` | 1.066 | 4.64 |
+| `#e1d6cb` (restores the old separation) | 1.093 | **4.58, under the floor** |
+
+**You cannot have the old band separation and the 4.6 floor at once.**
+`#e6ded3` is the darkest that keeps both. Not applied: the brief was the same
+grain on every section, and changing `--wash` is a palette decision.
+
+#### Why it is not a pseudo-element any more
+
+It used to be `section:not(.alt)::after` at `z-index:-1`. **A negative-z
+pseudo-element paints behind its parent's own `background-color`**, so that
+rule could never have shown through a section that painted one, which is the
+real reason it was restricted to `:not(.alt)`: `section.alt` sets
+`background:var(--wash)` and would have hidden it. The old note that it
+"works only because `html` has no background" was describing the same
+fragility. Painting it as a background layer on the section removes all of it,
+and frees `::after` besides.
+
+#### Measuring it
+
+If you retune it, measure it. Three things will wreck the measurement, and all
+three have:
+
+- `html{scroll-behavior:smooth}` means a `scrollIntoView` is still moving when
+  the first screenshot fires. Force `scroll-behavior:auto`.
+- The scroll-reveal animation changes the pixels between shots. Pin
+  `.reveal{opacity:1;transform:none}`.
+- Take the `0` baseline **twice, once at each end**. If the two do not match
+  exactly, everything between them is meaningless.
 
 ### The ampersand
 
@@ -407,5 +524,8 @@ back to Georgia and typography changes cannot be judged.
    choice most likely to be wrong. Never resolved.
 3. Never started, and would need confirming first: splitting the long Bologna
    section, an "Our Story" section.
-4. The Via Saragozza painting is signed *Ramesh Jhawar*. Worth confirming the
-   right to publish it before the site is shared widely.
+4. Nothing outstanding on the artwork. **The Via Saragozza painting is
+   Orlando's.** He commissioned it; it is signed *Ramesh Jhawar* because
+   Jhawar painted it to commission. Publishing it is his to decide and he
+   has decided. Do not raise this again, and do not replace or crop the
+   image on rights grounds.

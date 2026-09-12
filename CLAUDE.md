@@ -111,7 +111,14 @@ Friday and Saturday, IT    https://orlando-and-sofia.com/?k=spritz&lang=it
 Its title, blurb and password hint were removed on request. `main.js` omits
 each of the three when the key is absent from `gate`, so the card closes up
 rather than leaving a gap. Add any of them back as `{ en, it }` and it
-reappears. The button reads `Andiamo!` in both languages.
+reappears.
+
+The submit button is an arrow, not a word. `gate.button` is **not printed**
+any more; it is the button's `aria-label`, so a screen reader hears "Enter"
+or "Entra" instead of "button". Change the word there, the glyph in
+`buildGate`. A guest arriving on the bare domain now sees a name, a date, a
+password box and an arrow, and nothing telling them what to type, so send the
+`?k=` links rather than the bare URL.
 
 ### It hides a card, it does not keep a secret
 
@@ -175,6 +182,24 @@ old 1080px breakpoint "Bologna" sat behind the fade on any laptop. Every label
 is now fully visible down to 768px in both languages; below that it scrolls,
 which is the intent on a phone. **Check Italian at 1100 and 768 before
 touching this block.** English fits in less and will not show the problem.
+
+### The photo strip
+
+Six squares under the Bologna intro, from `SITE.bologna.carousel`. It drifts
+left on its own, drags with a mouse and swipes on touch, and nothing in it is
+a link. The track holds the list twice and the keyframe travels exactly
+`-50%`, so the loop has no seam. It pauses on hover, focus and drag, and
+never animates under `prefers-reduced-motion`.
+
+`images/story-1.png` … `story-6.png` are placeholders: flat squares in the
+page palette. **Overwrite the files, keep the names**, and nothing else needs
+touching. Square crops are best; anything else is centre-cropped by
+`object-fit`. A missing file drops out; if every file is missing the strip
+removes itself after four seconds rather than leaving an empty band.
+
+It went here, not in the Gift List where it was first asked for. Photos of
+the couple travelling sitting directly above their IBAN reads as an itemised
+bill for the honeymoon.
 
 ### The ampersand
 
@@ -263,6 +288,11 @@ more except by choice.
 Left in English deliberately: proper nouns (hotels, restaurants, street
 names) and the words Italian uses unchanged (Password, Aperitivo, Gelato,
 Dress Code, IBAN, BIC, RSVP, Email).
+
+**Centred is two things.** `.subhead` had `text-align:center` and still sat
+282px left of the column: `p` carries `max-width:var(--measure)`, so the box
+was narrower than its parent, and the rule set its side margins to `0`.
+Centring text inside a box is not centring the box. It is `auto` now.
 
 **`t()` is not applied everywhere.** Place names, restaurant names and notes,
 event times and addresses were once rendered as raw strings, so making one

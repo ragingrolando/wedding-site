@@ -500,7 +500,11 @@ for paper and ready, just unused.
   no longer opens pico at him.
 - **Renaming an image breaks the site** unless `content.js` is updated in the
   same commit. This has happened twice.
-- Claude pushes to both `main` and `claude/recreate-wedding-site-rw52wx`.
+- Claude works on a per-session `claude/...` branch and pushes there first,
+  then fast-forwards `main` once you have seen the change. **Pushing `main`
+  is the deploy**, so that second push is the one that changes the live site.
+  Session branches so far: `claude/recreate-wedding-site-rw52wx`,
+  `claude/wedding-site-handover-dmugik`.
 
 ### Verifying a change
 

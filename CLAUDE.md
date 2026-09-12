@@ -185,7 +185,8 @@ touching this block.** English fits in less and will not show the problem.
 
 ### The photo strip
 
-Six squares under the Bologna intro, from `SITE.bologna.carousel`. It drifts
+Six squares at the foot of the RSVP section, from `SITE.carousel`. That
+section now reads: dancers, heading, deadline, button, photos. It drifts
 left on its own, drags with a mouse and swipes on touch, and nothing in it is
 a link. The track holds the list twice and the keyframe travels exactly
 `-50%`, so the loop has no seam. It pauses on hover, focus and drag, and
@@ -197,9 +198,17 @@ touching. Square crops are best; anything else is centre-cropped by
 `object-fit`. A missing file drops out; if every file is missing the strip
 removes itself after four seconds rather than leaving an empty band.
 
-It went here, not in the Gift List where it was first asked for. Photos of
-the couple travelling sitting directly above their IBAN reads as an itemised
-bill for the honeymoon.
+`buildStrip` and `dragScroll` live at their own scope, not inside a section
+builder, so the strip can be called from anywhere. Move the
+`buildStrip(SITE.carousel)` call to relocate it. It has already been in the
+Bologna section and under the Gift List; it is in RSVP now.
+
+**`.dancer-strip-rsvp` was dead for the life of the file.** It sat above
+`.dancer-strip` with the same specificity, so the base rule won and the RSVP
+dancers rendered at the base 820px, never the 700 that rule asked for. It now
+sits below `.dancer-strip`, beside `.dancer-strip-inline`, where it applies.
+**Keep it there.** Any new `.dancer-strip-*` variant goes below the base rule
+too, or it will silently do nothing.
 
 ### The ampersand
 

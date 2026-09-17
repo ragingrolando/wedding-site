@@ -25,8 +25,8 @@
      muted tier only 3.3:1 on the wash ground, which fails AA, and it carries
      the nav labels and the food notes. .70 clears 4.6:1 on every ground the
      page uses; .78 keeps a visible step above it. */
-  --ink-72:rgba(29,51,32,.78);
-  --ink-52:rgba(29,51,32,.70);
+  --ink-72:rgba(29,51,32,.82);
+  --ink-52:rgba(29,51,32,.74);
   --ink-24:rgba(29,51,32,.24);
 
   --hill:#4f6b23;         /* the hill, darkened for contrast */
@@ -279,12 +279,21 @@ h1,h2,h3,.brand,.tl-name,.nm,.gate-kicker,.gate-title,.mono,.hero-names{
 /* ----------------------------------------------------------------- section */
 section{
   padding:var(--rhythm) 0;scroll-margin-top:84px;position:relative;
-  /* --band is the section's ground colour, and the only thing that differs
-     between an .alt band and a normal one. It is a custom property rather
-     than a plain background so a texture layer can be added on top of it
-     without every band variant having to restate its own colour. */
+  /* Every band is the same photographed wall over a different ground colour.
+     --band is that colour and the only thing that differs between an .alt
+     band and a normal one, so a new band variant only has to set it.
+
+     The texture needs no blend mode. concrete-wall.webp is a NEUTRAL GREY
+     (180,180,180) whose entire image lives in its ALPHA channel, averaging
+     61/255. So it composites straight over --band: the transparent parts are
+     the ground colour, the opaque parts are wall. Add a blend mode and you
+     will be blending a flat grey rectangle, which is not what you want.
+
+     No background-size: the file is served at its native 497x545 so the
+     grain is never rescaled. */
   --band:var(--paper);
   background-color:var(--band);
+  background-image:url("../images/concrete-wall.webp");
 }
 section.alt{--band:var(--wash)}
 

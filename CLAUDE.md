@@ -44,7 +44,6 @@ assets/content.js    Every word and filename on the site. Edit this.
 assets/main.js       Renders the page from content.js. Rarely needs touching.
 assets/styles.css    All styling. Tokens at the top.
 images/              Artwork. See images/README.md
-tools/plaster.js     UNUSED. Generated the rejected SVG plaster tile
 apps-script/         Unused. A Google Sheet RSVP backend, for if Joy is dropped
 joy-example/         The saved original Joy page. Reference only, never served
 ```
@@ -154,9 +153,10 @@ portico that runs through it.
 --arch       an inline SVG of one portico bay, tiled as a mask
 ```
 
-`--ink-52` and `--ink-72` were raised from `.56`/`.72` to `.70`/`.78` after a
-WCAG audit: at the old values the nav labels and the restaurant notes were
-running at 3.2:1. Nothing on the page is now under 4.6:1. **Do not lower them.**
+`--ink-52` and `--ink-72` have been raised twice: `.56`/`.72` to `.70`/`.78`
+after a WCAG audit, then to **`.74`/`.82`** to pay for the wall texture, which
+darkens the ground. Nothing on the page is under 4.9:1. **Do not lower them**,
+and if the texture is ever removed they can come back down.
 
 ### The arch is the signature
 
@@ -221,70 +221,94 @@ too, or it will silently do nothing.
 
 ### The wall texture
 
-**There is no texture on the page right now.** Every section is a flat
-`--band`: `--paper` normally, `--wash` on `section.alt`. `--band` is kept as a
-custom property, not folded back into a plain `background`, because the next
-attempt layers a texture on top of it and should not have to restate each
-band's colour.
+Every section is the same photographed wall over a different ground colour.
+`--band` is that colour and the only thing that differs between an `.alt` band
+and a normal one, so a new band variant only has to set it.
 
 ```css
-section     { --band:var(--paper); background-color:var(--band) }
+section     { --band:var(--paper); background-color:var(--band);
+              background-image:url("../images/concrete-wall.webp") }
 section.alt { --band:var(--wash) }
 ```
 
-#### Next: a photograph, not generated noise
-
-Orlando has `images/concrete-wall-2.png` and wants it used as the texture,
-tinted per band so each section keeps its own ground colour. **Not built: the
-file is not in the repo yet.** The shape it will take:
-
-```css
-section{
-  background-color:var(--band);
-  background-image:url("../images/concrete-wall-2.png");
-  background-blend-mode:multiply;      /* or soft-light, depends on the photo */
-}
-```
-
 `url()` in `assets/styles.css` resolves against the stylesheet, so the path is
-`../images/`, not `images/`. Three things have to be settled against the actual
-file and cannot be guessed:
+`../images/`, not `images/`.
 
-1. **Blend mode.** `multiply` tints and darkens, which costs ink contrast.
-   `soft-light` holds luminance better but tints more weakly. Which one works
-   depends on how light the photograph is.
-2. **Tiling.** A photo that is not seamless shows a grid of visible seams under
-   `repeat`. `cover` avoids that but rescales per section, so the same wall
-   appears at a different zoom in a short section and a long one.
-3. **Weight.** A full-width concrete photo can easily be larger than the hero.
-   It is on every section, so it is on every page view.
+#### The image is a transparent mask, not a picture
 
-#### What the generated version taught, which still applies
+**`concrete-wall.webp` is a flat neutral grey (180,180,180) whose entire image
+lives in its ALPHA channel**, averaging 61 of 255. That is why it needs no
+blend mode: it composites straight over `--band`, the transparent parts being
+the ground colour and the opaque parts the wall.
 
-Two builds of a generated SVG plaster were tried and both were rejected: the
-first read pink, the second read as bad grain. The tile generator is still at
-`tools/plaster.js` and is **not referenced by the site**. Delete it once the
-photograph is working; recover it with `git show c323a99:tools/plaster.js`.
+**Do not add `background-blend-mode`.** There is nothing to blend. The RGB is a
+featureless grey rectangle, so any blend mode throws the texture away and
+tints the band with flat grey.
 
-Carry these forward, because they are properties of the page, not of the noise:
+It also means the texture is recolourable: change the RGB, keep the alpha, and
+the wall becomes whatever colour you set. It is neutral now because the band
+colours are so desaturated that a neutral grey leaves their hue alone. Measured:
+both bands sit at hue 45, against 44 and 42 with no texture at all.
 
-- **Ink contrast is the constraint, and the `--wash` band is the worst case.**
-  Flat, it runs `--ink-52` at 4.779. Any texture that darkens the ground eats
-  into that, and the floor is 4.6. The generated plaster took it to 4.701.
-  Measure it; do not eyeball it.
-- **A texture on every band flattens the difference between bands.** Any
-  partly-opaque layer pulls the two grounds together, because whatever is
-  underneath contributes less. The generated plaster solved to alpha .656 and
-  cut band separation to **39%** of flat. The same will happen with a
-  photograph at similar strength.
+#### What was done to Orlando's original
+
+The file he supplied was `images/concrete-wall-2.png`, 597x545, 292KB. Recover
+it with `git show dce74ab:images/concrete-wall-2.png > orig.png`. Two changes:
+
+1. **Cropped 50px off each side**, to 497x545. The left and right edges of the
+   photograph averaged alpha 74 against 65 in the middle, about 14% denser, so
+   tiling put two dense strips together and drew a darker vertical line every
+   597px. At a 50px crop the edges are within 2.7 of the centre. Verified on
+   the rendered page: the column-to-column step at the tile seams scores
+   **z = 0.02 and 0.22**, i.e. indistinguishable from ordinary variation.
+2. **Re-encoded PNG to WebP at quality 80**, 292KB to 182KB. Safe because
+   **lossy WebP stores alpha losslessly**: measured RMSE against the source
+   alpha is exactly 0 at every quality from 70 to 95. Only the RGB is lossy,
+   and after alpha weighting that error lands as **1.1 levels of 255**.
+
+To change its strength or colour, re-encode: draw it to a canvas, scale the
+alpha channel or overwrite the RGB, and export with
+`canvas.toDataURL('image/webp', 0.8)`. That needs Chromium, which the repo
+deliberately does not carry, so there is no tool checked in for it.
+
+#### The texture was paid for out of the ink
+
+It darkens the ground from (247,244,236) to (228,226,220), and the `--wash`
+band from (239,234,222) to (222,219,210). At the old ink values that put
+`--ink-52` at **4.49 on the wash band, which fails WCAG's 4.5 outright**.
+
+So `--ink-52` went `.70` to `.74` and `--ink-72` went `.78` to `.82`, keeping
+the same step between the two tiers. That buys more than it spends:
+
+| | flat, no texture | textured |
+|---|---|---|
+| paper band | (247,244,236) h44 | (228,226,220) h45 |
+| wash band | (239,234,222) h42 | (222,219,210) h45 |
+| worst `--ink-52` | 4.779 | **4.926** |
+| worst `--ink-72` | 6.044 | 6.144 |
+| band separation | 1.092 | 1.069 |
+
+**Contrast is better with the wall than without it**, because the ink went up
+further than the ground came down. Band separation costs 2%, against the 61%
+the rejected generated plaster cost. **Do not lower the ink values.**
+
+#### Two rejected attempts, and what they taught
+
+A generated SVG plaster was built twice and rejected twice: the first read
+pink, the second read as bad grain. `tools/plaster.js` generated it; recover it
+with `git show c323a99:tools/plaster.js`. Worth keeping:
+
 - **Two grounds of different hue next to each other is what reads as wrong.**
-  The first build put a hue-25 ground directly above a hue-42 one and it read
-  pink, though neither colour was pink alone. If the tinted concrete looks off,
+  The pink build put a hue-25 ground directly above a hue-42 one, and it read
+  pink although neither colour was pink alone. If the wall ever looks off,
   measure both bands' hue before changing anything.
 - **Standard deviation does not measure grain size.** Use the lag-1
-  autocorrelation, or amplify a screenshot's contrast and look at it. At the
-  amplitudes in play (about 1.6% of range) the structure is invisible in any
-  screenshot that has been downscaled.
+  autocorrelation, or amplify a screenshot's contrast and look at it. At these
+  amplitudes the structure is invisible in any screenshot that has been
+  downscaled at all.
+- **A partly-opaque layer pulls the two grounds together**, because whatever is
+  underneath contributes less. It cost the generated plaster 61% of its band
+  separation. This wall is lighter-handed and costs 2%.
 
 #### Measuring it
 
@@ -335,6 +359,7 @@ screen cannot fill it without cropping. It degrades to painting-then-names.
 | `dancing-*.png` (4 more) | motifs | Cycled beside section headings |
 | `dancing-bride-groom.png` | nav + motif | 30px beside the names in the top bar |
 | `via-saragozza.webp` | Bologna | 2100 × 2082, beside the intro |
+| `concrete-wall.webp` | every section | 497 × 545, 182KB. A grey whose image is all in its alpha. See The wall texture |
 | `moka-pot.png` / `tea-cup.png` | language toggle | IT and EN |
 
 Keep the hero and the banner large: they are the only two shown big. Compress

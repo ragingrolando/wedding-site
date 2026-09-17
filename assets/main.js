@@ -339,7 +339,7 @@
       return friday || ev.id !== "friday";
     });
     var cards = events.map(function (ev) {
-      var where = ev.venue ? ev.venue + ", " + ev.address : ev.address;
+      var where = ev.venue ? ev.venue + ", " + t(ev.address) : t(ev.address);
       var acts = el("div", { class: "event-acts" }, [
         el("a", { class: "btn ghost small", href: icsHref(t(ev.name), ev.cal.start, ev.cal.end, where, t(ev.note)),
                   download: "orlando-sofia-" + ev.cal.start.slice(0, 10) + ".ics",
@@ -356,10 +356,10 @@
         ]),
         el("div", { class: "event-bay" }, [
           el("h3", { text: t(ev.name) }),
-          el("p", { class: "event-time", text: ev.time }),
+          el("p", { class: "event-time", text: t(ev.time) }),
           el("p", { class: "event-addr" }, [
             ev.venue ? el("strong", { text: ev.venue }) : null,
-            document.createTextNode(ev.address)
+            document.createTextNode(t(ev.address))
           ]),
           el("p", { class: "event-dress" }, [
             el("span", { class: "dress-label", text: t(SITE.ui.dressLabel) + " " }),
@@ -504,7 +504,7 @@
   function buildBologna() {
     var places = el("ul", { class: "places" }, SITE.bologna.places.map(function (p) {
       var body = [
-        el("p", { class: "nm", text: p.name }),
+        el("p", { class: "nm", text: t(p.name) }),
         el("p", { class: "tx", text: t(p.text) })
       ];
       /* The proposal line is the only sentence on this page that is about
@@ -536,11 +536,11 @@
        anyway, and it cannot rot. */
     var food = el("ul", { class: "food" }, SITE.bologna.food.map(function (f) {
       return el("li", {}, [
-        el("a", { href: f.url || mapsUrl(f.name + ", Bologna, Italy"),
+        el("a", { href: f.url || mapsUrl(t(f.name) + ", Bologna, Italy"),
                   target: "_blank", rel: "noopener",
                   class: f.url ? "has-own-link" : null }, [
-          el("span", { class: "nm", text: f.name }),
-          el("span", { class: "nt", text: f.note })
+          el("span", { class: "nm", text: t(f.name) }),
+          el("span", { class: "nt", text: t(f.note) })
         ])
       ]);
     }));
@@ -573,17 +573,94 @@
     function foodHead() {
       return el("p", { class: "subhead", text: t(SITE.bologna.foodTitle) });
     }
+
     function soloIntro(node) {
       return el("div", { class: "bol-open bol-open-solo" }, [node]);
     }
   }
 
+  /* ========================================================= photo strip */
+  /* A row of squares that drifts leftwards on its own and can be dragged
+     or swiped. The list is rendered twice and the animation travels
+     exactly half the track, so the seam between the copies never shows.
+     Nothing here is a link: the images are decoration, not navigation.
+     Touching it stops the drift, and prefers-reduced-motion never starts
+     it (see styles.css). */
+  function buildStrip(c) {
+    if (!c || !c.images || !c.images.length) return null;
+    var alt = t(c.alt);
+    var track = el("div", { class: "strip-track" });
+    var live = 0;
+    [0, 1].forEach(function (pass) {
+      c.images.forEach(function (file, i) {
+        var img = art(file, "strip-img", pass ? "" : alt);
+        if (!img) return;
+        if (pass) img.setAttribute("aria-hidden", "true");   /* the copy */
+        img.setAttribute("draggable", "false");
+        if (!pass) live++;
+        /* Keyed off i, the index in the ORIGINAL list, so the copy is laid
+           out identically to what it copies. The animation travels exactly
+           one list, so cell i lands where cell i was and the seam is
+           invisible however many photos there are. Never Math.random here:
+           the two passes would disagree and the loop would visibly jump. */
+        track.appendChild(el("div", { class: "strip-cell",
+                                      style: cellStyle(i) }, [img]));
+      });
+    });
+    if (!live) return null;
+    var strip = el("div", { class: "strip", role: "group",
+                            "aria-label": alt }, [track]);
+    /* Every file could still 404. Then the row is empty and should go. */
+    window.setTimeout(function () {
+      if (!track.querySelector("img") && strip.parentNode) {
+        strip.parentNode.removeChild(strip);
+      }
+    }, 4000);
+    dragScroll(strip);
+    return strip;
+  }
+
+  /* Scattered like prints dropped on a table: each one turned a little,
+     nudged up or down, and lapping over the one before it. The cycles are
+     coprime-ish and of different lengths, so the pattern does not read as a
+     repeat until well past the number of photos anyone will use. */
+  function cellStyle(i) {
+    var turn = [-3.4, 2.2, -1.4, 3.1, -2.3, 1.5, -2.9, 2.7];
+    var lift = [4, -3, 6, -5, 2, -6, 5, -2];
+    var lap  = [26, 18, 30, 20, 28, 16, 24, 22];
+    return "transform:rotate(" + turn[i % turn.length] + "deg)" +
+           " translateY(" + lift[i % lift.length] + "px);" +
+           "margin-left:-" + lap[i % lap.length] + "px;" +
+           "z-index:" + (10 + (i % 3));
+  }
+
+  /* Click-drag on a desktop. Touch already scrolls the container itself. */
+  function dragScroll(box) {
+    var down = false, startX = 0, startLeft = 0;
+    box.addEventListener("pointerdown", function (e) {
+      if (e.pointerType === "touch") return;
+      down = true; startX = e.clientX; startLeft = box.scrollLeft;
+      box.classList.add("dragging");
+    });
+    box.addEventListener("pointermove", function (e) {
+      if (!down) return;
+      e.preventDefault();
+      box.scrollLeft = startLeft - (e.clientX - startX);
+    });
+    ["pointerup", "pointercancel", "pointerleave"].forEach(function (ev) {
+      box.addEventListener(ev, function () {
+        down = false; box.classList.remove("dragging");
+      });
+    });
+  }
+
   /* ================================================================== rsvp */
   function buildRsvp() {
     var cfg = SITE.rsvp;
-    /* No motif beside the heading: the dancer row below the button is the
-       decoration for this section, and two would be a crowd. */
-    var inner = [sectionHead(SITE.ui.rsvpNow, cfg.deadline, true)];
+    /* No motif beside the heading: the dancer row above it is the decoration
+       for this section, and two would be a crowd. */
+    var inner = [art(SITE.dancerStrip, "dancer-strip dancer-strip-rsvp"),
+                 sectionHead(SITE.ui.rsvpNow, cfg.deadline, true)];
 
     if (cfg.mode === "form") {
       inner.push(buildRsvpForm(cfg));
@@ -593,7 +670,7 @@
                   text: t(SITE.ui.rsvpNow) })
       ]));
     }
-    inner.push(art(SITE.dancerStrip, "dancer-strip dancer-strip-rsvp"));
+    inner.push(buildStrip(SITE.carousel));
     return section("rsvp", inner, "rsvp");
   }
 
@@ -740,7 +817,15 @@
       el("div", { class: "field" }, [
         el("label", { for: "gate-pw", text: t(g.label) }), input
       ]),
-      el("button", { class: "btn", type: "submit", text: t(g.button) }),
+      /* An arrow, not a word. t(g.button) survives as the accessible name,
+         so a screen reader still hears "Enter" rather than "button". */
+      el("button", { class: "btn gate-go", type: "submit",
+                     "aria-label": t(g.button),
+                     html: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true" ' +
+                           'stroke="currentColor" stroke-width="1.6" ' +
+                           'stroke-linecap="round" stroke-linejoin="round">' +
+                           '<path d="M5 12h13"/><path d="M12.5 5.8 18.7 12l-6.2 6.2"/>' +
+                           '</svg>' }),
       t(g.hint) ? el("p", { class: "gate-hint", text: t(g.hint) }) : null,
       error
     ]);
@@ -769,8 +854,8 @@
                   text: (lang === "it" ? SITE.date.displayIt : SITE.date.display)
                         + " · " + t(SITE.place) }),
         el("div", { class: "gate-arches", "aria-hidden": "true" }),
-        el("h1", { class: "gate-title", text: t(g.title) }),
-        el("p", { class: "gate-blurb", text: t(g.blurb) }),
+        t(g.title) ? el("h1", { class: "gate-title", text: t(g.title) }) : null,
+        t(g.blurb) ? el("p", { class: "gate-blurb", text: t(g.blurb) }) : null,
         form,
         toggle
       ])

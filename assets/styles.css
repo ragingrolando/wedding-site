@@ -223,13 +223,74 @@ h1,h2,h3,.brand,.tl-name,.nm,.gate-kicker,.gate-title,.mono,.hero-names{
 .btn.ghost:hover{background:var(--portico-deep);border-color:var(--portico-deep);color:var(--paper)}
 .btn.small{font-size:11px;padding:10px 18px;letter-spacing:.1em}
 
+/* ------------------------------------------------------------- photo strip
+   A handful of prints laid out in a row, each turned a little and lapping
+   over the one before it. The track holds the list twice and the keyframe
+   travels exactly -50%, so it loops with no seam; main.js keys every tilt
+   off the index in the original list so both halves match. Nothing in it
+   is a link. Hovering, focusing or dragging stops the drift, and it never
+   starts at all for a reader who asked for less motion. */
+.strip{
+  margin:clamp(30px,4.5vw,48px) 0 0;overflow-x:auto;overflow-y:hidden;
+  scrollbar-width:none;-ms-overflow-style:none;cursor:grab;
+  /* Narrow fade. The point is that a print is visibly cut off at the edge,
+     which says "there is more" far better than a long dissolve does. */
+  -webkit-mask-image:linear-gradient(to right,transparent,#000 3.5%,#000 96.5%,transparent);
+          mask-image:linear-gradient(to right,transparent,#000 3.5%,#000 96.5%,transparent);
+}
+.strip::-webkit-scrollbar{display:none}
+.strip.dragging{cursor:grabbing}
+.strip-track{
+  display:flex;align-items:center;width:max-content;gap:0;
+  /* Room for the tilt and the drop shadow, which both reach past the box. */
+  padding:26px 34px 30px;
+  animation:stripDrift 72s linear infinite;
+}
+.strip:hover .strip-track,
+.strip:focus-within .strip-track,
+.strip.dragging .strip-track{animation-play-state:paused}
+
+/* The print itself: white mount, deeper at the foot the way a Polaroid is,
+   3px corners, and a shadow soft enough to sit on paper rather than float. */
+.strip-cell{
+  flex:0 0 auto;position:relative;
+  background:#fdfcf8;padding:9px 9px 30px;border-radius:3px;
+  box-shadow:0 1px 2px rgba(29,51,32,.10), 0 6px 16px rgba(29,51,32,.10);
+  transition:transform .25s ease, box-shadow .25s ease;
+}
+.strip-cell:hover{box-shadow:0 2px 4px rgba(29,51,32,.12), 0 12px 26px rgba(29,51,32,.14)}
+.strip-img{
+  display:block;width:clamp(112px,13.5vw,152px);aspect-ratio:1/1;object-fit:cover;
+  border-radius:1px;background:var(--card);
+  /* Decoration, not navigation: no pointer, no drag ghost, no selection.
+     Pointer events pass through to .strip so the row still drags. */
+  pointer-events:none;user-select:none;-webkit-user-select:none;-webkit-user-drag:none;
+}
+@keyframes stripDrift{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){
+  .strip-track{animation:none}
+  .strip-cell{transition:none}
+}
+@media (max-width:560px){
+  .strip-cell{padding:7px 7px 24px}
+  .strip-track{padding:20px 24px 24px}
+}
+
 /* ----------------------------------------------------------------- section */
-section{padding:var(--rhythm) 0;scroll-margin-top:84px;position:relative}
+section{
+  padding:var(--rhythm) 0;scroll-margin-top:84px;position:relative;
+  /* --band is the section's ground colour, and the only thing that differs
+     between an .alt band and a normal one. It is a custom property rather
+     than a plain background so a texture layer can be added on top of it
+     without every band variant having to restate its own colour. */
+  --band:var(--paper);
+  background-color:var(--band);
+}
+section.alt{--band:var(--wash)}
 
 /* The signature. A run of arches marks every change of ground, so the page
    reads as walking in and out of the colonnade rather than as nine
    interchangeable blocks. Masked, so the colour stays tokenised. */
-section.alt{background:var(--wash)}
 section.alt::before,
 section.alt+section::before{
   content:"";position:absolute;left:0;right:0;top:0;height:34px;
@@ -468,7 +529,10 @@ section.alt .tl-body::before{background:var(--wash)}
 .food a:hover .nm,.food a:focus-visible .nm{text-decoration-color:var(--verdigris)}
 .food .nt{display:block;max-width:34ch;margin:3px auto 0;
   font-size:15.5px;color:var(--ink-52);line-height:1.5}
-.subhead{text-align:center;margin:clamp(52px,7vw,84px) 0 28px;
+/* text-align centres the words inside the box; the box itself was still
+   left-aligned, because p carries max-width:var(--measure) and the margin
+   here was 0. auto centres the box, which is what centred actually means. */
+.subhead{text-align:center;margin:clamp(52px,7vw,84px) auto 28px;
   font-family:var(--util);font-size:12px;font-weight:600;letter-spacing:.18em;
   text-transform:uppercase;color:var(--ink-52)}
 
@@ -480,7 +544,6 @@ section.alt .tl-body::before{background:var(--wash)}
 .rsvp-inner{text-align:center}
 .rsvp-note{margin:22px auto 0;color:var(--ink-52);font-size:16px}
 /* The dancers close the section, under the button. */
-.dancer-strip-rsvp{max-width:700px;margin:clamp(40px,6vw,64px) auto 0}
 form.rsvp-form{max-width:520px;margin:36px auto 0;display:grid;gap:15px;text-align:left}
 .row{display:grid;gap:15px;grid-template-columns:1fr 1fr}
 .field{display:grid;gap:7px}
@@ -570,6 +633,12 @@ footer p{max-width:none;margin-top:14px;font-family:var(--util);font-size:11px;
 /* Same row, closing the running order. Smaller than the footer one, but
    the same weight: every dancer and motif on the page sits at .8. */
 .dancer-strip-inline{max-width:640px;margin:clamp(44px,6vw,68px) auto 0;opacity:.8}
+/* Above the RSVP heading, not under the button. 656px is 20% off the 820 it
+   actually rendered at: this rule used to sit ABOVE .dancer-strip with the
+   same specificity, so its max-width never applied and the 700px it asked
+   for was never what you saw. Keep it below .dancer-strip. The margin is
+   under the image now, so the gap falls between dancers and heading. */
+.dancer-strip-rsvp{max-width:656px;margin:0 auto clamp(26px,3.6vw,38px)}
 
 .stay-more{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;
   margin-top:clamp(30px,4vw,44px)}
@@ -653,6 +722,15 @@ footer p{max-width:none;margin-top:14px;font-family:var(--util);font-size:11px;
 .gate-hint{color:var(--ink-52);font-style:italic;font-size:16px}
 .gate-error{color:var(--portico-deep);min-height:20px}
 .gate .lang{margin:30px auto 0;width:max-content}
+/* The submit button carries an arrow instead of a word. It keeps the full
+   width of the field above it, so the tap target does not shrink with the
+   label; aria-label on the button holds the accessible name. */
+.gate-go{padding:15px 34px}
+.gate-go svg{width:22px;height:22px;display:block}
+.gate-go:hover svg{transform:translateX(2px)}
+.gate-go svg{transition:transform .2s}
+@media (prefers-reduced-motion:reduce){.gate-go svg{transition:none}}
+
 .gate-form.shake{animation:gateShake .34s ease}
 @keyframes gateShake{
   0%,100%{transform:translateX(0)}
@@ -662,12 +740,18 @@ footer p{max-width:none;margin-top:14px;font-family:var(--util);font-size:11px;
 }
 
 /* ============================== mobile =================================== */
-@media (max-width:1080px){
+/* 1200, not 1080. Eight Italian labels need 684px and the inline bar offers
+   584 at 1100px, so Bologna sat behind the fade on any laptop. Dropping the
+   nav to its own full-width row earlier gives it the width it needs. The gap
+   and size ease down with the viewport so the row still fits at tablet
+   widths in Italian, which is the longest the labels ever get. */
+@media (max-width:1200px){
   .topbar-inner{flex-wrap:wrap;padding:10px var(--gut);gap:12px}
-  .nav{order:3;width:100%;margin-left:0;gap:20px;padding-bottom:2px;
-       -webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);
-       mask-image:linear-gradient(90deg,#000 88%,transparent)}
-  .nav a{font-size:12px}
+  /* No mask override here. The base .nav mask is driven by --fade-r, which
+     main.js only sets when the row genuinely has more to scroll to. The old
+     hardcoded gradient dimmed the last label even when everything fitted. */
+  .nav{order:3;width:100%;margin-left:0;gap:clamp(13px,2vw,20px);padding-bottom:2px}
+  .nav a{font-size:clamp(11px,1.42vw,12px)}
   .nav-rsvp{margin-left:auto}
   .lang{margin-left:0}
 }

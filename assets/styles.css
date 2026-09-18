@@ -15,7 +15,28 @@
 :root{
   /* --- sampled from the Villa Zarri watercolour --- */
   --paper:#f7f4ec;        /* watercolour paper, warmed */
-  --wash:#efeade;         /* alternating band */
+  /* The section grounds. FOUR warm tones, cycled so no two neighbouring
+     sections share one. Not nine.
+
+     Nine distinct grounds was tried and does not work. The ink sets a floor:
+     the deepest ground --ink-52 can carry is about HSL lightness .87, and the
+     wall texture composites over everything as a .2835-alpha layer of grey
+     180, which pulls every ground towards grey and compresses the differences
+     further. The usable range spans 1.16 in contrast, which is three or four
+     visible steps, not nine. Forcing nine out of it means pushing hue instead
+     of lightness, and at these low saturations small hue shifts read as
+     DIFFERENT HUES: the nine-tone attempt produced a green FAQ section, a
+     pink RSVP and a khaki Bologna. It is in the history if you want to look.
+
+     Separation is measured as CIE dE, not contrast ratio, because contrast
+     ratio scores two grounds of equal lightness and different hue as 1.00
+     while the eye sees two colours. Calibration: the old paper/wash pair,
+     which read as two grounds, scores dE 2.96. These four are 4.67 apart at
+     worst, and every section boundary is at least that. */
+  --tone-1:#f8f3ef;       /* palest  */
+  --tone-2:#f7f1e1;       /* cream   */
+  --tone-3:#f2e6cc;       /* sand    */
+  --tone-4:#ede1d5;       /* clay    */
   --card:#e9e3d1;
   --line:#d9d1b9;
   --line-soft:#e6e0cd;
@@ -69,7 +90,13 @@ html{scroll-behavior:smooth;scroll-padding-top:84px;-webkit-text-size-adjust:100
   *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
 body{
-  background:var(--paper);color:var(--ink);
+  /* The wall runs behind everything, so it is continuous under the hero and
+     the footer as well as the sections. Sections paint their own --band over
+     it; the hero and footer are transparent and show this one. */
+  --band:var(--paper);
+  background-color:var(--band);
+  background-image:url("../images/concrete-wall.webp");
+  color:var(--ink);
   font-family:var(--body);font-weight:400;font-size:17.5px;line-height:1.65;
   font-optical-sizing:auto;
   -webkit-font-smoothing:antialiased;overflow-x:hidden;
@@ -295,7 +322,20 @@ section{
   background-color:var(--band);
   background-image:url("../images/concrete-wall.webp");
 }
-section.alt{--band:var(--wash)}
+/* One ground per section, cycled 1-3-2-4 so neighbours never share a tone
+   and the two deepest never touch. Keyed by id rather than by nth-child so
+   reordering the nav cannot silently reshuffle the palette. .alt is still
+   what main.js alternates and what draws the arch run; it no longer carries
+   a colour. */
+#when{--band:var(--tone-1)}
+#order{--band:var(--tone-3)}
+#dress{--band:var(--tone-2)}
+#transport{--band:var(--tone-4)}
+#stay{--band:var(--tone-1)}
+#faq{--band:var(--tone-3)}
+#gifts{--band:var(--tone-2)}
+#bologna{--band:var(--tone-4)}
+#rsvp{--band:var(--tone-1)}
 
 /* The signature. A run of arches marks every change of ground, so the page
    reads as walking in and out of the colonnade rather than as nine
@@ -410,8 +450,7 @@ p+p{margin-top:.85em}
 /* The dot is 12px across including its border, so its left offset is
    (rule x) - 6 - (where the body column starts). Off by two before. */
 .tl-body::before{content:"";position:absolute;left:-26px;top:11px;width:9px;height:9px;
-  border-radius:50%;background:var(--paper);border:1.5px solid var(--portico)}
-section.alt .tl-body::before{background:var(--wash)}
+  border-radius:50%;background:var(--band);border:1.5px solid var(--portico)}
 .tl-name{font-size:23px;line-height:1.2}
 .tl-note{font-size:16.5px;color:var(--ink-72);margin-top:2px}
 

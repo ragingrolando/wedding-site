@@ -140,8 +140,8 @@ portico that runs through it.
 ### Tokens (top of `styles.css`)
 
 ```
---paper      #f7f4ec   the ground
---wash       #efeade   alternating band
+--paper      #f7f4ec   the hero and footer ground, and the body default
+--tone-1..4  four warm section grounds, cycled. See The section grounds
 --card       #e9e3d1
 --ink        #1d3320   the pen line, verbatim from the painting
 --portico    #c05b3c   the arches
@@ -219,6 +219,58 @@ sits below `.dancer-strip`, beside `.dancer-strip-inline`, where it applies.
 **Keep it there.** Any new `.dancer-strip-*` variant goes below the base rule
 too, or it will silently do nothing.
 
+### The section grounds
+
+**Four warm tones, cycled 1-3-2-4 so no two neighbouring sections share one.**
+Not nine. They are the colour UNDER the wall texture, not what you see.
+
+```
+--tone-1 #f8f3ef  palest   when, stay, rsvp
+--tone-2 #f7f1e1  cream    dress, gifts
+--tone-3 #f2e6cc  sand     order, faq
+--tone-4 #ede1d5  clay     transport, bologna
+```
+
+Assigned by `#id`, not `nth-child`, so reordering the nav cannot silently
+reshuffle the palette. `.alt` is still what `main.js` alternates and what
+draws the arch run; it no longer carries a colour. The arch run therefore
+still lands exactly on every change of ground.
+
+| | rendered ground | hue | `--ink-52` |
+|---|---|---|---|
+| tone 1 | (229,225,222) | 26 | 5.142 |
+| tone 2 | (228,224,213) | 44 | 5.077 |
+| tone 3 | (225,216,197) | 41 | 4.872 |
+| tone 4 | (221,213,204) | 32 | 4.813 |
+
+#### Why four and not nine
+
+One per section was asked for, built, and does not work. Two limits collide:
+
+1. **The ink sets a floor.** The deepest ground `--ink-52` at `.74` can carry
+   is about HSL lightness `.87`.
+2. **The wall compresses what is left.** It composites as a `.2835`-alpha
+   layer of grey 180, pulling every ground towards grey.
+
+What survives is a range spanning **1.16 in contrast**, which is three or four
+visible steps. Nine needs eight steps of 1.019 each, far below the 1.069 that
+read as a change in the old two-band design.
+
+Forcing nine means pushing hue instead of lightness, and **at these low
+saturations a small hue shift reads as a different hue, not a different
+orange**. The nine-tone attempt scored well on paper and rendered a green FAQ
+section, a pink RSVP and a khaki Bologna. Look at it before rebuilding it.
+
+#### Measure separation as dE, not contrast ratio
+
+Contrast ratio scores two grounds of equal lightness and different hue as
+**1.00** while the eye plainly sees two colours. It is the wrong tool for
+this and it is what sent the first two attempts wrong.
+
+Use CIE dE against this calibration: **the old `--paper`/`--wash` pair, which
+read as two grounds, scores dE 2.96.** The four tones here are 4.67 apart at
+worst, and the worst section boundary on the page measures **3.97**.
+
 ### The wall texture
 
 Every section is the same photographed wall over a different ground colour.
@@ -226,10 +278,16 @@ Every section is the same photographed wall over a different ground colour.
 and a normal one, so a new band variant only has to set it.
 
 ```css
-section     { --band:var(--paper); background-color:var(--band);
-              background-image:url("../images/concrete-wall.webp") }
-section.alt { --band:var(--wash) }
+body    { --band:var(--paper); background-color:var(--band);
+          background-image:url("../images/concrete-wall.webp") }
+section { --band:var(--paper); background-color:var(--band);
+          background-image:url("../images/concrete-wall.webp") }
+#order  { --band:var(--tone-3) }   /* and so on, see The section grounds */
 ```
+
+`body` carries the same two lines, so the wall runs behind the hero and the
+footer too and is continuous down the whole page. Sections paint their own
+`--band` over it; the hero and footer are transparent and show the body's.
 
 `url()` in `assets/styles.css` resolves against the stylesheet, so the path is
 `../images/`, not `images/`.

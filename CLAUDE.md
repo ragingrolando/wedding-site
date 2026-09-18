@@ -225,23 +225,30 @@ too, or it will silently do nothing.
 Not nine. They are the colour UNDER the wall texture, not what you see.
 
 ```
---tone-1 #f8f3ef  palest   when, stay, rsvp
---tone-2 #f7f1e1  cream    dress, gifts
---tone-3 #f2e6cc  sand     order, faq
---tone-4 #ede1d5  clay     transport, bologna
+--tone-1 #faf5e7  palest      when, stay, rsvp
+--tone-2 #f7ecd2  ochre       dress, gifts
+--tone-3 #efe9e5  soft clay   order, faq
+--tone-4 #f8e5d9  apricot     transport, bologna
 ```
+
+**These are much paler than they render.** The wall is tinted terracotta and
+does most of the colouring; the tones only steer it. Judge them rendered, not
+as hex values.
 
 Assigned by `#id`, not `nth-child`, so reordering the nav cannot silently
 reshuffle the palette. `.alt` is still what `main.js` alternates and what
 draws the arch run; it no longer carries a colour. The arch run therefore
 still lands exactly on every change of ground.
 
-| | rendered ground | hue | `--ink-52` |
-|---|---|---|---|
-| tone 1 | (229,225,222) | 26 | 5.142 |
-| tone 2 | (228,224,213) | 44 | 5.077 |
-| tone 3 | (225,216,197) | 41 | 4.872 |
-| tone 4 | (221,213,204) | 32 | 4.813 |
+| | rendered ground | hue | chroma | `--ink-52` |
+|---|---|---|---|---|
+| tone 1 | (243,216,186) | 32 | 57 | 4.980 |
+| tone 2 | (241,210,171) | 33 | 70 | 4.863 |
+| tone 3 | (235,208,184) | 28 | 51 | 4.761 |
+| tone 4 | (241,205,176) | 27 | 65 | 4.764 |
+
+Worst section boundary measures dE 4.04. The arch run is unaffected: `--portico`
+at `.5` scores 1.68-1.73 against these grounds, against 1.71-1.79 before.
 
 #### Why four and not nine
 
@@ -294,19 +301,34 @@ footer too and is continuous down the whole page. Sections paint their own
 
 #### The image is a transparent mask, not a picture
 
-**`concrete-wall.webp` is a flat neutral grey (180,180,180) whose entire image
-lives in its ALPHA channel**, averaging 61 of 255. That is why it needs no
-blend mode: it composites straight over `--band`, the transparent parts being
-the ground colour and the opaque parts the wall.
+**`concrete-wall.webp` is a flat TERRACOTTA (223,143,73, hue 28) whose entire
+image lives in its ALPHA channel**, averaging 61 of 255. That is why it needs
+no blend mode: it composites straight over `--band`, the transparent parts
+being the ground colour and the opaque parts the wall.
 
 **Do not add `background-blend-mode`.** There is nothing to blend. The RGB is a
-featureless grey rectangle, so any blend mode throws the texture away and
-tints the band with flat grey.
+featureless terracotta rectangle, so any blend mode throws the texture away
+and tints the band with flat orange.
 
-It also means the texture is recolourable: change the RGB, keep the alpha, and
-the wall becomes whatever colour you set. It is neutral now because the band
-colours are so desaturated that a neutral grey leaves their hue alone. Measured:
-both bands sit at hue 45, against 44 and 42 with no texture at all.
+#### The wall's own colour is the main lever on the palette
+
+It shipped as neutral grey (180,180,180), and grey is a bleach: at `.2835`
+alpha it cut every ground's chroma by about a quarter and held the page pale.
+Tinting the wall terracotta instead was **nearly free warmth**. On the same
+band colour:
+
+| wall | ground | hue | chroma | `--ink-52` |
+|---|---|---|---|---|
+| neutral grey 180 | (224,216,197) | 42 | 27 | 4.862 |
+| terracotta 223,143,73 | (232,212,186) | 34 | 46 | 4.823 |
+
+Chroma up 70%, contrast down 0.04. Deepening the *bands* to chase the same
+warmth costs ten times as much contrast and fails the floor. **If the page
+should be warmer or cooler, retint the wall before touching the tones.**
+
+Its hue is 28 deliberately. The search wanted 22, which delivers identical
+chroma and sits in the zone that read as pink in the rejected builds. 28 is
+free insurance.
 
 #### What was done to Orlando's original
 
@@ -324,10 +346,14 @@ it with `git show dce74ab:images/concrete-wall-2.png > orig.png`. Two changes:
    alpha is exactly 0 at every quality from 70 to 95. Only the RGB is lossy,
    and after alpha weighting that error lands as **1.1 levels of 255**.
 
-To change its strength or colour, re-encode: draw it to a canvas, scale the
-alpha channel or overwrite the RGB, and export with
-`canvas.toDataURL('image/webp', 0.8)`. That needs Chromium, which the repo
-deliberately does not carry, so there is no tool checked in for it.
+To retint or restrength it, re-encode from the ORIGINAL, not from the shipped
+file, so tints do not compound: `git show dce74ab:images/concrete-wall-2.png`.
+Crop 50px off each side, then for each pixel take its grey `g` and write
+`RGB = tint * g/180`, which keeps the wall's own light and dark variation
+instead of flattening it. Keep the alpha untouched and check its mean is still
+**61.26**. Export with `canvas.toDataURL('image/webp', 0.8)`. That needs
+Chromium, which the repo deliberately does not carry, so there is no tool
+checked in for it.
 
 #### The texture was paid for out of the ink
 
@@ -417,7 +443,7 @@ screen cannot fill it without cropping. It degrades to painting-then-names.
 | `dancing-*.png` (4 more) | motifs | Cycled beside section headings |
 | `dancing-bride-groom.png` | nav + motif | 30px beside the names in the top bar |
 | `via-saragozza.webp` | Bologna | 2100 × 2082, beside the intro |
-| `concrete-wall.webp` | every section | 497 × 545, 182KB. A grey whose image is all in its alpha. See The wall texture |
+| `concrete-wall.webp` | everywhere | 497 × 545, 178KB. A terracotta whose image is all in its alpha. See The wall texture |
 | `moka-pot.png` / `tea-cup.png` | language toggle | IT and EN |
 
 Keep the hero and the banner large: they are the only two shown big. Compress

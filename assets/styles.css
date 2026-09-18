@@ -33,10 +33,10 @@
      while the eye sees two colours. Calibration: the old paper/wash pair,
      which read as two grounds, scores dE 2.96. These four are 4.67 apart at
      worst, and every section boundary is at least that. */
-  --tone-1:#f8f3ef;       /* palest  */
-  --tone-2:#f7f1e1;       /* cream   */
-  --tone-3:#f2e6cc;       /* sand    */
-  --tone-4:#ede1d5;       /* clay    */
+  --tone-1:#faf5e7;       /* palest  */
+  --tone-2:#f7ecd2;       /* cream   */
+  --tone-3:#efe9e5;       /* sand    */
+  --tone-4:#f8e5d9;       /* clay    */
   --card:#e9e3d1;
   --line:#d9d1b9;
   --line-soft:#e6e0cd;

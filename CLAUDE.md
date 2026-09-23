@@ -140,7 +140,7 @@ portico that runs through it.
 ### Tokens (top of `styles.css`)
 
 ```
---paper      #f7f4ec   the hero and footer ground, and the body default
+--paper      #f7f4ec   NOT a ground any more. Button text, fields, hover fills
 --tone-1..4  four warm section grounds, cycled. See The section grounds
 --card       #e9e3d1
 --ink        #1d3320   the pen line, verbatim from the painting
@@ -292,9 +292,25 @@ section { --band:var(--paper); background-color:var(--band);
 #order  { --band:var(--tone-3) }   /* and so on, see The section grounds */
 ```
 
-`body` carries the same two lines, so the wall runs behind the hero and the
-footer too and is continuous down the whole page. Sections paint their own
-`--band` over it; the hero and footer are transparent and show the body's.
+`body` and `.gate` carry the same two lines, so the wall runs behind the hero,
+the footer and the password screen too, and is continuous everywhere. Sections
+paint their own `--band` over it; the hero and footer are transparent and show
+the body's.
+
+**`--paper` is not a page ground any more.** It is the old neutral cream, hue
+44, against a page that now runs 27-33. Three places were still painting it
+flat and each read as a cool patch on a warm page:
+
+| | was | now |
+|---|---|---|
+| `body` | `--band:var(--paper)` | `--band:var(--tone-1)` |
+| `.gate` | `background:var(--paper)`, no texture | tone-1 plus the wall |
+| `.topbar` | hardcoded `rgba(247,244,236,.93)` | `rgba(250,238,226,.93)`, hue 31 |
+
+They all now measure (243,219,190)-(243,220,192) against the first section's
+(243,219,190). `--paper` survives only for things that want a light chip:
+button text, form fields, hover fills. **If the palette moves again, grep for
+`--paper` and for hardcoded `247,244,236` before assuming it followed.**
 
 `url()` in `assets/styles.css` resolves against the stylesheet, so the path is
 `../images/`, not `images/`.

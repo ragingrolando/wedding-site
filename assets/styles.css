@@ -92,8 +92,13 @@ html{scroll-behavior:smooth;scroll-padding-top:84px;-webkit-text-size-adjust:100
 body{
   /* The wall runs behind everything, so it is continuous under the hero and
      the footer as well as the sections. Sections paint their own --band over
-     it; the hero and footer are transparent and show this one. */
-  --band:var(--paper);
+     it; the hero and footer are transparent and show this one.
+
+     This is --tone-1, NOT --paper. --paper is the old neutral cream and is
+     hue 44 against a page that now runs 27-33; leaving it here made the hero
+     and footer the only cool things on the page. --paper survives only for
+     things that want a light chip: button text, form fields, hover fills. */
+  --band:var(--tone-1);
   background-color:var(--band);
   background-image:url("../images/concrete-wall.webp");
   color:var(--ink);
@@ -143,7 +148,11 @@ h1,h2,h3,.brand,.tl-name,.nm,.gate-kicker,.gate-title,.mono,.hero-names{
 /* ------------------------------------------------------------------ header */
 .topbar{
   position:sticky;top:0;z-index:50;
-  background:rgba(247,244,236,.93);backdrop-filter:blur(10px);
+  /* Warm frost, hue 31, to sit in the same family as the grounds. This was
+     a hardcoded rgba(247,244,236,.93) and stayed neutral when the palette
+     went terracotta, so it read as a pale strip laid across a warm page.
+     Hardcoded rather than tokenised because it needs its own alpha. */
+  background:rgba(250,238,226,.93);backdrop-filter:blur(10px);
   border-bottom:1px solid transparent;transition:border-color .25s;
 }
 .topbar.stuck{border-bottom-color:var(--line)}
@@ -742,7 +751,12 @@ footer p{max-width:none;margin-top:14px;font-family:var(--util);font-size:11px;
 /* ============================ soft gate ================================== */
 .gate{
   min-height:100svh;display:grid;place-items:center;
-  padding:clamp(28px,7vw,64px) var(--gut);text-align:center;background:var(--paper);
+  padding:clamp(28px,7vw,64px) var(--gut);text-align:center;
+  /* The gate is the first thing every guest sees, so it gets the same wall
+     as the page behind it. It had flat --paper and no texture. */
+  --band:var(--tone-1);
+  background-color:var(--band);
+  background-image:url("../images/concrete-wall.webp");
 }
 .gate-card{width:100%;max-width:430px}
 .gate-kicker{max-width:none;font-size:clamp(28px,5vw,36px);line-height:1.1}

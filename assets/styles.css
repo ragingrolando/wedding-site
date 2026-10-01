@@ -428,9 +428,20 @@ p+p{margin-top:.85em}
   display:flex;align-items:flex-end;justify-content:center;
   padding:0 22px 15px;
 }
-.event-day{
+/* The date is the headline: the largest type on the card. It used to be
+   11px caps under a 30px event name, which made the one fact a guest has to
+   remember the hardest one to see. The weekday is the small caps above it,
+   in the accent, which is the only rust text besides the links. */
+.event-arch{flex-direction:column;align-items:center;justify-content:flex-end;gap:4px}
+.event-arch p+p{margin-top:0}
+.event-weekday{
   font-family:var(--util);font-size:11px;font-weight:var(--wt-util-strong);letter-spacing:.18em;
-  text-transform:uppercase;color:var(--portico-deep);line-height:1.4;
+  text-transform:uppercase;color:var(--portico-deep);line-height:1.4;max-width:none;
+}
+.event-date{
+  font-family:var(--display);font-weight:var(--wt-display);
+  font-variation-settings:"SOFT" 40,"WONK" 1;
+  font-size:clamp(27px,2.8vw,34px);line-height:1.1;color:var(--ink);max-width:none;
 }
 /* The piers are drawn rather than bordered so they can fade out at the foot.
    A bay you cannot walk through is a tombstone, and a line that simply stops
@@ -446,46 +457,53 @@ p+p{margin-top:.85em}
 }
 .event-bay::before{left:0}
 .event-bay::after{right:0}
-/* Hierarchy, top to bottom: date in the arch, event name, three labelled
-   facts, the note, the links. Every label is one style and every value is
-   one style, with no italics and no colour change, so the eye reads the
-   structure rather than the typography. The time used to be teal, the venue
-   a third face and the dress label italic; three ways of saying "detail". */
-.event-bay h3{font-size:clamp(25px,2.6vw,30px);line-height:1.15;text-wrap:balance}
+/* Hierarchy, top to bottom: date in the arch (the headline), event name,
+   three labelled facts, the note, the links. Three text colours and no
+   more: --ink for content, --ink-72 for everything secondary (labels and
+   the note, which were two different greys), --portico-deep as the one
+   accent (weekday and links).
+
+   A short rust hairline, the arch's own colour, divides each group: name,
+   facts, note, links. Each rule sits 16px below what precedes it (the row
+   gap) and 18px above what follows (the padding), so every division on the
+   card is the same size. */
+.event-bay h3{font-size:clamp(20px,2vw,23px);line-height:1.2;text-wrap:balance}
 .event-facts{display:grid;gap:16px;align-content:start}
 .event-fact dt{
   font-family:var(--util);font-size:11px;font-weight:var(--wt-util-strong);letter-spacing:.16em;
-  text-transform:uppercase;color:var(--ink-52);margin-bottom:8px;
+  text-transform:uppercase;color:var(--ink-72);margin-bottom:8px;
 }
 .event-fact dd{font-size:17.5px;line-height:1.45;color:var(--ink)}
 .event-fact dd strong{display:block;font-weight:var(--wt-body-strong)}
 .event-fact dd span{display:block}
-/* A short hairline in the arch colour sets the note off from the facts. */
-.event-note{font-size:17px;line-height:1.55;color:var(--ink-72);max-width:none;
-  padding-top:18px;position:relative}
-.event-note::before{content:"";position:absolute;top:0;left:50%;width:36px;height:1px;
-  margin-left:-18px;background:var(--bay)}
-.event-note:empty{padding:0}
-.event-note:empty::before{display:none}
-/* Side by side, the two cards share rows, so the facts, the note and the
-   links line up across the pair even when one name runs to two lines. Each
-   card spans seven rows of .events (arch, name, time, where, dress code,
-   note, links) and passes them down, three levels deep. Without subgrid the cards simply don't align.
+.event-foot{display:flex;flex-direction:column;gap:16px}
+.event-note{font-size:17px;line-height:1.55;color:var(--ink-72);max-width:none}
+.event-facts,.event-note,.event-acts{position:relative;padding-top:18px}
+.event-facts::before,.event-note::before,.event-acts::before{
+  content:"";position:absolute;top:0;left:50%;width:36px;height:1px;
+  margin-left:-18px;background:var(--bay);
+}
+/* Side by side, the two cards share rows, so the facts and the foot line up
+   across the pair even when one name runs to two lines. Each card spans six
+   rows of .events (arch, name, time, where, dress code, foot) and passes them
+   down, three levels deep. Without subgrid the cards simply don't align.
    A subgrid's own row-gap replaces the parent's inside it, so the gap on
    .events still spaces stacked cards while the rows within a card use theirs.
+   The foot sits at the TOP of its row, straight after the facts. Aligning
+   the links across the pair instead left a hole above Saturday's links the
+   height of Friday's note, which read as something missing.
    It must sit BELOW the base .event-bay rule, which sets display:flex at the
    same specificity and would otherwise win. */
 @supports (grid-template-rows:subgrid){
-  .event{display:grid;grid-row:span 7;grid-template-rows:subgrid;row-gap:0}
-  .event-bay{display:grid;grid-row:span 6;grid-template-rows:subgrid;row-gap:16px}
+  .event{display:grid;grid-row:span 6;grid-template-rows:subgrid;row-gap:0}
+  .event-bay{display:grid;grid-row:span 5;grid-template-rows:subgrid;row-gap:16px}
   .event-facts{grid-row:span 3;grid-template-rows:subgrid}
-  .event-bay h3{margin-bottom:8px}
-  .event-acts{align-self:end}
+  .event-foot{align-self:start}
 }
 /* Two quiet links, not two outlined pills. */
 .event-acts{
   display:flex;flex-wrap:wrap;justify-content:center;align-items:center;
-  gap:6px 22px;margin-top:auto;padding-top:24px;
+  gap:6px 22px;margin-top:auto;
 }
 .event-acts .btn{
   background:none;border:none;border-radius:0;padding:3px 0;

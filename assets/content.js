@@ -153,7 +153,9 @@ const SITE = {
         /* Hidden by default. Shown to whoever came in on gate.fridayPassword,
            or on a link carrying ?f=11. See the Friday block in main.js. */
         id:      "friday",
-        day:     { en: "Friday, 11 June 2027", it: "Venerdì 11 Giugno 2027" },
+        /* The date is the headline of the card; the weekday sits above it. */
+        weekday: { en: "Friday",               it: "Venerdì" },
+        date:    { en: "11 June 2027",         it: "11 Giugno 2027" },
         name:    { en: "Welcome Drinks",       it: "Aperitivo di benvenuto" },
         time:    { en: "16:00 to 21:00", it: "Dalle 16:00 alle 21:00" },
         /* The venue is not booked yet. tbc hides the Directions link; delete
@@ -170,7 +172,8 @@ const SITE = {
         cal: { start: "2027-06-11T16:00:00", end: "2027-06-11T21:00:00" }
       },
       {
-        day:     { en: "Saturday, 12 June 2027", it: "Sabato 12 Giugno 2027" },
+        weekday: { en: "Saturday",               it: "Sabato" },
+        date:    { en: "12 June 2027",           it: "12 Giugno 2027" },
         name:    { en: "Ceremony and Reception", it: "Cerimonia e ricevimento" },
         time:    { en: "From 15:30", it: "Dalle 15:30" },
         venue:   "Villa Zarri",

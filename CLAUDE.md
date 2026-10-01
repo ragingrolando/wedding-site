@@ -193,21 +193,35 @@ would stand under two different arches.
 
 ### When and Where
 
-Each card reads top to bottom: date in the arch, event name, three labelled
-facts (Time, Where, Dress code), the note, the links. **Every label is one
-style and every value is one style**: Instrument Sans caps for labels,
-Newsreader for values, venue name at `--wt-body-strong`. No italics anywhere
-in the section, and no colour change on the time. It used to say "detail"
-three ways: a teal time, a Fraunces venue and an italic dress label.
+Each card reads top to bottom: the date in the arch, the event name, three
+labelled facts (Time, Where, Dress code), the note, the links.
+
+**The date is the headline.** It is the largest type on the card (Fraunces,
+27-34px), with the weekday in small rust caps above it. It used to be 11px
+caps under a 30px event name, which made the one fact a guest must remember
+the hardest to see. The event name is second, at 20-23px. Content has
+`weekday` and `date` per event, not one `day` string, so the two can be set
+differently.
+
+**Three text colours and no more**: `--ink` for content, `--ink-72` for
+everything secondary (labels and the note, which were two different greys),
+`--portico-deep` as the one accent (weekday and links). No italics in the
+section. Add a fourth colour and it is a regression.
+
+**A short rust hairline divides each group**: name, facts, note, links. Each
+sits 16px below what precedes it (the row gap) and 18px above what follows
+(padding), measured identical on both cards. The links used to carry an extra
+24px of padding on top of the row gap, which read as something missing.
 
 **The two cards share rows.** `.event`, `.event-bay` and `.event-facts` are
-nested subgrids, so when "Ceremony and Reception" wraps to two lines the
-facts, note and links still line up with Friday's. The note `<p>` is always
-rendered, empty on Saturday, so both cards have the same seven rows. The
-subgrid block **must sit below the base `.event-bay` rule**, which sets
-`display:flex` at the same specificity; it was placed above it first and did
-nothing, the same mistake as the dead dancer rule. Browsers without subgrid
-get unaligned but correct cards.
+nested subgrids, so the facts line up across the pair even when one event
+name wraps. The note and links share one `.event-foot` block that sits at the
+**top** of its row: aligning the links across the pair instead left a hole
+above Saturday's links the height of Friday's note. A card with no note
+renders no note element at all. The subgrid block **must sit below the base
+`.event-bay` rule**, which sets `display:flex` at the same specificity; it was
+placed above it once and did nothing, the same mistake as the dead dancer
+rule. Browsers without subgrid get unaligned but correct cards.
 
 **Widened 25% on request, keeping the shape.** `.events` max-width 780 to
 960px, `.events-solo` 380 to 475px, and the arch height's `vw` term and cap

@@ -358,10 +358,15 @@
       }
       /* Each event stands in a bay of the portico: a drawn arch, open at the
          foot. The date is inscribed in the head, above the impost, where a
-         keystone inscription goes; everything else stands under it. */
+         keystone inscription goes, and it is the headline: the one fact a
+         guest has to remember. The event name stands under it.
+
+         Note and links share one foot block, so a card without a note has no
+         empty row and no doubled gap above its links. */
       return el("article", { class: "event" }, [
         el("div", { class: "event-arch" }, [
-          el("p", { class: "event-day", text: t(ev.day) })
+          el("p", { class: "event-weekday", text: t(ev.weekday) }),
+          el("p", { class: "event-date", text: t(ev.date) })
         ]),
         el("div", { class: "event-bay" }, [
           el("h3", { text: t(ev.name) }),
@@ -373,9 +378,10 @@
             ]),
             fact(SITE.ui.dressLabel, [document.createTextNode(t(ev.dress))])
           ]),
-          /* Always rendered, empty or not, so both cards have the same rows. */
-          el("p", { class: "event-note", text: t(ev.note) }),
-          acts
+          el("div", { class: "event-foot" }, [
+            t(ev.note) ? el("p", { class: "event-note", text: t(ev.note) }) : null,
+            acts
+          ])
         ])
       ]);
     });

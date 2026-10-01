@@ -14,7 +14,7 @@ decided and why, and what is still open.
 | Date | Saturday 12 June 2027 |
 | Venue | Villa Zarri, Via Ronco 1, 40013 Castel Maggiore BO, Italy |
 | Ceremony | 16:00, guests welcome from 15:30 |
-| Friday drinks | 11 June, 16:00–21:00, Via Santo Stefano, Bologna |
+| Friday drinks | 11 June, 16:00–21:00, central Bologna, **venue TBC** |
 | Languages | English and Italian |
 | Live at | `https://orlando-and-sofia.com` |
 
@@ -141,7 +141,9 @@ portico that runs through it.
 
 ```
 --paper      #f7f4ec   NOT a ground any more. Button text, fields, hover fills
---tone-1..4  four warm section grounds, cycled. See The section grounds
+--tone-1..4  four warm section grounds, cycled, as RGB TRIPLETS. See The section grounds
+--wall-fade  .5  how much of the wall is veiled. 0 = full strength, 1 = gone
+--wt-*       the five font weights. See Type weight
 --card       #e9e3d1
 --ink        #1d3320   the pen line, verbatim from the painting
 --portico    #c05b3c   the arches
@@ -155,8 +157,27 @@ portico that runs through it.
 
 `--ink-52` and `--ink-72` have been raised twice: `.56`/`.72` to `.70`/`.78`
 after a WCAG audit, then to **`.74`/`.82`** to pay for the wall texture, which
-darkens the ground. Nothing on the page is under 4.9:1. **Do not lower them**,
-and if the texture is ever removed they can come back down.
+darkens the ground. Since the wall was faded to half strength the grounds are
+lighter and nothing on the page is under 5.2:1. **Do not lower them**; that
+headroom is what lets the wall come back up.
+
+### Type weight
+
+Raised on request because the page read thin. Every `font-weight` in
+`styles.css` is one of five tokens, so heavier or lighter is a change in one
+place:
+
+| Token | Was | Now | Used for |
+|---|---|---|---|
+| `--wt-body` | 400 | 460 | Newsreader body copy, form fields |
+| `--wt-body-strong` | 500/600 | 600 | Hero date line, venue names |
+| `--wt-display` | 400 | 520 | Fraunces headings, names, ampersand |
+| `--wt-util` | 500 | 600 | Instrument Sans nav, subtitles, footer |
+| `--wt-util-strong` | 600 | 650 | Buttons, small caps labels |
+
+`index.html` loads all three faces at `400..700`. It loaded `400..600` and
+Instrument Sans as three static cuts, so anything heavier than 600 silently
+fell back to 600. **Going past 700 means widening that URL too.**
 
 ### The arch is the signature
 
@@ -169,6 +190,29 @@ rather than closing. A bay you cannot walk through is a tombstone.
 The arch head is a separate element, not a `border-radius` on the card. A
 percentage radius keys off the card's height, so two cards of different lengths
 would stand under two different arches.
+
+### When and Where
+
+Each card reads top to bottom: date in the arch, event name, three labelled
+facts (Time, Where, Dress code), the note, the links. **Every label is one
+style and every value is one style**: Instrument Sans caps for labels,
+Newsreader for values, venue name at `--wt-body-strong`. No italics anywhere
+in the section, and no colour change on the time. It used to say "detail"
+three ways: a teal time, a Fraunces venue and an italic dress label.
+
+**The two cards share rows.** `.event`, `.event-bay` and `.event-facts` are
+nested subgrids, so when "Ceremony and Reception" wraps to two lines the
+facts, note and links still line up with Friday's. The note `<p>` is always
+rendered, empty on Saturday, so both cards have the same seven rows. The
+subgrid block **must sit below the base `.event-bay` rule**, which sets
+`display:flex` at the same specificity; it was placed above it first and did
+nothing, the same mistake as the dead dancer rule. Browsers without subgrid
+get unaligned but correct cards.
+
+**The Friday venue is TBC.** `tbc: true` on the event hides the Directions
+link, which would otherwise map-search "Venue TBC". When it is booked: fill in
+`venue` and `address`, delete `tbc`. The calendar file still carries "Venue
+TBC, Central Bologna" as its location until then.
 
 ### The nav is a scroller, not a menu
 
@@ -225,30 +269,36 @@ too, or it will silently do nothing.
 Not nine. They are the colour UNDER the wall texture, not what you see.
 
 ```
---tone-1 #faf5e7  palest      when, stay, rsvp
---tone-2 #f7ecd2  ochre       dress, gifts
---tone-3 #efe9e5  soft clay   order, faq
---tone-4 #f8e5d9  apricot     transport, bologna
+--tone-1:255 255 255  palest   when, stay, rsvp
+--tone-2:253 248 235  apricot  dress, gifts
+--tone-3:247 244 244  sand     order, faq
+--tone-4:249 237 228  clay     transport, bologna
 ```
 
-**These are much paler than they render.** The wall is tinted terracotta and
-does most of the colouring; the tones only steer it. Judge them rendered, not
-as hex values.
+**They are triplets, not hex**, because the wall is faded with a veil of the
+section's own colour at an alpha, and `rgb(var(--band) / .5)` needs the bare
+channels. Use `rgb(var(--band))` wherever you need the colour itself.
+
+**They are much paler than they render.** The terracotta wall does most of the
+colouring, so `--tone-1` is pure white and still renders a faint peach. Judge
+them rendered, not as values. Asked for as "a very faint colour", each a
+slightly different shade of the Bologna orange.
 
 Assigned by `#id`, not `nth-child`, so reordering the nav cannot silently
 reshuffle the palette. `.alt` is still what `main.js` alternates and what
 draws the arch run; it no longer carries a colour. The arch run therefore
 still lands exactly on every change of ground.
 
-| | rendered ground | hue | chroma | `--ink-52` |
-|---|---|---|---|---|
-| tone 1 | (243,216,186) | 32 | 57 | 4.980 |
-| tone 2 | (241,210,171) | 33 | 70 | 4.863 |
-| tone 3 | (235,208,184) | 28 | 51 | 4.761 |
-| tone 4 | (241,205,176) | 27 | 65 | 4.764 |
+| | rendered ground | was (wall at full strength) | `--ink-52` |
+|---|---|---|---|
+| tone 1 | (251,241,231) | (243,216,186) | 5.59 |
+| tone 2 | (249,235,214) | (241,210,171) | 5.44 |
+| tone 3 | (244,232,222) | (235,208,184) | 5.36 |
+| tone 4 | (246,225,208) | (241,205,176) | 5.22 |
 
-Worst section boundary measures dE 4.04. The arch run is unaffected: `--portico`
-at `.5` scores 1.68-1.73 against these grounds, against 1.71-1.79 before.
+Section boundaries measure dE 3.08 to 7.46. The tightest pair is tone 1 and
+tone 3 (When/Order, Stay/Q&A), because tone 1 is already white and cannot go
+lighter. To separate them further, deepen tone 3, never lift tone 1.
 
 #### Why four and not nine
 
@@ -276,7 +326,7 @@ this and it is what sent the first two attempts wrong.
 
 Use CIE dE against this calibration: **the old `--paper`/`--wash` pair, which
 read as two grounds, scores dE 2.96.** The four tones here are 4.67 apart at
-worst, and the worst section boundary on the page measures **3.97**.
+worst, and the worst section boundary on the page measures **3.08**.
 
 ### The wall texture
 
@@ -285,14 +335,24 @@ Every section is the same photographed wall over a different ground colour.
 and a normal one, so a new band variant only has to set it.
 
 ```css
-body    { --band:var(--paper); background-color:var(--band);
-          background-image:url("../images/concrete-wall.webp") }
-section { --band:var(--paper); background-color:var(--band);
-          background-image:url("../images/concrete-wall.webp") }
+body,section,.gate{
+  background-color:rgb(var(--band));
+  background-image:
+    linear-gradient(rgb(var(--band) / var(--wall-fade)),rgb(var(--band) / var(--wall-fade))),
+    url("../images/concrete-wall.webp");
+}
 #order  { --band:var(--tone-3) }   /* and so on, see The section grounds */
 ```
 
-`body` and `.gate` carry the same two lines, so the wall runs behind the hero,
+**`--wall-fade` is the strength knob.** It lays a veil of the section's own
+colour over the wall, so `.5` shows half the wall and keeps each ground's own
+hue. It was asked for "more transparent" and went from no veil to `.5`, which
+halves the texture (luminance sd 5-6 down to 2.6-3.8). Lowering it also
+deepens every ground towards terracotta, so re-measure the ink if it goes
+below `.3`. A triplet and an alpha, not `color-mix()`, so it works on phones
+older than iOS 16.2.
+
+`body` and `.gate` share the one rule, so the wall runs behind the hero,
 the footer and the password screen too, and is continuous everywhere. Sections
 paint their own `--band` over it; the hero and footer are transparent and show
 the body's.
@@ -435,6 +495,10 @@ hero. Everywhere else it is the plain character. This took four attempts:
 
 ### The hero
 
+The "We're getting married" / "Ci sposiamo" line above the names was removed
+on request, along with its CSS. The page's meta description still says
+"getting married"; that is link-preview text, not on the page.
+
 `heroTextBelow: true` in `content.js`. The painting holds the first screen on
 its own; the names arrive on scroll, using the same reveal every section uses.
 **No pinning and no scroll hijacking.** Set to `false` to put the names back
@@ -557,7 +621,8 @@ for paper and ready, just unused.
 
 There is no test suite. The checks that have caught real bugs:
 
-- `scrollWidth <= clientWidth` at 1440 / 1100 / 820 / 390 / 320, both languages
+- `scrollWidth <= clientWidth` at 1440 / 1200 / 1100 / 820 / 768 / 390 / 320,
+  both languages, and with both `?k=baci` and `?k=spritz` (one card or two)
 - No failed requests, no page errors
 - Screenshot the section you changed and actually look at it
 

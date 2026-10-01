@@ -155,9 +155,12 @@ const SITE = {
         id:      "friday",
         day:     { en: "Friday, 11 June 2027", it: "Venerdì 11 Giugno 2027" },
         name:    { en: "Welcome Drinks",       it: "Aperitivo di benvenuto" },
-        time:    { en: "16:00 to 21:00", it: "dalle 16:00 alle 21:00" },
-        address: { en: "Via Santo Stefano, 40125 Bologna BO, Italy",
-                   it: "Via Santo Stefano, 40125 Bologna BO, Italia" },
+        time:    { en: "16:00 to 21:00", it: "Dalle 16:00 alle 21:00" },
+        /* The venue is not booked yet. tbc hides the Directions link; delete
+           it and fill in venue and address once it is. */
+        tbc:     true,
+        venue:   { en: "Venue TBC", it: "Luogo da confermare" },
+        address: { en: "Central Bologna", it: "Centro di Bologna" },
         dress:   { en: "Casual, whatever your heart desires",
                    it: "Casual, come desideri" },
         note: {
@@ -497,6 +500,8 @@ const SITE = {
                    it: "App da scaricare sullo smartphone:" },
     addToCal:    { en: "Add to Calendar",   it: "Aggiungi al calendario" },
     directions:  { en: "Directions",        it: "Indicazioni" },
+    timeLabel:   { en: "Time",              it: "Orario" },
+    whereLabel:  { en: "Where",             it: "Dove" },
     dressLabel:  { en: "Dress code",        it: "Dress code" },
     searchStay:  { en: "Search rooms",      it: "Cerca camere" },
     formName:    { en: "Full name",         it: "Nome e cognome" },

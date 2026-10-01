@@ -283,8 +283,6 @@
                           style: "background-image:url('images/" + SITE.heroImage + "')" }) : null,
       el("div", { class: "hero-veil" }),
       el("div", {}, [
-        el("p", { class: "hero-kicker",
-                  text: lang === "it" ? "Ci sposiamo" : "We're getting married" }),
         el("h1", { class: "hero-names" },
            coupleMark(SITE.names.first, SITE.names.second)),
         el("p", { class: "hero-meta" }, [
@@ -339,14 +337,25 @@
       return friday || ev.id !== "friday";
     });
     var cards = events.map(function (ev) {
-      var where = ev.venue ? ev.venue + ", " + t(ev.address) : t(ev.address);
+      var venue = t(ev.venue);
+      var where = venue ? venue + ", " + t(ev.address) : t(ev.address);
+      /* A venue still to be confirmed gets no Directions link: it would send
+         guests to a map search for the words "Venue TBC". */
       var acts = el("div", { class: "event-acts" }, [
         el("a", { class: "btn ghost small", href: icsHref(t(ev.name), ev.cal.start, ev.cal.end, where, t(ev.note)),
                   download: "orlando-sofia-" + ev.cal.start.slice(0, 10) + ".ics",
                   text: t(SITE.ui.addToCal) }),
+        ev.tbc ? null :
         el("a", { class: "btn ghost small", href: mapsUrl(where),
                   target: "_blank", rel: "noopener", text: t(SITE.ui.directions) })
       ]);
+      /* Every detail is a label over a value, in the same two styles, so the
+         two cards read as the same form filled in twice. */
+      function fact(label, kids) {
+        return el("div", { class: "event-fact" }, [
+          el("dt", { text: t(label) }), el("dd", {}, kids)
+        ]);
+      }
       /* Each event stands in a bay of the portico: a drawn arch, open at the
          foot. The date is inscribed in the head, above the impost, where a
          keystone inscription goes; everything else stands under it. */
@@ -356,15 +365,15 @@
         ]),
         el("div", { class: "event-bay" }, [
           el("h3", { text: t(ev.name) }),
-          el("p", { class: "event-time", text: t(ev.time) }),
-          el("p", { class: "event-addr" }, [
-            ev.venue ? el("strong", { text: ev.venue }) : null,
-            document.createTextNode(t(ev.address))
+          el("dl", { class: "event-facts" }, [
+            fact(SITE.ui.timeLabel, [document.createTextNode(t(ev.time))]),
+            fact(SITE.ui.whereLabel, [
+              venue ? el("strong", { text: venue }) : null,
+              el("span", { text: t(ev.address) })
+            ]),
+            fact(SITE.ui.dressLabel, [document.createTextNode(t(ev.dress))])
           ]),
-          el("p", { class: "event-dress" }, [
-            el("span", { class: "dress-label", text: t(SITE.ui.dressLabel) + " " }),
-            document.createTextNode(t(ev.dress))
-          ]),
+          /* Always rendered, empty or not, so both cards have the same rows. */
           el("p", { class: "event-note", text: t(ev.note) }),
           acts
         ])

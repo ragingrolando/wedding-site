@@ -405,20 +405,24 @@ p+p{margin-top:.85em}
 .events{
   display:grid;gap:clamp(28px,4vw,56px);
   grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));
-  max-width:780px;margin-inline:auto;align-items:stretch;
+  max-width:960px;margin-inline:auto;align-items:stretch;
 }
 /* One bay, because the guest is on a link that hides the Friday drinks. */
-.events-solo{grid-template-columns:minmax(0,min(380px,100%));justify-content:center}
+.events-solo{grid-template-columns:minmax(0,min(475px,100%));justify-content:center}
 
 .event{
   --bay:rgba(192,91,60,.44);
   display:flex;flex-direction:column;text-align:center;background:none;
 }
 
+/* Widened 25% on request, keeping the shape: max-width 780 -> 960 (each of
+   two cards 362 -> 452px at 1440), solo 380 -> 475, and the arch height's
+   vw term and cap scaled by the same 1.25. The 84px floor is NOT scaled,
+   because phones get no wider and their arches should not get taller. */
 /* The head carries the date, which is what stops a semicircle over 340px of
    card from being a large empty dome. The line under it is the impost. */
 .event-arch{
-  height:clamp(84px,10vw,116px);
+  height:clamp(84px,12.5vw,145px);
   border:1px solid var(--bay);
   border-radius:50% 50% 0 0/100% 100% 0 0;
   display:flex;align-items:flex-end;justify-content:center;
@@ -451,7 +455,7 @@ p+p{margin-top:.85em}
 .event-facts{display:grid;gap:16px;align-content:start}
 .event-fact dt{
   font-family:var(--util);font-size:11px;font-weight:var(--wt-util-strong);letter-spacing:.16em;
-  text-transform:uppercase;color:var(--ink-52);margin-bottom:3px;
+  text-transform:uppercase;color:var(--ink-52);margin-bottom:8px;
 }
 .event-fact dd{font-size:17.5px;line-height:1.45;color:var(--ink)}
 .event-fact dd strong{display:block;font-weight:var(--wt-body-strong)}

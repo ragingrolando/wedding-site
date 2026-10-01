@@ -209,6 +209,16 @@ subgrid block **must sit below the base `.event-bay` rule**, which sets
 nothing, the same mistake as the dead dancer rule. Browsers without subgrid
 get unaligned but correct cards.
 
+**Widened 25% on request, keeping the shape.** `.events` max-width 780 to
+960px, `.events-solo` 380 to 475px, and the arch height's `vw` term and cap
+scaled by the same 1.25: `clamp(84px,12.5vw,145px)`. Measured width/height
+ratio is unchanged on desktop (3.12 for two cards, 3.28 for one) and on
+phones, where the 84px floor was left alone because the cards get no wider.
+Tablets (768-820) shift a little, 3.9-4.2 to 3.4 with two cards and 4.5 to
+4.6-5.0 with one, because there the card width is set by the screen, not
+the max-width. The old shape varied there too. Labels sit 8px above their
+values, half the 16px between facts, so each label reads with its value.
+
 **The Friday venue is TBC.** `tbc: true` on the event hides the Directions
 link, which would otherwise map-search "Venue TBC". When it is booked: fill in
 `venue` and `address`, delete `tbc`. The calendar file still carries "Venue

@@ -224,6 +224,25 @@ link, which would otherwise map-search "Venue TBC". When it is booked: fill in
 `venue` and `address`, delete `tbc`. The calendar file still carries "Venue
 TBC, Central Bologna" as its location until then.
 
+### Bologna folds away
+
+Below the Via Saragozza painting and the intro, the two long lists sit in
+two accordions, **closed on arrival**: "Things to Do" / "Cosa fare" (16
+places) and "Our Favourite Food & Drinks Spots" (16 restaurants). That takes
+the section from 3,054px to 1,180px on desktop and from 5,170px to 1,260px
+on a phone.
+
+They are native `<details>`, so keyboard and screen readers work with no
+script, and they share the Q&A's rules (same divider, same chevron), with a
+larger heading and full width because the places run two columns.
+Headings are `bologna.placesTitle` and `bologna.foodTitle` in `content.js`.
+`fold()` in `buildBologna` wraps each list; add a third list by adding a
+third `fold()`. Open one by default with `open: ""` in its attributes.
+
+`.subhead`, the old centred food heading, went with this. Its lesson stays
+true everywhere: `p` carries `max-width:var(--measure)`, so centring the text
+inside a `p` is not centring the `p`; give it `margin-inline:auto`.
+
 ### The nav is a scroller, not a menu
 
 There is no burger. The nav is a flex row with `overflow-x:auto` and a mask
@@ -584,10 +603,10 @@ Left in English deliberately: proper nouns (hotels, restaurants, street
 names) and the words Italian uses unchanged (Password, Aperitivo, Gelato,
 Dress Code, IBAN, BIC, RSVP, Email).
 
-**Centred is two things.** `.subhead` had `text-align:center` and still sat
-282px left of the column: `p` carries `max-width:var(--measure)`, so the box
-was narrower than its parent, and the rule set its side margins to `0`.
-Centring text inside a box is not centring the box. It is `auto` now.
+**Centred is two things.** The old `.subhead` (since removed, see Bologna
+folds away) had `text-align:center` and still sat 282px left of the column:
+`p` carries `max-width:var(--measure)`, so the box was narrower than its
+parent. Centring text inside a box is not centring the box.
 
 **`t()` is not applied everywhere.** Place names, restaurant names and notes,
 event times and addresses were once rendered as raw strings, so making one

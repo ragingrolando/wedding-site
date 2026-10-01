@@ -444,6 +444,8 @@ const SITE = {
                it: "Se avete la macchina, fate un giro sui colli intorno a Bologna: strade tortuose, verde e viste bellissime sulla città. Esplorate tra San Luca, Via di Casaglia, Parco Cavaioni e San Michele in Bosco." } }
     ],
 
+    /* The two accordion headings. Each list is folded away until opened. */
+    placesTitle: { en: "Things to Do", it: "Cosa fare" },
     foodTitle: { en: "Our Favourite Food & Drinks Spots",
                 it: "I nostri posti preferiti per mangiare e bere" },
 

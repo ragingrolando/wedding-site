@@ -561,7 +561,14 @@
     /* Painting beside the opening, not above it: the section is long and a
        full-width plate here would push the list another screen down. */
     var plate = art(SITE.bologna.image, "bol-img", t(SITE.bologna.imageCaption));
-    if (!plate) return section("bologna", [head, soloIntro(intro), places, foodHead(), food]);
+    /* The two long lists fold away, closed on arrival, so the section is the
+       painting, the intro and two headings until a guest asks for more. Same
+       look and behaviour as the Q&A. */
+    var lists = el("div", { class: "bol-accs" }, [
+      fold(SITE.bologna.placesTitle, places),
+      fold(SITE.bologna.foodTitle, food)
+    ]);
+    if (!plate) return section("bologna", [head, soloIntro(intro), lists]);
 
     var fig = el("figure", { class: "bol-fig" }, [
       plate,
@@ -577,10 +584,13 @@
       opener.classList.add("bol-open-solo");
     });
 
-    return section("bologna", [head, opener, places, foodHead(), food]);
+    return section("bologna", [head, opener, lists]);
 
-    function foodHead() {
-      return el("p", { class: "subhead", text: t(SITE.bologna.foodTitle) });
+    function fold(title, list) {
+      return el("details", { class: "bol-acc" }, [
+        el("summary", { text: t(title) }),
+        el("div", { class: "bol-acc-body" }, [list])
+      ]);
     }
 
     function soloIntro(node) {

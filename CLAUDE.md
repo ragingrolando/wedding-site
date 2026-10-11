@@ -647,11 +647,21 @@ for paper and ready, just unused.
 
 ## Working practices
 
-- **Orlando works on `main`.** His local clone was once branched off a feature
-  branch, which silently pushed his files where Pages could not see them. If
-  something he pushed "isn't showing", check which branch it landed on first.
-- He has `core.mergeoptions --no-edit` and `core.editor nano` set, so `git pull`
-  no longer opens pico at him.
+- **GitHub `main` is the master copy, by Orlando's decision.** It is the only
+  copy that matters: Pages publishes it and every Claude session pushes to
+  it. Orlando edits remotely through Claude sessions or the GitHub web editor,
+  not from a laptop clone. If a laptop clone still exists it is a backup at
+  most; never treat it as current, and never push from it without pulling
+  first.
+- History, in case a laptop clone comes back into use: it was once branched
+  off a feature branch, which silently pushed his files where Pages could not
+  see them. If something he pushed "isn't showing", check which branch it
+  landed on first. He had `core.mergeoptions --no-edit` and `core.editor nano`
+  set, so `git pull` does not open pico at him.
+- **Hand edits in the GitHub web editor can blank the site.** `content.js` is
+  one JavaScript object, so a stray quote or missing comma stops everything
+  rendering. If the site goes blank after a web edit, restore the previous
+  version from the file's History on GitHub first, then fix the edit.
 - **Renaming an image breaks the site** unless `content.js` is updated in the
   same commit. This has happened twice.
 - Claude works on a per-session `claude/...` branch and pushes there first,
